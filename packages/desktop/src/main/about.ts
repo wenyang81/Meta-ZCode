@@ -2,6 +2,7 @@ import type { AboutPanelOptionsOptions, BrowserWindow, MessageBoxReturnValue } f
 import { existsSync, readFileSync } from "node:fs";
 import { arch, hostname, platform, release, type, version as osVersion } from "node:os";
 import { join } from "node:path";
+import { brandIdentity } from "@zcode/biz-brand";
 import {
   DEFAULT_LOCALE,
   toZhOrEnLocale,
@@ -53,7 +54,7 @@ interface AboutSnapshotOptions {
   };
 }
 
-const ABOUT_APPLICATION_NAME = "ZCode Desktop App";
+const ABOUT_APPLICATION_NAME = brandIdentity.productName;
 // 自定义 About 内容本体是 256x280；原生窗口如果同尺寸会让内容贴满透明窗口边界。
 // 这里给 BrowserWindow 额外留出背景呼吸空间，避免正式 About 看起来比 demo 更局促。
 const ABOUT_WINDOW_WIDTH = 256;
@@ -67,21 +68,27 @@ const ABOUT_MESSAGES: Record<
     okButtonLabel: string;
     optimizedForAppleSilicon: string;
     copyright: (year: number) => string;
+    upstreamNotice: string;
   }
 > = {
   "zh-CN": {
-    aboutTitle: "关于 ZCode",
+    aboutTitle: `关于 ${brandIdentity.displayName}`,
     versionLabel: "版本",
     okButtonLabel: "确定",
     optimizedForAppleSilicon: "已针对 Apple Silicon 优化。",
-    copyright: (year) => `版权所有 © ${year} ZCode。`,
+    copyright: (year) => `版权所有 © ${year} ${brandIdentity.displayName}。`,
+    // Apache-2.0 §6 不授予商标权，所以本 fork 换掉上游标识；同时 §4 的归属义务要求
+    // 保留来源说明，改名不等于消除上游版权。见 docs/brand-identity.md「开源合规边界」。
+    upstreamNotice: "本应用基于上游 ZCode（zai-org/zcode）构建，依 Apache-2.0 许可发布。",
   },
   "en-US": {
-    aboutTitle: "About ZCode",
+    aboutTitle: `About ${brandIdentity.productName}`,
     versionLabel: "version",
     okButtonLabel: "OK",
     optimizedForAppleSilicon: "Optimized for Apple Silicon.",
-    copyright: (year) => `Copyright © ${year} ZCode.`,
+    copyright: (year) => `Copyright © ${year} ${brandIdentity.productName}.`,
+    upstreamNotice:
+      "Built from upstream ZCode (zai-org/zcode), provided under the Apache-2.0 license.",
   },
 };
 
@@ -199,6 +206,10 @@ export function formatAboutCopyright(
   return getAboutMessages(locale).copyright(year);
 }
 
+export function formatAboutUpstreamNotice(locale: Locale = DEFAULT_LOCALE): string {
+  return getAboutMessages(locale).upstreamNotice;
+}
+
 export function formatAboutOptimizationLine(
   snapshot: Pick<AboutSnapshot, "osPlatform" | "osArch">,
   locale: Locale = DEFAULT_LOCALE,
@@ -216,14 +227,17 @@ export function createSystemAboutPanelOptions(
   locale: Locale = DEFAULT_LOCALE,
 ): AboutPanelOptionsOptions {
   const messages = getAboutMessages(locale);
-  const credits = formatAboutOptimizationLine(snapshot, locale);
+  const credits = [
+    formatAboutUpstreamNotice(locale),
+    formatAboutOptimizationLine(snapshot, locale),
+  ].filter(Boolean);
   return {
     applicationName: ABOUT_APPLICATION_NAME,
     applicationVersion: `${messages.versionLabel} ${snapshot.appVersion}`,
     copyright: formatAboutCopyright(year, locale),
     // 设计原因：macOS About Panel 的 credits 区最接近参考图里的硬件优化说明位置。
     // 保持信息交给系统级面板渲染，避免自绘窗口和原生关于弹窗风格割裂。
-    ...(credits ? { credits } : {}),
+    ...(credits.length ? { credits: credits.join("\n") } : {}),
   };
 }
 
@@ -277,6 +291,7 @@ export async function showAboutDialog(
         applicationName: ABOUT_APPLICATION_NAME,
         appVersion: snapshot.appVersion,
         copyright: formatAboutCopyright(undefined, locale),
+        upstreamNotice: formatAboutUpstreamNotice(locale),
         optimizationLine: formatAboutOptimizationLine(snapshot, locale),
         versionLabel: aboutMessages.versionLabel,
         okButtonLabel: aboutMessages.okButtonLabel,

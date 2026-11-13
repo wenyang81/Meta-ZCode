@@ -52,7 +52,7 @@ export function createDesktopTray(options: {
   }
 
   const getLabel = (id: (typeof desktopMenuMessageIds)[keyof typeof desktopMenuMessageIds]) =>
-    getDesktopMenuMessage(options.getLocale(), id);
+    getDesktopMenuMessage(options.getLocale(), id).replaceAll("{appName}", app.name);
   const showTrayWindow = () => {
     void Promise.resolve(options.showCurrentWindow()).catch((error) => {
       options.logger.warn("[desktop-tray] failed to show current window", error);

@@ -1489,8 +1489,8 @@ const koKR: Record<string, string> = {
   "welcome.login": "로그인",
   "welcome.loggingIn": "로그인 중...",
   "welcome.loginFailed": "로그인 실패",
-  "login.title": "ZCode에 오신 것을 환영합니다",
-  "login.description": "계정을 연결하여 ZCode 사용을 시작하세요",
+  "login.title": "{brand}에 오신 것을 환영합니다",
+  "login.description": "로그인 후 {brand}를 사용해 보세요",
   "login.oauth.activeProviderHint":
     "현재 활성 공급자: {provider}. 다시 로그인하면 현재 ID가 대체됩니다.",
   "login.oauth.loadingProviders": "계정 공급자 로드 중...",

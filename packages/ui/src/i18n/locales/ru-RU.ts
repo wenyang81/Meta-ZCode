@@ -1520,8 +1520,8 @@ const ruRU: Record<string, string> = {
   "welcome.login": "Войти",
   "welcome.loggingIn": "Вход...",
   "welcome.loginFailed": "Не удалось войти",
-  "login.title": "Добро пожаловать в ZCode",
-  "login.description": "Подключите аккаунт, чтобы начать работу с ZCode",
+  "login.title": "Добро пожаловать в {brand}",
+  "login.description": "Войдите, чтобы начать работу с {brand}",
   "login.oauth.activeProviderHint":
     "Текущий провайдер: {provider}. Повторный вход заменит текущую учётную запись.",
   "login.oauth.loadingProviders": "Загрузка провайдеров аккаунтов...",

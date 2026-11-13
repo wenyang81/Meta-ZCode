@@ -91,7 +91,7 @@ installer-completed (日志可查，完成页直接启动 `$INSTDIR\\ZCode.exe`)
 - 开始菜单/桌面 `.lnk` 目标正确时原样保留（包括参数）。
 - 目标错误但 `.lnk` 存在时原位修复，随后设置稳定 AUMID 并发送 `SHChangeNotify(SHCNE_UPDATEITEM)`。
 - 用户删除的 `.lnk` 不重建；完成页直接启动新安装目录的 exe。
-- `app.setAppUserModelId()` 在打包态使用生产/Preview 对应 `appId`，开发态使用 `cn.aminer.zcode`。
+- `app.setAppUserModelId()` 在打包态使用生产/Preview 对应 `appId`，开发态使用 `<appId>.dev`（本 fork 的品牌身份，见 [品牌身份](../brand-identity.md)）。
 
 ## 接受用例
 

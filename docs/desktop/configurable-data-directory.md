@@ -33,6 +33,13 @@
 2. `process.env.ZCODE_DATA_BASE_DIR`（host process 通过环境变量接收）
 3. `os.homedir()`（兜底默认值）
 
+Bootstrap 读取 `setting.json` 的唯一例外是**隔离态**：未打包运行（源码 dev、e2e、冒烟脚本）
+且调用方显式设置了 `ZCODE_DATA_BASE_DIR` 时，`applyEarlyDataBaseDirBootstrap()` 跳过覆盖，
+第 2 项直接生效。原因是 `setting.json` 只有一份且永远在默认 homedir 下，正式版把
+`dataBaseDir` 钉到自定义目录后，无条件覆盖会让开发态显式请求的隔离失效，dev 与正式版因此
+共享同一份 `tasks-index.sqlite`、凭据与设置。打包运行不受影响，仍以 `setting.json` 为准。
+隔离条件的权威描述见 [mise 开发运行时](../development-mise-runtime.md)。
+
 ## 复制行为
 
 当用户更改数据目录时，会将旧目录的数据复制到新目录：

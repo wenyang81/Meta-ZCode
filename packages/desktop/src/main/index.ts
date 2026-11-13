@@ -7,6 +7,7 @@ import { installRequestSecurityDiagnostics } from "./request-security-edition/in
 import { createLocalTtftExporter } from "./localTtftExporter.js";
 /* eslint-disable max-lines */
 import "./desktopEarlyDataBaseDirBootstrap.js";
+import { isExplicitDevDataBaseDir } from "./desktopDataBaseDirBootstrap.js";
 import "./desktopEarlyChromiumHardwareAccelerationBootstrap.js";
 import { powerMonitor, powerSaveBlocker } from "electron";
 import { crashCapturePaths } from "./appCrashCaptureBootstrap.js";
@@ -2262,7 +2263,10 @@ app.whenReady().then(async () => {
   let bootstrapSettings: AppSettings | undefined;
   try {
     bootstrapSettings = await mainSettingService.get();
-    if (bootstrapSettings.dataBaseDir) {
+    // 修复原因：这里曾无条件用 setting.json 的 dataBaseDir 覆盖数据根，把早期 bootstrap
+    // 已跳过的隔离态又改回共享目录，dev 与正式版因此仍落在同一份任务索引上。
+    // 判定与 applyEarlyDataBaseDirBootstrap() 共用 isExplicitDevDataBaseDir()，保持一条规则。
+    if (bootstrapSettings.dataBaseDir && !isExplicitDevDataBaseDir()) {
       setDataBaseDir(bootstrapSettings.dataBaseDir);
     }
     if (bootstrapSettings.locale) {

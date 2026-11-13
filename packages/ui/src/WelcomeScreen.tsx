@@ -5,6 +5,7 @@
  * 通过 useOAuth hook 驱动 OAuth 流程。
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { brandIdentity } from "@zcode/biz-brand";
 import { LoaderCircle, TriangleAlertIcon } from "lucide-react";
 import {
   type OAuthProviderMeta,
@@ -131,6 +132,11 @@ export function CredentialStoreRecovery({
 const LOGIN_TERMS_URL = "https://zcode.z.ai/terms";
 const LOGIN_PRIVACY_URL = "https://zcode.z.ai/privacy";
 
+/** 登录页正文里的品牌名：中文界面用中文名，其余界面用拉丁名，两个值都只在 biz-brand 存一份。 */
+function loginBrandName(locale: string): string {
+  return locale.startsWith("zh") ? brandIdentity.displayName : brandIdentity.productName;
+}
+
 interface WelcomeScreenProps {
   onComplete: (reason: LoginCompleteReason) => void | Promise<void>;
 }
@@ -146,7 +152,7 @@ export function resolveLoginRegionForLocale(locale: string): SingleLoginRegion {
 }
 
 export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
-  const { intl } = useZCodeIntl();
+  const { intl, locale } = useZCodeIntl();
   const platform = usePlatform();
   return (
     <main className="relative h-full min-h-dvh overflow-hidden bg-background text-foreground">
@@ -184,7 +190,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
               {intl.formatMessage({ id: "login.agreement.privacy" })}
             </button>
           </p>
-          <p>{intl.formatMessage({ id: "login.copyright" })}</p>
+          <p>{intl.formatMessage({ id: "login.copyright" }, { brand: loginBrandName(locale) })}</p>
         </footer>
       </div>
     </main>
@@ -467,8 +473,11 @@ export function LoginPanel({ active, onComplete }: LoginPanelProps) {
   return (
     <>
       <LoginPanelHeader
-        title={intl.formatMessage({ id: "login.title" })}
-        description={intl.formatMessage({ id: "login.description" })}
+        title={intl.formatMessage({ id: "login.title" }, { brand: loginBrandName(locale) })}
+        description={intl.formatMessage(
+          { id: "login.description" },
+          { brand: loginBrandName(locale) },
+        )}
       >
         {null}
       </LoginPanelHeader>
@@ -682,7 +691,7 @@ function LoginPanelLogo() {
     // 登录 logo 壳是固定深色底，边框不能跟随浅色主题 token，否则浅色主题下边框过重。
     <div
       className="relative flex size-16 items-center justify-center rounded-2xl bg-[linear-gradient(180deg,#000000_0%,#151718_100%)] text-[#ffffff] shadow-lg/20 before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:border before:border-[rgba(255,255,255,0.1)]"
-      aria-label="ZCode"
+      aria-label={brandIdentity.displayName}
       role="img"
     >
       <ZCodeAboutLogo className="h-auto w-10" />

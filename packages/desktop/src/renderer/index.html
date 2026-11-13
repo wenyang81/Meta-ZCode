@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ZCode</title>
+    <title>融智坊</title>
     <style>
       html,
       body,
@@ -109,24 +109,51 @@
     <div id="root"></div>
     <div id="loading" class="[app-region:drag]" role="status" aria-busy="true" aria-label="Loading...">
       <div class="startup-logo-shell">
+        <!-- 品牌标记；母版在 packages/biz-brand/src/index.ts，静态壳不能 import，改母版时同步这里。 -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="118"
-          height="100"
-          fill="none"
-          viewBox="0 0 256 218"
+          viewBox="0 0 120 120"
           class="startup-logo"
           aria-hidden="true"
         >
-          <path
-            fill="currentColor"
-            d="M134.4 0.130152L116.48 25.6022C113.665 29.5699 109.054 32.0019 104.064 32.0019H6.3999V0C6.3999 0.130149 134.4 0.130152 134.4 0.130152Z"
+          <defs>
+            <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2563eb" />
+              <stop offset="100%" stop-color="#059669" />
+            </linearGradient>
+            <linearGradient id="diaLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e3a8a" />
+              <stop offset="100%" stop-color="#2563eb" />
+            </linearGradient>
+            <linearGradient id="diaRight" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#059669" />
+              <stop offset="100%" stop-color="#16a34a" />
+            </linearGradient>
+          </defs>
+          <polygon
+            points="60,10 103,35 103,85 60,110 17,85 17,35"
+            fill="none"
+            stroke="url(#hexGrad)"
+            stroke-width="4"
+            stroke-linejoin="round"
           />
-          <path fill="currentColor" d="M256 0.130127L102.401 217.732H0L153.599 0.130127H256Z" />
-          <path
-            fill="currentColor"
-            d="M121.601 217.732L139.65 192.134C142.465 188.166 147.076 185.734 152.067 185.734H249.604V217.736H121.601V217.732Z"
-          />
+          <g stroke="#bfdbfe" stroke-width="1.6">
+            <line x1="60" y1="10" x2="60" y2="110" />
+            <line x1="17" y1="35" x2="103" y2="85" />
+            <line x1="103" y1="35" x2="17" y2="85" />
+          </g>
+          <g>
+            <circle cx="60" cy="10" r="4.5" fill="#2563eb" />
+            <circle cx="103" cy="35" r="4.5" fill="#059669" />
+            <circle cx="103" cy="85" r="4.5" fill="#2563eb" />
+            <circle cx="60" cy="110" r="4.5" fill="#059669" />
+            <circle cx="17" cy="85" r="4.5" fill="#2563eb" />
+            <circle cx="17" cy="35" r="4.5" fill="#059669" />
+          </g>
+          <polygon points="60,42 60,78 40,60" fill="url(#diaLeft)" />
+          <polygon points="60,42 60,78 80,60" fill="url(#diaRight)" />
+          <circle cx="60" cy="34" r="7" fill="#3b82f6" opacity="0.25" />
+          <circle cx="60" cy="34" r="4" fill="#1e3a8a" />
         </svg>
       </div>
     </div>

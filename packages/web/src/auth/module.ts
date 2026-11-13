@@ -4,7 +4,7 @@
  */
 export const webAuthModule = {
   id: "web-auth",
-  requires: ["mobile-ui", "shared", "ui"],
+  requires: ["biz-brand", "mobile-ui", "shared", "ui"],
   provides: ["web-auth"],
   publicEntrypoints: ["index.ts", "contract.ts"],
 } as const;

@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties } from "react";
+import { brandIdentity } from "@zcode/biz-brand";
 import { CopyIcon, EyeIcon, XIcon, ZapIcon } from "lucide-react";
 import { animate, motion, useReducedMotion } from "motion/react";
 import shareCardDarkBackgroundUrl from "@/assets/highspeed/share-card.svg";
@@ -74,7 +75,11 @@ export function HighspeedShareNoticeCard({
             data-highspeed-card-background="dark"
           />
           <div className="highspeed-sidebar-share-card__content">
-            <div className="highspeed-sidebar-share-card__title" role="img" aria-label="ZCode">
+            <div
+              className="highspeed-sidebar-share-card__title"
+              role="img"
+              aria-label={brandIdentity.displayName}
+            >
               <ZCodeWordmarkLogo className="highspeed-sidebar-share-card__wordmark" />
             </div>
             <Button

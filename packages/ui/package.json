@@ -55,6 +55,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "@xyflow/react": "^12.10.1",
+    "@zcode/biz-brand": "workspace:*",
     "@zcode/design-runtime": "workspace:*",
     "@zcode/provider": "workspace:*",
     "@zcode/rpc": "workspace:*",

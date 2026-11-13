@@ -71,3 +71,12 @@ AI 生成的代码、命令、解释、文件和建议可能存在错误、遗�
 ## 四、第三方许可与版权声明
 
 本仓库第一方代码依照根 [LICENSE](LICENSE) 采用 Apache-2.0；该许可不替其他权利人新增授权，也不覆盖第三方软件、复制代码、原生二进制、字体、图标、网页素材及其他资源的独立条款。具体依赖包详见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。受第三方版权、许可及再分发条件等约束，不承诺提供官方产品的全部功能及活动政策，具体以实际发布的源码和构建产物为准。
+
+## 五、本 fork 的修改声明
+
+本节是二开方追加的声明，只新增、不替换上文来自上游的任何文本。
+
+- 本仓库是 [zai-org/zcode](https://github.com/zai-org/zcode) 的 fork，上游以 Apache-2.0 授权发布。根 [LICENSE](LICENSE)、本文件上文与 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) 随本 fork 的源码和构建产物原样分发。
+- 被本 fork 修改的上游文件清单由 `node scripts/fork-changes.mjs` 生成到 [docs/fork-changes.md](docs/fork-changes.md)，并随源码提供；逐次修改的完整记录保留在 git 历史中。二开业务代码放在独立包（如 `packages/biz-brand`），对上游文件的改动收在少量 seam 上，规则见 [docs/brand-identity.md](docs/brand-identity.md)。
+- 本 fork 的应用名称、图标与界面品牌为 `融智坊 / FusionFinLab`，与上游产品标识无关；Apache-2.0 第 6 条不授予商标使用权，本 fork 不就上游商标主张任何权利，也不代表上游认可本 fork 及其功能、安全或运营表现。
+- 桌面端关于面板显示上游来源声明；本 fork 不因此获得上游账号、模型服务、网关或域名的任何使用授权，接入端点与凭据由本 fork 的使用方自行配置并承担相应条款。

@@ -1,7 +1,10 @@
+import { brandIdentity } from "@zcode/biz-brand";
+
 interface CustomAboutDialogHtmlInput {
   applicationName: string;
   appVersion: string;
   copyright: string;
+  upstreamNotice: string;
   optimizationLine: string;
   versionLabel: string;
   okButtonLabel: string;
@@ -127,6 +130,13 @@ export function createCustomAboutDialogHtml(input: CustomAboutDialogHtmlInput): 
         color: #303033;
       }
 
+      .attribution {
+        /* 显式清掉 p 的默认下边距：256x312 窗口在 darwin-arm64 英文文案下只差这几像素。 */
+        margin: 8px 0 0;
+        font-size: 11px;
+        line-height: 1.35;
+        color: #6b6b70;
+      }
 
       .ok-button {
         width: 100%;
@@ -163,6 +173,10 @@ export function createCustomAboutDialogHtml(input: CustomAboutDialogHtmlInput): 
         .meta {
           color: #e2e2e2;
         }
+
+        .attribution {
+          color: #9a9a9f;
+        }
       }
     </style>
   </head>
@@ -171,25 +185,7 @@ export function createCustomAboutDialogHtml(input: CustomAboutDialogHtmlInput): 
       <section class="about-card" role="dialog" aria-modal="true" aria-labelledby="about-title">
         <div class="content">
           <div class="app-icon" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="118"
-              height="100"
-              fill="none"
-              viewBox="0 0 256 218"
-              class="app-logo"
-              focusable="false"
-            >
-              <path
-                fill="currentColor"
-                d="M134.4 0.130152L116.48 25.6022C113.665 29.5699 109.054 32.0019 104.064 32.0019H6.3999V0C6.3999 0.130149 134.4 0.130152 134.4 0.130152Z"
-              />
-              <path fill="currentColor" d="M256 0.130127L102.401 217.732H0L153.599 0.130127H256Z" />
-              <path
-                fill="currentColor"
-                d="M121.601 217.732L139.65 192.134C142.465 188.166 147.076 185.734 152.067 185.734H249.604V217.736H121.601V217.732Z"
-              />
-            </svg>
+            <img class="app-logo" src="${brandIdentity.logoDataUrl}" alt="" draggable="false" />
           </div>
           <h1 id="about-title" class="title">
             ${escapeHtml(input.applicationName)}<br />
@@ -199,6 +195,7 @@ export function createCustomAboutDialogHtml(input: CustomAboutDialogHtmlInput): 
             ${input.optimizationLine ? `<div>${escapeHtml(input.optimizationLine)}</div>` : ""}
             <div>${escapeHtml(input.copyright)}</div>
           </div>
+          <p class="attribution">${escapeHtml(input.upstreamNotice)}</p>
         </div>
         <div class="spacer"></div>
         <button class="ok-button" type="button" autofocus>${escapeHtml(input.okButtonLabel)}</button>

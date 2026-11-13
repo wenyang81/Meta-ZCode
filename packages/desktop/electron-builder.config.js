@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { createRequire } from "node:module";
 import { HELPER_APP_NAME } from "@zcode/zcode-cua/broker/helperConstants";
+import { brandIdentity } from "@zcode/biz-brand";
 import { runCommand, runCommandAndReadStdout } from "../../scripts/spawn-command.mjs";
 import { loadBuiltinProviderConfig } from "../../scripts/builtin-provider-config.mjs";
 import { noticesFileName, stageElectronNotices } from "../../scripts/third-party-notices.mjs";
@@ -645,7 +646,7 @@ export default {
     zcodeProductFlavor: desktopProductIdentity.flavor,
     homepage: "https://zcode.z.ai",
     author: {
-      name: "ZCode",
+      name: brandIdentity.productName,
       email: "dev@zcode.z.ai",
     },
   },

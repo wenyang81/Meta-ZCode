@@ -1541,8 +1541,8 @@ const jaJP: Record<string, string> = {
   "welcome.login": "サインイン",
   "welcome.loggingIn": "サインイン中...",
   "welcome.loginFailed": "サインインに失敗しました",
-  "login.title": "ZCode へようこそ",
-  "login.description": "アカウントを接続して ZCode を使い始めましょう",
+  "login.title": "{brand} へようこそ",
+  "login.description": "ログインして {brand} を使い始めましょう",
   "login.oauth.activeProviderHint":
     "現在のプロバイダー: {provider}。再度サインインすると現在の ID が置き換えられます。",
   "login.oauth.loadingProviders": "アカウントプロバイダーを読み込み中...",

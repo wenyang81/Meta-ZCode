@@ -2446,3 +2446,25 @@ body {
   + :is(.summary-hover-text, :has(.summary-hover-text)):not([data-consecutive-summary-group]) {
   padding-top: 0;
 }
+
+/* 品牌启动标记的呼吸态，取代上游内联 SVG 的 <animate begin="3s" dur="1.8s" values="1;0.4;1">。
+   图形母版在 @zcode/biz-brand，见 docs/brand-identity.md。 */
+@keyframes brand-logo-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.brand-logo-breathe {
+  animation: brand-logo-breathe 1.8s linear 3s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-logo-breathe {
+    animation: none;
+  }
+}
