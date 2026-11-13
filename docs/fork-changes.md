@@ -4,14 +4,15 @@
 
 用途：Apache-2.0 第 4(b) 条要求分发修改版时对被修改的文件给出显著说明。本 fork 不在上游源文件里逐个加“已修改”头注释（那会把同步冲突面扩大到每个 seam），改为集中提供本清单，配合 git 历史与 [上游同步规范](upstream-sync.md)、[品牌身份 seam](brand-identity.md) 一起构成修改声明。
 
-- 生成时间：2026-11-13 14:31:51 UTC
+- 生成时间：2026-11-13 15:35:28 UTC
 - 比较基线：`c5904686ea`（上游同步提交 chore: sync ZCode source v3.18.1）
-- 工作区状态：已跟踪改动 60 个文件，未跟踪新增 14 个文件
+- 工作区状态：已跟踪改动 72 个文件，未跟踪新增 0 个文件
 
 状态含义：`M` 修改、`A` 新增、`D` 删除、`R` 重命名、`?` 未跟踪（尚未提交）。
 
-## (仓库根)（5）
+## (仓库根)（6）
 
+- `M` .gitignore
 - `M` AGENTS.md
 - `M` architecture-policy.yaml
 - `M` NOTICE.md
@@ -20,30 +21,24 @@
 
 ## docs/（3）
 
-- `?` docs/brand-identity.md
+- `A` docs/brand-identity.md
 - `M` docs/development-mise-runtime.md
-- `?` docs/upstream-sync.md
+- `A` docs/upstream-sync.md
 
 ## docs/desktop/（2）
 
 - `M` docs/desktop/configurable-data-directory.md
 - `M` docs/desktop/windows-installer-overhaul-spec.md
 
-## docs/qgraphflow/zcode-repo-architecture/（3）
-
-- `?` docs/qgraphflow/zcode-repo-architecture/diagram.svg
-- `?` docs/qgraphflow/zcode-repo-architecture/graph.json
-- `?` docs/qgraphflow/zcode-repo-architecture/index.html
-
 ## packages/biz-brand/（7）
 
-- `?` packages/biz-brand/package.json
-- `?` packages/biz-brand/src/contract.example.ts
-- `?` packages/biz-brand/src/CONTRACT.md
-- `?` packages/biz-brand/src/contract.ts
-- `?` packages/biz-brand/src/index.ts
-- `?` packages/biz-brand/src/module.ts
-- `?` packages/biz-brand/tsconfig.json
+- `A` packages/biz-brand/package.json
+- `A` packages/biz-brand/src/contract.example.ts
+- `A` packages/biz-brand/src/CONTRACT.md
+- `A` packages/biz-brand/src/contract.ts
+- `A` packages/biz-brand/src/index.ts
+- `A` packages/biz-brand/src/module.ts
+- `A` packages/biz-brand/tsconfig.json
 
 ## packages/desktop/（28）
 
@@ -64,7 +59,7 @@
 - `M` packages/desktop/electron-builder.config.js
 - `M` packages/desktop/package.json
 - `M` packages/desktop/scripts/desktop-product-identity.mjs
-- `?` packages/desktop/scripts/render-brand-icons.mjs
+- `A` packages/desktop/scripts/render-brand-icons.mjs
 - `M` packages/desktop/src/main/about.ts
 - `M` packages/desktop/src/main/aboutWindow.ts
 - `M` packages/desktop/src/main/desktopApplicationMenu.ts
@@ -112,5 +107,5 @@
 
 ## scripts/（1）
 
-- `?` scripts/fork-changes.mjs
+- `A` scripts/fork-changes.mjs
 

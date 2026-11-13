@@ -78,3 +78,7 @@ __pycache__/
 
 # CR-01：afterPack 生成的 NSIS helper define，按架构命名，不得入库
 packages/desktop/build/generated/
+
+# qgraphflow 技能按需生成的架构图产物（diagram.svg/graph.json/index.html），
+# 每次重跑都会覆盖，不入库也不参与推送工作区检查。
+docs/qgraphflow/
