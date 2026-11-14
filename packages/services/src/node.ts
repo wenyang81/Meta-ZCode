@@ -493,6 +493,7 @@ import { createZCodeTaskIndexSyncer } from "./zcode-agent/zcodeTaskIndexSyncer.j
 import { TaskIndexRepo } from "./session/taskIndexRepo.js";
 import { AutomationRepo } from "#src/session/automationRepo.js";
 import type { AppSettings } from "@zcode/shared";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import { createBotsService } from "./bots/botsService.js";
 import { BotsRepo } from "#src/bots/repo.js";
 import {
@@ -1211,7 +1212,7 @@ export { isOfficialCuaPluginEnabledForWorkspace };
 
 export function hasGlobalCliZCodeCuaServer(env: NodeJS.ProcessEnv = process.env): boolean {
   const home = env.HOME?.trim() || homedir();
-  const configPath = join(home, ".zcode", "cli", "config.json");
+  const configPath = join(home, DATA_DIR_NAME, "cli", "config.json");
   let parsed: unknown;
   try {
     parsed = JSON.parse(readFileSync(configPath, "utf8"));

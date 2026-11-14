@@ -1,5 +1,7 @@
 import { isAbsolute, relative } from "node:path";
 
+import { DATA_DIR_NAME } from "@zcode/shared";
+
 import { resolveWorkspacePath } from "../tool/path-policy.js";
 
 const SENSITIVE_MEMORY_PATH_SEGMENTS = new Set([
@@ -15,7 +17,10 @@ const SENSITIVE_MEMORY_PATH_SEGMENTS = new Set([
   "objects",
   "refs",
   ".claude",
+  // 工作区契约名固定为 `.zcode`，品牌化的只是用户级数据叶子，两条都必须挡：
+  // 只保留其中一个会让品牌包出现「另一半目录不再受保护」的口子。默认叶子下两者同值，Set 自动去重。
   ".zcode",
+  DATA_DIR_NAME,
   "skills",
   "commands",
   "agents",

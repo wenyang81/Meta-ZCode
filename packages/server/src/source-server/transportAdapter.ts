@@ -5,6 +5,7 @@ import {
   normalizeRemoteConnectionError,
   normalizeRemoteAssetInstallMode,
   sourceServerInstallProgressSchema,
+  DATA_DIR_NAME,
   type SourceServerInstallProgress,
   type PublicZCodeErrorCode,
   type RemoteTarget,
@@ -165,9 +166,10 @@ export interface CreateSourceServerTransportAdapterOptions {
   createBackend?: (target: RemoteTarget) => Promise<IRemoteBackend>;
 }
 
-const SERVER_ROOT_READ_PATH = "~/.zcode/server";
-const SERVER_ROOT_SHELL = '"$HOME/.zcode/server"';
-const SERVER_BIN_SHELL = '"$HOME/.zcode/server/bin/zcode"';
+// 远端 source server 的根目录由本地解析出的数据叶子决定，和 provisioning 写入、server 进程自读保持一致。
+const SERVER_ROOT_READ_PATH = `~/${DATA_DIR_NAME}/server`;
+const SERVER_ROOT_SHELL = `"$HOME/${DATA_DIR_NAME}/server"`;
+const SERVER_BIN_SHELL = `"$HOME/${DATA_DIR_NAME}/server/bin/zcode"`;
 const STALE_BOOTSTRAP_AGE_MS = 30 * 60 * 1_000;
 const INSTALL_PROGRESS_MESSAGES: Record<SourceServerInstallProgress["phase"], string> = {
   "verify-archive": "Verifying Source Server archive",
@@ -257,7 +259,7 @@ class BackendSourceServerTransportAdapter implements SourceServerTransportAdapte
     const operationId = `${process.pid}-${Date.now()}`;
     const bootstrapRootShell = `${SERVER_ROOT_SHELL}/.bootstrap-${operationId}`;
     const bootstrapDirShell = `${bootstrapRootShell}/extract`;
-    const remoteArchive = `~/.zcode/server/.bootstrap-${operationId}/zcode-server.tar.gz`;
+    const remoteArchive = `${SERVER_ROOT_READ_PATH}/.bootstrap-${operationId}/zcode-server.tar.gz`;
     const remoteArchiveShell = `${bootstrapRootShell}/zcode-server.tar.gz`;
     const cleanupCommand = `rm -rf ${bootstrapRootShell}`;
     const cleanupStaleBootstrapRootsCommand =

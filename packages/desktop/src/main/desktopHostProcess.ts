@@ -23,6 +23,7 @@ import {
   type TaskRealtimeHostDeliveryKind,
   type WorkspacePurpose,
   CREDENTIAL_KEY_SHARE_UNAVAILABLE_ERROR_CODE,
+  DATA_DIR_NAME,
   formatZCodeHostProcessName,
   HostMessageTypes,
   hostResponseMessageSchema,
@@ -353,7 +354,7 @@ export function spawnHostProcess(
       // 目标布局推导，密钥不离开 Main，也不开放对目标目录的加解密。
       const share = isAbsolute(targetBaseDir)
         ? credentialCipher.shareKeyWithCopiedCredentials(
-            join(targetBaseDir, ".zcode", "v2", "credentials.json"),
+            join(targetBaseDir, DATA_DIR_NAME, "v2", "credentials.json"),
           )
         : Promise.reject(new Error("Data root must be absolute"));
       void share

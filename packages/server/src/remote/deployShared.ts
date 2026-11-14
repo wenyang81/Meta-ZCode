@@ -3,8 +3,11 @@ import { access } from "node:fs/promises";
 import type { StdioStream } from "@zcode/server/remote/backend.js";
 import { quotePosixPathArg } from "@zcode/server/remote/posixShell.js";
 import type { RemoteAssetNetworkPort } from "@zcode/server/remote/remoteAssetNetwork.js";
+import { DATA_DIR_NAME } from "@zcode/shared";
 
-export const REMOTE_BASE = "~/.zcode/server";
+// 远端 server 落在远端用户 home 下的数据叶子 + `server`，与本地同一个 owner 解析出的叶子名，
+// 品牌包不再把远端数据写回上游的 `.zcode`。
+export const REMOTE_BASE = `~/${DATA_DIR_NAME}/server`;
 
 export interface RemoteAssetDeployOptions {
   /** 取消当前连接初始化；共享 cache 仍可独立完成，但不得继续写入远端 staging。 */

@@ -1,4 +1,5 @@
 import { readFile, readdir } from "node:fs/promises";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import { dirname, join, resolve } from "node:path";
 import {
   parseAgentProfileFromMarkdown,
@@ -197,7 +198,10 @@ export function createSubagentRuntimeConfigCache(reader: ConfigReader) {
       if (workspace) {
         const workspaceKey = key(workspace);
         workspaces.get(workspaceKey)?.dispose();
-        const project = documentScope(join(workspace.workspacePath, ".zcode", "agents"), "project");
+        const project = documentScope(
+          join(workspace.workspacePath, WORKSPACE_CONFIG_DIR_NAME, "agents"),
+          "project",
+        );
         workspaces.set(workspaceKey, project);
         initializing.push(project);
       }

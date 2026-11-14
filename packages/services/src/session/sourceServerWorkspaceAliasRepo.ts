@@ -1,4 +1,5 @@
 import { runTasksDatabaseMigrations } from "#src/session/tasksDatabase/migrations.js";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import { cancelConflictingOffPeakBindings } from "#src/session/offPeakWorkspaceIdentityMigration.js";
 import { runSessionDatabaseIdentityMigration } from "@zcode/shared/sqlite-migrations";
 /* eslint-disable max-lines -- R3 canonical alias、双库备份、ledger 与幂等合并属于同一迁移事务边界。 */
@@ -299,9 +300,9 @@ export class SourceServerWorkspaceAliasRepo {
   public constructor(options: SourceServerWorkspaceAliasRepoOptions = {}) {
     this.taskDbPath = options.taskDbPath ?? getTasksIndexDatabasePath();
     this.sessionDbPath =
-      options.sessionDbPath ?? join(getDataBaseDir(), ".zcode", "cli", "db", "db.sqlite");
+      options.sessionDbPath ?? join(getDataBaseDir(), DATA_DIR_NAME, "cli", "db", "db.sqlite");
     this.backupRoot =
-      options.backupRoot ?? join(getDataBaseDir(), ".zcode", "server", "migration-backups");
+      options.backupRoot ?? join(getDataBaseDir(), DATA_DIR_NAME, "server", "migration-backups");
     this.now = options.now ?? Date.now;
     this.createMigrationId = options.migrationId ?? randomUUID;
     this.afterPhaseCommitted = options.afterPhaseCommitted;

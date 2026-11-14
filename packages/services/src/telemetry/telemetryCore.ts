@@ -10,6 +10,7 @@ import {
   type TelemetryEventPayload,
   type TelemetryRendererContext,
   type OAuthLoginAttribution,
+  DATA_DIR_NAME,
 } from "@zcode/shared";
 import { mkdir, open, readFile, stat, unlink, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
@@ -131,14 +132,14 @@ function toLocalDateKey(timestamp: number, timeZone: string): string {
 
 function resolveTelemetryStateFile(homeDir?: string): string {
   if (homeDir) {
-    return join(homeDir, ".zcode", "v2", "telemetry-state.json");
+    return join(homeDir, DATA_DIR_NAME, "v2", "telemetry-state.json");
   }
   return join(getAppConfigDir(), "telemetry-state.json");
 }
 
 function resolveTelemetryLockFile(homeDir?: string): string {
   if (homeDir) {
-    return join(homeDir, ".zcode", "v2", "telemetry-state.lock");
+    return join(homeDir, DATA_DIR_NAME, "v2", "telemetry-state.lock");
   }
   return join(getAppConfigDir(), "telemetry-state.lock");
 }

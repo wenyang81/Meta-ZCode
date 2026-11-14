@@ -1,4 +1,5 @@
 import {
+  DATA_DIR_NAME,
   ZCODE_AGENT_PROVIDER,
   ZCODE_COMMAND_AGENT_SOURCES,
   type ZCodeProvider,
@@ -19,7 +20,7 @@ export const COMMAND_AGENT_SOURCE_META: Record<
 > = {
   zcodeAgent: {
     labelId: "settings.commands.source.zcodeAgent",
-    pathHint: "~/.zcode/commands",
+    pathHint: `~/${DATA_DIR_NAME}/commands`,
     provider: ZCODE_AGENT_PROVIDER,
   },
 };

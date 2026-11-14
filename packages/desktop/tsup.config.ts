@@ -198,6 +198,9 @@ function createSharedDefines() {
     __ZCODE_ENV__: JSON.stringify(zcodeEnv),
     __ZCODE_PRODUCT_FLAVOR__: JSON.stringify(zcodeProductFlavor),
     ...buildTimeConfigDefines,
+    // Data root 叶子名是路径事实，不是显示文案：品牌包在构建期带上叶子，用户机器不需要配环境变量。
+    // 空串表示未品牌化，shared 回落到运行时 ZCODE_DATA_DIR_NAME，再回落 .zcode（与上游一致）。
+    __ZCODE_DATA_DIR_NAME__: JSON.stringify(process.env.ZCODE_DATA_DIR_NAME?.trim() ?? ""),
     // Computer Use Helper build identity — helperInstaller 读它决定下载哪个 Helper bundle。
     // 缺失时 installer 抛 "Packaged ZCode is missing its embedded Computer Use Helper build identity"。
     // CI 构建时通过 ZCODE_CUA_HELPER_BUILD_ID env 注入；dev 为空串走兜底（dev helper 不走下载）。

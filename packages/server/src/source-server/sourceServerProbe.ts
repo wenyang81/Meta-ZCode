@@ -3,6 +3,7 @@ import {
   normalizeRemotePlatform,
   resolveRemotePlatform,
 } from "@zcode/server/remote/detectEnv.js";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import type { IRemoteBackend } from "@zcode/server/remote/backend.js";
 import {
   assertSupportedRemoteEnvironment,
@@ -21,8 +22,8 @@ import type {
   TransportContext,
 } from "@zcode/server/source-server/transportAdapter.js";
 
-const SERVER_ROOT_SHELL = '"$HOME/.zcode/server"';
-const SERVER_BIN_SHELL = '"$HOME/.zcode/server/bin/zcode"';
+const SERVER_ROOT_SHELL = `"$HOME/${DATA_DIR_NAME}/server"`;
+const SERVER_BIN_SHELL = `"$HOME/${DATA_DIR_NAME}/server/bin/zcode"`;
 const SERVER_CURRENT_SHELL = `${SERVER_ROOT_SHELL}/current.json`;
 const SERVER_STATUS_SHELL = `${SERVER_ROOT_SHELL}/run/status.json`;
 const SERVER_DOWNGRADE_SHELL = `${SERVER_ROOT_SHELL}/downgrade.json`;

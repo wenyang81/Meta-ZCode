@@ -14,6 +14,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import WebSocket from "ws";
 import { dockerPlatformForTarget, resolveVerificationTarget } from "./verify-remote-ssh-target.mjs";
 import { assert, findFreePort, retry, run } from "./verify-remote-ssh-runtime.mjs";
@@ -143,7 +144,7 @@ async function main() {
   );
 
   log("install archive through bootstrap bin/zcode");
-  const serverRoot = "/root/.zcode/server";
+  const serverRoot = `/root/${DATA_DIR_NAME}/server`;
   const remoteArchive = `/root/zcode-server-${target}.tar.gz`;
   const { stdout: installOutput } = await ssh(
     `/root/zcode-bootstrap/bin/zcode update --from-archive ${remoteArchive} --server-root ${serverRoot} --json`,

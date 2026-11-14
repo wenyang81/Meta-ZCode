@@ -17,7 +17,11 @@ import { dirname, join, posix } from "node:path";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { ZipFile } from "yazl";
-import { CLI_MEMORY_DIAGNOSTIC_DIRECTORY, CLI_MEMORY_FILE_PATTERN } from "@zcode/shared";
+import {
+  CLI_MEMORY_DIAGNOSTIC_DIRECTORY,
+  CLI_MEMORY_FILE_PATTERN,
+  DATA_DIR_NAME,
+} from "@zcode/shared";
 
 import {
   createFeedbackDiagnosticArchive,
@@ -34,7 +38,7 @@ function getZCodeDataDir() {
 }
 
 function getZCodeCliDir() {
-  return join(homedir(), ".zcode", "cli");
+  return join(homedir(), DATA_DIR_NAME, "cli");
 }
 
 function getZCodeCliLogDir() {
@@ -47,7 +51,7 @@ function getZCodeCliLogDir() {
  * helperExitLogPathFor）。同目录下还有 `.tokens` broker 凭据，收集时必须按文件名白名单。
  */
 function getCuaHelperRunDir() {
-  return join(homedir(), ".zcode", "computer-use", "run");
+  return join(homedir(), DATA_DIR_NAME, "computer-use", "run");
 }
 
 function isCuaHelperDiagnosticFileName(fileName: string): boolean {
@@ -1058,7 +1062,7 @@ function shouldApplyLogExportRetention(archivePath: string): boolean {
   const normalizedArchivePath = normalizeArchivePath(archivePath);
   if (
     normalizedArchivePath.startsWith("logs/") ||
-    normalizedArchivePath.startsWith(".zcode/cli/log/")
+    normalizedArchivePath.startsWith(`${DATA_DIR_NAME}/cli/log/`)
   ) {
     return true;
   }
@@ -1259,7 +1263,7 @@ export async function createLogArchiveArtifacts(
   // 如果导出日志只扫描 v2，定位 agent CLI 启动、协议或崩溃问题时会缺少最关键的原生侧日志。
   await collectLogArchiveFilesFromDirectory(
     zcodeCliLogDir,
-    posix.join(".zcode", "cli", "log"),
+    posix.join(DATA_DIR_NAME, "cli", "log"),
     visitedDirs,
     files,
   );
@@ -1267,7 +1271,7 @@ export async function createLogArchiveArtifacts(
   const zcodeCliDir = getZCodeCliDir();
   await collectLogArchiveFilesByName(
     join(zcodeCliDir, CLI_MEMORY_DIAGNOSTIC_DIRECTORY),
-    posix.join(".zcode", "cli", CLI_MEMORY_DIAGNOSTIC_DIRECTORY),
+    posix.join(DATA_DIR_NAME, "cli", CLI_MEMORY_DIAGNOSTIC_DIRECTORY),
     (name) => CLI_MEMORY_FILE_PATTERN.test(name),
     files,
   );
@@ -1276,12 +1280,12 @@ export async function createLogArchiveArtifacts(
   // 二者都不在 ~/.zcode/cli/log 下，需要额外收集才能完整还原现场。
   await collectLogArchiveFile(
     join(zcodeCliDir, "config.json"),
-    posix.join(".zcode", "cli", "config.json"),
+    posix.join(DATA_DIR_NAME, "cli", "config.json"),
     files,
   );
   await collectLogArchiveFilesFromDirectory(
     join(zcodeCliDir, "rollout"),
-    posix.join(".zcode", "cli", "rollout"),
+    posix.join(DATA_DIR_NAME, "cli", "rollout"),
     visitedDirs,
     files,
   );
@@ -1293,7 +1297,7 @@ export async function createLogArchiveArtifacts(
   // 同目录下有 .tokens broker 凭据，因此按文件名白名单只收 *.exit.log，不递归该目录。
   await collectLogArchiveFilesByName(
     getCuaHelperRunDir(),
-    posix.join(".zcode", "computer-use", "run"),
+    posix.join(DATA_DIR_NAME, "computer-use", "run"),
     isCuaHelperDiagnosticFileName,
     files,
   );
@@ -1445,26 +1449,26 @@ export async function createFeedbackLogArchiveFromExportLogs(
     sources: [
       {
         directory: join(getZCodeCliDir(), CLI_MEMORY_DIAGNOSTIC_DIRECTORY),
-        archivePrefix: ".zcode/cli/memory-diagnostics",
+        archivePrefix: `${DATA_DIR_NAME}/cli/memory-diagnostics`,
         contentPolicy: "cli-memory",
         onlyCurrentDay: false,
       },
       { directory: join(sourceDir, "logs"), archivePrefix: "logs" },
-      { directory: getZCodeCliLogDir(), archivePrefix: ".zcode/cli/log" },
+      { directory: getZCodeCliLogDir(), archivePrefix: `${DATA_DIR_NAME}/cli/log` },
       {
         directory: getZCodeCliDir(),
-        archivePrefix: ".zcode/cli",
+        archivePrefix: `${DATA_DIR_NAME}/cli`,
         includeFileNames: ["config.json"],
         onlyCurrentDay: false,
         contentPolicy: "cli-config",
       },
       {
         directory: join(getZCodeCliDir(), "rollout"),
-        archivePrefix: ".zcode/cli/rollout",
+        archivePrefix: `${DATA_DIR_NAME}/cli/rollout`,
       },
       {
         directory: getCuaHelperRunDir(),
-        archivePrefix: ".zcode/computer-use/run",
+        archivePrefix: `${DATA_DIR_NAME}/computer-use/run`,
         exitLogsOnly: true,
       },
     ],

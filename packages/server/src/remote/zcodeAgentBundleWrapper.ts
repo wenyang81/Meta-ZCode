@@ -5,6 +5,7 @@
 // 期望找到的可执行入口（如 agents/glm/zcode-agent）—— 由它用远端 node 执行 zcode.cjs。
 // 这样 provider runtime resolver 不需要区分原生/JS，照旧找 zcode-agent 这个可执行文件即可。
 // 开发态与生产态共用同一份 wrapper 语义。
+import { DATA_DIR_NAME } from "@zcode/shared";
 
 export const REMOTE_AGENT_BUNDLE_NAME = "zcode.cjs";
 
@@ -12,8 +13,10 @@ export function buildRemoteAgentBundleWrapper(runtimeResourceDir: string): strin
   return [
     "#!/bin/sh",
     "set -eu",
-    'runtime_root="${ZCODE_SERVER_RUNTIME_ROOT:-$HOME/.zcode/server}"',
-    `exec "$runtime_root/node" "$HOME/.zcode/server/agents/${runtimeResourceDir}/${REMOTE_AGENT_BUNDLE_NAME}" "$@"`,
+    // 叶子名在写脚本时就固化（与 provisioning 的目标目录同一来源），shell 里的
+    // ZCODE_SERVER_RUNTIME_ROOT 只是本地覆盖入口。
+    `runtime_root="\${ZCODE_SERVER_RUNTIME_ROOT:-$HOME/${DATA_DIR_NAME}/server}"`,
+    `exec "$runtime_root/node" "$HOME/${DATA_DIR_NAME}/server/agents/${runtimeResourceDir}/${REMOTE_AGENT_BUNDLE_NAME}" "$@"`,
     "",
   ].join("\n");
 }

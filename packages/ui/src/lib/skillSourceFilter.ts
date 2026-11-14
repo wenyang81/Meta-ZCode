@@ -1,13 +1,20 @@
-import type { ZCodeProvider } from "@zcode/shared";
+import { DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME, type ZCodeProvider } from "@zcode/shared";
 
 type SkillSourceType = "glm" | "unknown";
 
+// 技能目录有两个来源：用户级数据叶子（品牌包可改名）与工作区契约名（固定 `.zcode`）。
+// 两条都放行，否则品牌包里 `~/.dlMeta/skills` 下的技能会被判成 unknown，`/` 面板漏项。
+// 路径已小写归一，目录名同样按小写比较，避免大写叶子名匹配不上。
+const SKILL_SOURCE_DIR_SEGMENTS = [DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME].map(
+  (name) => `/${name.toLowerCase()}/`,
+);
+
 export function resolveSkillSourceType(skillPath: string): SkillSourceType {
   const normalized = skillPath.replaceAll("\\", "/").toLowerCase();
-  if (normalized.includes("/.zcode/skills/")) {
+  if (SKILL_SOURCE_DIR_SEGMENTS.some((segment) => normalized.includes(`${segment}skills/`))) {
     return "glm";
   }
-  if (normalized.includes("/.zcode/cli/plugins/cache/")) {
+  if (normalized.includes(`/${DATA_DIR_NAME.toLowerCase()}/cli/plugins/cache/`)) {
     return "glm";
   }
   return "unknown";

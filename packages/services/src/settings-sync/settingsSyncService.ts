@@ -21,6 +21,7 @@ import type {
   SettingsSyncSourceRootSummary,
   SettingsSyncTaskImportResult,
 } from "@zcode/shared";
+import { DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import { copyFile, cp, link, lstat, mkdir, readFile, readdir, rm, symlink } from "node:fs/promises";
 import { homedir } from "node:os";
 import { basename, dirname, join, relative, resolve } from "node:path";
@@ -413,35 +414,35 @@ function resolveUserHomeDir(): string {
 }
 
 function getWorkspaceZcodeSkillRoot(workspacePath: string): string {
-  return join(workspacePath, ".zcode", "skills");
+  return join(workspacePath, WORKSPACE_CONFIG_DIR_NAME, "skills");
 }
 
 function getUserZcodeSkillRoot(): string {
-  return join(resolveUserHomeDir(), ".zcode", "skills");
+  return join(resolveUserHomeDir(), DATA_DIR_NAME, "skills");
 }
 
 function getWorkspaceZcodeCommandRoot(workspacePath: string): string {
-  return join(workspacePath, ".zcode", "commands");
+  return join(workspacePath, WORKSPACE_CONFIG_DIR_NAME, "commands");
 }
 
 function getUserZcodeCommandRoot(): string {
-  return join(resolveUserHomeDir(), ".zcode", "commands");
+  return join(resolveUserHomeDir(), DATA_DIR_NAME, "commands");
 }
 
 function getWorkspaceZcodePluginRoot(workspacePath: string): string {
-  return join(workspacePath, ".zcode", "plugins");
+  return join(workspacePath, WORKSPACE_CONFIG_DIR_NAME, "plugins");
 }
 
 function getUserZcodePluginRoot(): string {
-  return join(resolveUserHomeDir(), ".zcode", "plugins");
+  return join(resolveUserHomeDir(), DATA_DIR_NAME, "plugins");
 }
 
 function getUserZcodeCliConfigPath(): string {
-  return join(resolveUserHomeDir(), ".zcode", "cli", "config.json");
+  return join(resolveUserHomeDir(), DATA_DIR_NAME, "cli", "config.json");
 }
 
 function getWorkspaceZcodeConfigPath(workspacePath: string): string {
-  return join(workspacePath, ".zcode", "config.json");
+  return join(workspacePath, WORKSPACE_CONFIG_DIR_NAME, "config.json");
 }
 
 function getClaudeUserAgentsFileSourcePath(): string {
@@ -449,7 +450,7 @@ function getClaudeUserAgentsFileSourcePath(): string {
 }
 
 function getUserZcodeAgentsFilePath(): string {
-  return join(resolveUserHomeDir(), ".zcode", "AGENTS.md");
+  return join(resolveUserHomeDir(), DATA_DIR_NAME, "AGENTS.md");
 }
 
 function resolveTargetRootForScope(

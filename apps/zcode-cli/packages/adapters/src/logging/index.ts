@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import type { LogContext, LogEntry, Logger, LoggerFactory, LogRedactor } from "@zcode/contracts";
 import { LogLevel, LogLevelName } from "@zcode/contracts";
 import {
+  DATA_DIR_NAME,
   ZCODE_RUNTIME_ENV_KEY,
   normalizeZCodeRuntimeEnv,
   createLocalTtftLogQueue,
@@ -250,7 +251,7 @@ export function createNodeLoggerFactory(options: NodeLoggerFactoryOptions = {}):
 }
 
 export function getDefaultLogDir(): string {
-  return join(homedir(), ".zcode", "cli", "log");
+  return join(homedir(), DATA_DIR_NAME, "cli", "log");
 }
 
 function getDefaultMinLevel(env: NodeJS.ProcessEnv | undefined): LogLevel {

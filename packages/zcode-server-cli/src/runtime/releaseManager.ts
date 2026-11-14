@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readdir, readFile, realpath, rename, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { createServiceLogger } from "@zcode/services/node";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import { withFileLock } from "@zcode/shared/node";
 import {
   releaseManifestSchema,
@@ -171,7 +172,7 @@ export class ReleaseManager {
   }
 
   private async assertCredentialCompatibility(manifest: ReleaseManifest): Promise<void> {
-    const filePath = join(this.layout.dataBaseDir, ".zcode", "v2", "credentials.json");
+    const filePath = join(this.layout.dataBaseDir, DATA_DIR_NAME, "v2", "credentials.json");
     await withFileLock(filePath, async () => {
       const raw = await readFile(filePath, "utf8").catch((error) => {
         if ((error as { code?: string }).code === "ENOENT") return "";

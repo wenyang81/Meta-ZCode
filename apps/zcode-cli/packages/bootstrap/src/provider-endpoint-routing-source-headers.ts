@@ -3,6 +3,7 @@ import { arch as readOsArch, homedir, release as readOsRelease } from "node:os";
 import { join } from "node:path";
 import {
   buildZCodeSourceHeadersFromContext,
+  DATA_DIR_NAME,
   resolveRuntimeZCodeEndpointOrigin,
   resolveRuntimeZCodeEnv,
   ZCODE_APP_VERSION_ENV,
@@ -47,7 +48,7 @@ function resolveClientTimezone(): string {
 
 function resolveTelemetryStateFile(env: NodeJS.ProcessEnv): string {
   const dataBaseDir = env[ZCODE_DATA_BASE_DIR_ENV_KEY]?.trim() || homedir();
-  return join(dataBaseDir, ".zcode", "v2", "telemetry-state.json");
+  return join(dataBaseDir, DATA_DIR_NAME, "v2", "telemetry-state.json");
 }
 
 async function readExistingDeviceMid(

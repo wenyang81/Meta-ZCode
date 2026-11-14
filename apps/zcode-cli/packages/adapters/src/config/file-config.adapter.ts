@@ -6,6 +6,7 @@ import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import type { RuntimeConfigPatch, UiLocale } from "@zcode/contracts";
 import { z } from "zod";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import { withFileLock } from "@zcode/shared/node";
 import {
   CANONICAL_CUA_PLUGIN_ID,
@@ -60,7 +61,7 @@ export const VISUALIZE_PLUGIN_ID = "visualize@zcode-plugins-official";
 const VISUALIZE_MIGRATION_KEY = "visualizeDefaultOffMigrated";
 
 const DEFAULT_CONFIG_FILE = "config.json";
-const DEFAULT_BASE_DIR = "~/.zcode/cli";
+const DEFAULT_BASE_DIR = `~/${DATA_DIR_NAME}/cli`;
 
 /**
  * Resolve path with ~ expansion

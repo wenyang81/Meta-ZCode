@@ -1545,7 +1545,10 @@ modules:
     roots:
       - packages/shared/src/managed-worktree
     managed: true
-    requires: []
+    requires:
+      # layout.ts 的托管工作区家目录段改为复用 @zcode/shared 的数据目录叶子 owner，
+      # 避免同一个品牌叶子在 worktrees 路径上再写死一份 `.zcode`。
+      - shared
     publicEntrypoints:
       - packages/shared/src/managed-worktree/index.ts
       - packages/shared/src/managed-worktree/contract.ts
@@ -2372,3 +2375,18 @@ exceptions:
     paths:
       - packages/ui/src/root/GlobalDatabaseStartupLoading.tsx
     reason: 启动失败页在现有复制诊断/重试/退出旁增加导出日志按钮（docs/desktop/database-migration-startup-gate-plan.md）。只扩展既有失败页交互，不新增文件、不改变启动状态 owner 或模块边界；接管 packages/ui/src/root 不在本次范围内。
+  - id: data-dir-name-owner
+    rule: unmanaged-new-file
+    paths:
+      - packages/shared/src/dataDirName.ts
+    reason: 数据目录叶子名的唯一所有者（docs/data-dir-name.md）必须落在 @zcode/shared——七类路径权威从 Electron main、services、agent CLI 到 server CLI 都已依赖该层，而 biz-brand 按规格不做文件系统语义。单文件、纯常量与校验，不接管整个未受管 shared 模块。
+  - id: data-dir-name-workspace-leaf-edit
+    rule: unmanaged-new-file
+    paths:
+      - packages/services/src/subagents/subagentRuntimeConfig.ts
+    reason: 上游新增的 subagent 运行时配置缓存只把项目级 agents 目录的字面量换成 WORKSPACE_CONFIG_DIR_NAME（同为 .zcode 的固定契约名），拼路径与行为不变；接管整个 services 未受管模块不在本次范围内。
+  - id: data-dir-name-workflow-run-save-edit
+    rule: unmanaged-new-file
+    paths:
+      - packages/ui/src/components/workflow-timeline/workflowRunSave.ts
+    reason: 上游 c5904686（v3.18.1 同步）新增的工作流保存路径预览，只把全局档展示串的用户级叶子换成 DATA_DIR_NAME，项目档仍按契约名 `.zcode` 字面量；纯展示文案，不改保存 owner 与模块边界，接管整个 ui 未受管模块不在本次范围内。

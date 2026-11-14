@@ -127,6 +127,14 @@ export * from "./zcode-session-content-profile.js";
 export * from "./zcode-tool-projection-memory.js";
 export * from "./zcode-slash-command-help.js";
 export * from "./zcodeEndpoint.js";
+export {
+  DATA_DIR_NAME,
+  DEFAULT_DATA_DIR_NAME,
+  WORKSPACE_CONFIG_DIR_NAME,
+  ZCODE_DATA_DIR_NAME_ENV,
+  normalizeDataDirName,
+  resolveDataDirName,
+} from "./dataDirName.js";
 export * from "./zcode-source-headers.js";
 export * from "./zcode-agent-policy.js";
 export * from "./zcode-media-policy.js";

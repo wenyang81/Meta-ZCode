@@ -1,5 +1,9 @@
 import { randomUUID } from "node:crypto";
-import { OAUTH_SESSION_REVISION_KEY, OAUTH_LINKED_BIGMODEL_KEY } from "@zcode/shared";
+import {
+  DATA_DIR_NAME,
+  OAUTH_SESSION_REVISION_KEY,
+  OAUTH_LINKED_BIGMODEL_KEY,
+} from "@zcode/shared";
 import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
@@ -395,7 +399,7 @@ export function resolveSharedZCodeCredentialsPath(
 
   const env = options.env ?? process.env;
   const baseDir = options.baseDir ?? env[ZCODE_DATA_BASE_DIR_ENV_KEY] ?? homedir();
-  return join(resolveUserPath(baseDir), ".zcode", "v2", "credentials.json");
+  return join(resolveUserPath(baseDir), DATA_DIR_NAME, "v2", "credentials.json");
 }
 
 async function readRawCredentialRecord(

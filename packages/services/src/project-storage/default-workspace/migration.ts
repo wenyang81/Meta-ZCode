@@ -1,15 +1,18 @@
 import type { DatabaseSync } from "node:sqlite";
 import type { ProjectMigrationContext } from "#src/project-storage/contract.js";
+import { DATA_DIR_NAME } from "@zcode/shared";
 
 // 原因：旧 settings 的 purpose 缺失/误标会把系统任务目录迁成项目。
 // 限定首次迁移创建且未编辑的单 root 自动项目，不能按名称隐藏用户项目或任务。
+// 叶子名来自品牌变量；DATA_DIR_NAME 的取值形状已限定为 [.]A-Za-z0-9_-，
+// 不含 GLOB 元字符（* ? [ ]），可以直接拼进模式串。
 export const DEFAULT_WORKSPACE_CANDIDATES_SQL = `
 SELECT p.project_id FROM projects p JOIN project_roots r USING(project_id)
 WHERE p.host_id=? AND p.deleted=0 AND p.name_overridden=0
   AND p.updated_at=p.created_at
   AND p.created_at<=(SELECT applied_at FROM schema_migration WHERE id='0005_projects')
   AND (SELECT count(*) FROM project_roots other WHERE other.project_id=p.project_id)=1
-  AND replace(r.root_path, char(92), '/') GLOB '*/.zcode/workspace/default'
+  AND replace(r.root_path, char(92), '/') GLOB '*/${DATA_DIR_NAME}/workspace/default'
 `;
 
 export function migrateDefaultWorkspaceTasks(db: DatabaseSync, context: ProjectMigrationContext) {

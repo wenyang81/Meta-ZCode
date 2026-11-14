@@ -7,10 +7,12 @@ import { brandIdentity } from "@zcode/biz-brand";
 import { listSSHConfigAliasesFromLocalConfig } from "@zcode/services/node";
 import { DEV_HELPER_APP_NAME, HELPER_APP_NAME } from "@zcode/zcode-cua/broker/helperConstants";
 import {
+  DATA_DIR_NAME,
   ZCODE_APP_VERSION_ENV,
   ZCODE_BUILD_COMMIT_ID_ENV,
   ZCODE_AGENT_RUNTIME,
   ZCODE_COMMIT,
+  ZCODE_DATA_DIR_NAME_ENV,
   ZCODE_DYNAMIC_WORKFLOW_MODE_ENV,
   ZCODE_ENV,
   ZCODE_PRODUCT_FLAVOR,
@@ -531,7 +533,7 @@ export function buildHostProcessEnv(hostProcessLocalEnv: Record<string, string>)
             )
           ? rawInheritedEnv.ZCODE_CUA_BUNDLED_HELPER_APP_PATH?.trim() ||
             join(
-              rawInheritedEnv.ZCODE_HOME?.trim() || join(homedir(), ".zcode"),
+              rawInheritedEnv.ZCODE_HOME?.trim() || join(homedir(), DATA_DIR_NAME),
               "computer-use",
               "dev",
               DEV_HELPER_APP_NAME,
@@ -592,6 +594,10 @@ export function buildHostProcessEnv(hostProcessLocalEnv: Record<string, string>)
     // Telemetry 的构建身份必须来自 Desktop 编译期元数据，不能让 Agent 在运行时读取
     // 工作树或根据安装路径猜测；否则同一产品版本的不同修复包无法在 ARMS 中区分。
     [ZCODE_BUILD_COMMIT_ID_ENV]: ZCODE_COMMIT,
+    // 数据目录叶子名由 Main 一次性解析（外部 env > 构建期 define > `.zcode`），这里显式下发给
+    // Host/Agent。子进程不靠继承外部环境决定叶子名：任何一个 spawn 路径漏传就会让一半数据落
+    // `.zcode`、一半落品牌叶子。放在 dataBaseDir 之前，两者共同构成完整数据根。
+    [ZCODE_DATA_DIR_NAME_ENV]: DATA_DIR_NAME,
     ...(dataBaseDir !== homedir() ? { ZCODE_DATA_BASE_DIR: dataBaseDir } : {}),
     ...(windowsAppInstallDir ? { [ZCODE_WINDOWS_APP_INSTALL_DIR_ENV]: windowsAppInstallDir } : {}),
     ...(bundledCuaHelperAppPath

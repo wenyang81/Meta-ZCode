@@ -7,9 +7,12 @@ import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import { resolveVerificationTarget } from "./verify-remote-ssh-target.mjs";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+// 容器里 root 用户的 server 根必须跟着解析出的数据叶子走，否则品牌包验证的是另一个目录。
+const containerServerRoot = `/root/${DATA_DIR_NAME}/server`;
 const argv = process.argv.slice(2);
 const readArg = (flag) => {
   const index = argv.indexOf(flag);
@@ -63,17 +66,17 @@ try {
     [
       "mkdir -p /tmp/zcode-bootstrap",
       "tar -xzf /tmp/zcode-server.tar.gz -C /tmp/zcode-bootstrap --strip-components=1",
-      "/tmp/zcode-bootstrap/bin/zcode update --from-archive /tmp/zcode-server.tar.gz --server-root /root/.zcode/server --json",
-      "ZCODE_SERVER_SKIP_SERVICE_REGISTRATION=1 /root/.zcode/server/bin/zcode serve --daemon --server-root /root/.zcode/server --json",
+      `/tmp/zcode-bootstrap/bin/zcode update --from-archive /tmp/zcode-server.tar.gz --server-root ${containerServerRoot} --json`,
+      `ZCODE_SERVER_SKIP_SERVICE_REGISTRATION=1 ${containerServerRoot}/bin/zcode serve --daemon --server-root ${containerServerRoot} --json`,
     ].join(" && "),
   ]);
   const statusResult = await run("docker", [
     "exec",
     containerName,
-    "/root/.zcode/server/bin/zcode",
+    `${containerServerRoot}/bin/zcode`,
     "status",
     "--server-root",
-    "/root/.zcode/server",
+    containerServerRoot,
     "--json",
   ]);
   const status = JSON.parse(statusResult.stdout.toString("utf8").trim().split("\n").pop());
@@ -82,7 +85,7 @@ try {
     "exec",
     containerName,
     "cat",
-    "/root/.zcode/server/run/ingress-token",
+    `${containerServerRoot}/run/ingress-token`,
   ]);
   const token = tokenResult.stdout.toString("utf8").trim();
   assert(token.length >= 32, "ingress token exists");
@@ -109,11 +112,11 @@ try {
       "exec",
       "-i",
       containerName,
-      "/root/.zcode/server/bin/zcode",
+      `${containerServerRoot}/bin/zcode`,
       "server",
       "proxy-stdio",
       "--server-root",
-      "/root/.zcode/server",
+      containerServerRoot,
     ],
     { input: request },
   );

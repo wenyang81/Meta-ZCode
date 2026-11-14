@@ -4,6 +4,7 @@ import { homedir } from "node:os";
 import { basename, dirname, join, relative } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { SKILL_DATA_SYNC_MAX_ITEM_BYTES } from "@zcode/shared";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import type { ISkillSyncService } from "./skillSync.js";
 import {
   MAX_SKILL_SCAN_DEPTH,
@@ -34,7 +35,7 @@ export function resolveUserHomeDir(): string {
 }
 
 export function getUserZcodeSkillRoot(): string {
-  return join(resolveUserHomeDir(), ".zcode", "skills");
+  return join(resolveUserHomeDir(), DATA_DIR_NAME, "skills");
 }
 
 function getUserAgentsSkillRoot(): string {

@@ -52,7 +52,7 @@ import {
   type ExecutionShellSelection,
   type MessageId,
 } from "@zcode/contracts";
-import { isRemoteWorkspaceIdentity, resolveZCodeRuntimeEnv } from "@zcode/shared";
+import { DATA_DIR_NAME, isRemoteWorkspaceIdentity, resolveZCodeRuntimeEnv } from "@zcode/shared";
 import {
   ZCODE_ATTACHMENT_FAULT_CODES,
   ZCodeAttachmentFaultError,
@@ -532,7 +532,7 @@ export async function createZCodeApp(options: ZCodeAppOptions): Promise<ZCodeApp
       (messageEnabled
         ? createNodeSessionMailboxAdapter({
             rootDir: resolvePath(
-              (options.env ?? process.env).ZCODE_MAILBOX_ROOT ?? "~/.zcode/mailbox",
+              (options.env ?? process.env).ZCODE_MAILBOX_ROOT ?? `~/${DATA_DIR_NAME}/mailbox`,
             ),
           })
         : undefined);

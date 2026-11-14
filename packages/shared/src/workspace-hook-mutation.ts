@@ -3,6 +3,7 @@ import { basename, dirname, resolve } from "node:path";
 import type { WorkspaceHookBundleSnapshotData } from "./workspace-hook-digest.js";
 import { createWorkspaceHookDeclarationDigest } from "./workspace-hook-digest.js";
 import {
+  WORKSPACE_HOOK_PROJECT_CONFIG_KIND,
   workspaceHooksConfigSchema,
   type WorkspaceHookDefinition,
 } from "./workspace-hook-config.js";
@@ -72,7 +73,7 @@ export async function writeWorkspaceHookConfiguredToggle(input: {
     !entry ||
     !entry.editable ||
     !source?.editable ||
-    source.configFileKind !== ".zcode/config.json" ||
+    source.configFileKind !== WORKSPACE_HOOK_PROJECT_CONFIG_KIND ||
     resolve(source.canonicalPath) !== configPath
   ) {
     throw mismatch("Workspace Hook toggle target is not the current editable project config");

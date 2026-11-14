@@ -4,7 +4,7 @@ import { access, mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs
 import { fileURLToPath } from "node:url";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import type { Readable, Writable } from "node:stream";
-import { isPublicZCodeErrorCode, ZCODE_VERSION } from "@zcode/shared";
+import { DATA_DIR_NAME, isPublicZCodeErrorCode, ZCODE_VERSION } from "@zcode/shared";
 import { prepareServerCredentialStorage } from "@zcode/shared/credential-security";
 import { SourceServerWorkspaceAliasRepo } from "@zcode/services/node";
 import {
@@ -146,7 +146,7 @@ export async function runServerCli(
     if (["serve", "update"].includes(command) && parsed.argv.includes("--prepare-credentials")) {
       // Desktop 的在线更新先于 ensureDaemon；候选 Core 启动前也必须准备同一持久密钥。
       await prepareServerCredentialStorage({
-        filePath: join(layout.dataBaseDir, ".zcode", "v2", "credentials.json"),
+        filePath: join(layout.dataBaseDir, DATA_DIR_NAME, "v2", "credentials.json"),
       });
     }
     if (proxyStdioRequested) {

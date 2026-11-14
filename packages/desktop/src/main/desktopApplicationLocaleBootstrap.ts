@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { isLocale, resolvePersistedUiLocale } from "@zcode/shared";
+import { DATA_DIR_NAME, isLocale, resolvePersistedUiLocale } from "@zcode/shared";
 import type { Locale } from "@zcode/shared";
 
 /**
@@ -19,7 +19,7 @@ function resolveBootstrapHomeDir(): string {
 export function resolveApplicationLocaleBootstrapSettingsFile(
   homePath: string = resolveBootstrapHomeDir(),
 ): string {
-  return join(homePath, ".zcode", "v2", "setting.json");
+  return join(homePath, DATA_DIR_NAME, "v2", "setting.json");
 }
 
 export function extractBootstrapApplicationLocale(rawValue: unknown): Locale | undefined {

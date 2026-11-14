@@ -2,6 +2,7 @@ import { existsSync, statSync } from "node:fs";
 import { access, readFile, stat } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { z } from "zod";
+import { WORKSPACE_CONFIG_DIR_NAME } from "./dataDirName.js";
 
 export const WORKSPACE_HOOK_DIGEST_SCHEMA_VERSION = 1 as const;
 export const DEFAULT_WORKSPACE_HOOK_TIMEOUT_MS = 60_000;
@@ -17,7 +18,19 @@ export const WORKSPACE_HOOK_EVENT_NAMES = [
 ] as const;
 
 export type WorkspaceHookEventName = (typeof WORKSPACE_HOOK_EVENT_NAMES)[number];
-export type WorkspaceHookConfigFileKind = "zcode.json" | ".zcode/config.json" | "explicit";
+
+/**
+ * 项目级 hook 配置的种类标签，同时是它在 git 仓库里的相对路径。
+ * 走 WORKSPACE_CONFIG_DIR_NAME：工作区 `.zcode` 是随仓库走的跨工具契约、不随品牌叶子改名，
+ * 但它必须和下面拼候选路径的常量同源（docs/data-dir-name.md）。
+ */
+export const WORKSPACE_HOOK_PROJECT_CONFIG_KIND =
+  `${WORKSPACE_CONFIG_DIR_NAME}/config.json` as const;
+
+export type WorkspaceHookConfigFileKind =
+  | "zcode.json"
+  | typeof WORKSPACE_HOOK_PROJECT_CONFIG_KIND
+  | "explicit";
 
 const positiveNumberSchema = z.number().finite().positive();
 
@@ -178,7 +191,7 @@ export function resolveWorkspaceHookConfiguredGates(input: {
 function buildWorkspaceHookCandidatePaths(directories: readonly string[]): string[] {
   return directories.flatMap((directory) => [
     join(directory, "zcode.json"),
-    join(directory, ".zcode", "config.json"),
+    join(directory, WORKSPACE_CONFIG_DIR_NAME, "config.json"),
   ]);
 }
 
@@ -236,17 +249,20 @@ export function createWorkspaceHookSourceInput(input: {
   const configDirectory = dirname(canonicalPath);
   return {
     canonicalPath,
-    baseDir: basename(configDirectory) === ".zcode" ? dirname(configDirectory) : configDirectory,
+    baseDir:
+      basename(configDirectory) === WORKSPACE_CONFIG_DIR_NAME
+        ? dirname(configDirectory)
+        : configDirectory,
     discoveryOrder: input.discoveryOrder,
     configFileKind: explicitProjectConfig
       ? "explicit"
       : basename(canonicalPath) === "zcode.json"
         ? "zcode.json"
-        : ".zcode/config.json",
+        : WORKSPACE_HOOK_PROJECT_CONFIG_KIND,
     explicitProjectConfig,
     editable:
       !explicitProjectConfig &&
-      canonicalPath === resolve(input.workingDirectory, ".zcode", "config.json"),
+      canonicalPath === resolve(input.workingDirectory, WORKSPACE_CONFIG_DIR_NAME, "config.json"),
     hooks: input.hooks,
   };
 }

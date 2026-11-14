@@ -1,4 +1,5 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import { homedir } from "node:os";
 import { basename, dirname, join, posix, win32 } from "node:path";
 import type {
@@ -40,8 +41,8 @@ export interface UserMcpRecord {
 const ZCODE_MCP_DESCRIPTOR: DirectoryMcpDescriptor = {
   source: "zcode",
   directorySource: "zcode",
-  userConfigDirSegments: [".zcode", "cli"],
-  workspaceConfigDirSegments: [".zcode"],
+  userConfigDirSegments: [DATA_DIR_NAME, "cli"],
+  workspaceConfigDirSegments: [WORKSPACE_CONFIG_DIR_NAME],
   fileName: "config.json",
   configKeyName: "mcp.servers",
 };

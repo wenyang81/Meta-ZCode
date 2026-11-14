@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import { lstat, mkdir, readFile, readdir, rm } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import type {
@@ -35,7 +36,7 @@ interface ResolvedUserCommand {
 }
 
 function commandsRoot(source: CommandRootSource): string {
-  return join(resolveUserHomeDir(), source === "zcode" ? ".zcode" : ".agents", "commands");
+  return join(resolveUserHomeDir(), source === "zcode" ? DATA_DIR_NAME : ".agents", "commands");
 }
 
 function hashContent(content: Uint8Array): string {
@@ -229,7 +230,7 @@ export function createCommandDataSyncMethods(): IDataSyncCategoryService<Command
     async checkSyncWriteAccess() {
       return await checkRemoteSyncDirectoriesWriteAccess([
         commandsRoot("zcode"),
-        join(resolveUserHomeDir(), ".zcode", "cli"),
+        join(resolveUserHomeDir(), DATA_DIR_NAME, "cli"),
       ]);
     },
 

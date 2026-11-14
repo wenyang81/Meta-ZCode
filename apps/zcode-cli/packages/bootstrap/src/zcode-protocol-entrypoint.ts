@@ -16,6 +16,7 @@ import {
   type McpTelemetryTracker,
 } from "@zcode/adapters/mcp";
 import {
+  DATA_DIR_NAME,
   zcodeProtocolNotifications,
   type ZCodeMcpResourceSample,
   type ZCodeMcpTelemetryEvent,
@@ -160,6 +161,13 @@ export async function runZCodeProtocolAgent(
   try {
     // 数据库准备先于账号、Registry 和遥测，不把远端材料等待混进迁移门禁。
     const configResult = createConfig({ env: options.env });
+    // 与 main 的 `[startup] 数据目录叶子名解析结果`、host 的 `host data directory leaf resolved`
+    // 对照（docs/data-dir-name.md 验收场景 2）：agent 的叶子名只能来自 main→host 注入的 env，
+    // storage.dir 是它解析后第一个落到磁盘的路径。三处任一不一致就说明注入链断了一段。
+    logger.info("agent data directory leaf resolved", {
+      dataDirName: DATA_DIR_NAME,
+      storageRoot: configResult.config.storage.dir,
+    });
     sessionStore = await acquireProtocolStartupResource({
       signal: options.lifecycle?.signal,
       logger,

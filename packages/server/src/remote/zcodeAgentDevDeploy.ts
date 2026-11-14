@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- 开发态 agent 部署包含本地打包、远端 owner staging 与 wrapper 安装，后续独立拆分上传事务。 */
-import { ZCODE_AGENT_PROVIDER, resolveZCodeRuntimeEnv } from "@zcode/shared";
+import { DATA_DIR_NAME, ZCODE_AGENT_PROVIDER, resolveZCodeRuntimeEnv } from "@zcode/shared";
 import { createHash, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import {
@@ -266,7 +266,7 @@ async function shouldSkipDevelopmentZCodeAgentDeploy(params: {
   try {
     await waitForClose(
       await params.backend.exec(
-        `"\${ZCODE_SERVER_RUNTIME_ROOT:-$HOME/.zcode/server}/node" -e ${quotePosixShellArg(verifyBundleScript)} ${quotePosixPathArg(params.remoteBundlePath)} ${quotePosixShellArg(params.localBundleSha256)}`,
+        `"\${ZCODE_SERVER_RUNTIME_ROOT:-$HOME/${DATA_DIR_NAME}/server}/node" -e ${quotePosixShellArg(verifyBundleScript)} ${quotePosixPathArg(params.remoteBundlePath)} ${quotePosixShellArg(params.localBundleSha256)}`,
       ),
     );
   } catch {

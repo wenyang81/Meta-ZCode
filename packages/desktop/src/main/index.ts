@@ -100,6 +100,7 @@ import {
   type TelemetryEventPayload,
   HostMessageTypes,
   InternalChannels,
+  DATA_DIR_NAME,
 } from "@zcode/shared";
 import { logger, webRemoteControlRelayLogger, flushLocalTtftLogs } from "./logger.js";
 import { markMainLaunchAppReady } from "./desktopLaunchMarks.js";
@@ -618,7 +619,7 @@ async function runBrowserCommandOnView(params: {
 let currentDesktopZoomLevel = 0;
 let currentDesktopWindowSize: DesktopWindowSize | undefined;
 const preloadPath = join(import.meta.dirname, "../preload/index.cjs");
-const settingsFile = join(homedir(), ".zcode", "v2", "setting.json");
+const settingsFile = join(homedir(), DATA_DIR_NAME, "v2", "setting.json");
 let activeAppShutdownPolicy = resolveAppShutdownPolicy("normal", process.platform);
 let activeAppShutdownKind: AppShutdownKind | null = null;
 const WINDOWS_AGENT_FORCE_KILL_TIMEOUT_MS = 2_000;
@@ -2748,6 +2749,10 @@ app.whenReady().then(async () => {
     return;
   }
 
+  logger.info("[startup] 数据目录叶子名解析结果", {
+    dataDirName: DATA_DIR_NAME,
+    dataRootDir: getZCodeDataRootDir(),
+  });
   logger.info("[startup] 创建主窗口");
   await primaryWindowCoordinator.ensurePrimaryWindow("app-ready");
 

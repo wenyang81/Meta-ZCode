@@ -6,6 +6,7 @@ import { basename, join, win32 } from "node:path";
 import { homedir } from "node:os";
 import {
   DATA_BASE_DIR_FORBIDDEN_WINDOWS_INSTALL_DIR_ERROR_CODE,
+  DATA_DIR_NAME,
   ZCODE_AGENT_RUNTIME,
 } from "@zcode/shared";
 
@@ -42,9 +43,9 @@ export function getDataBaseDir(): string {
   return defaultDataBaseDir;
 }
 
-/** {dataBaseDir}/.zcode */
+/** `{dataBaseDir}/{数据叶子}`；叶子名默认 `.zcode`，品牌构建由 `ZCODE_DATA_DIR_NAME` 决定。 */
 export function getZCodeDataRootDir(): string {
-  return join(getDataBaseDir(), ".zcode");
+  return join(getDataBaseDir(), DATA_DIR_NAME);
 }
 
 /** 非项目对话共享的真实工作目录；默认 ~/.zcode/workspace/default。 */
@@ -69,9 +70,9 @@ export function resolveAgentUserInstructionsHomeDir(env: NodeJS.ProcessEnv = pro
   return envHome && envHome.length > 0 ? envHome : homedir();
 }
 
-/** `{home}/.zcode/AGENTS.md`：用户自定义指令（个性化）的唯一事实源文件。 */
+/** `{home}/{数据叶子}/AGENTS.md`：用户自定义指令（个性化）的唯一事实源文件。 */
 export function getAgentUserInstructionsFilePath(env: NodeJS.ProcessEnv = process.env): string {
-  return join(resolveAgentUserInstructionsHomeDir(env), ".zcode", "AGENTS.md");
+  return join(resolveAgentUserInstructionsHomeDir(env), DATA_DIR_NAME, "AGENTS.md");
 }
 
 function readEnvValue(env: Record<string, string | undefined>, key: string): string | undefined {
@@ -251,7 +252,7 @@ export function getLegacyDeletedTaskSessionSnapshotPath(
 export function getProviderWorkspaceConfigDir(): string {
   return ZCODE_AGENT_RUNTIME.nativeConfigDir
     ? join(getDataBaseDir(), ZCODE_AGENT_RUNTIME.nativeConfigDir)
-    : join(getDataBaseDir(), ".zcode", "cli");
+    : join(getDataBaseDir(), DATA_DIR_NAME, "cli");
 }
 
 /**
@@ -260,8 +261,8 @@ export function getProviderWorkspaceConfigDir(): string {
  * state must only live at the default homedir location.
  */
 export async function copyDataDirectory(oldBaseDir: string, newBaseDir: string): Promise<void> {
-  const oldDir = join(oldBaseDir, ".zcode", "v2");
-  const newDir = join(newBaseDir, ".zcode", "v2");
+  const oldDir = join(oldBaseDir, DATA_DIR_NAME, "v2");
+  const newDir = join(newBaseDir, DATA_DIR_NAME, "v2");
   await cp(oldDir, newDir, {
     recursive: true,
     force: false,

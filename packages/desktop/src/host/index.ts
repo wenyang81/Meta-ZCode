@@ -105,6 +105,7 @@ import {
   type AppControlServiceHandle,
   type WindowHostExtensions,
   getAppConfigDir,
+  getZCodeDataRootDir,
   OffPeakModelUnavailableError,
   OffPeakPermanentDispatchError,
   type BotProjectConnection,
@@ -123,6 +124,7 @@ import {
   formatLogPrefix,
   formatZCodeHostProcessName,
   formatZodError,
+  DATA_DIR_NAME,
   buildRemoteWorkspaceIdentity,
   buildServerRemoteWorkspaceIdentity,
   remoteHostIdFromWorkspaceIdentity,
@@ -4033,6 +4035,12 @@ parentPort.on("message", async (e: Electron.MessageEvent) => {
         ),
       initializeServices: async () => {
         logger.info("initializing local services");
+        // 与 Main 的 [startup] 同名日志对照（docs/data-dir-name.md 验收场景 2）：叶子名由 Main 经
+        // env 下发，Host 任何一次启动都必须报出与 Main 一致的值，否则就是注入链路漏了一段。
+        logger.info("host data directory leaf resolved", {
+          dataDirName: DATA_DIR_NAME,
+          dataRootDir: getZCodeDataRootDir(),
+        });
         activeSessionRealtimePort = createTaskRealtimeBridgeForHostInit(msg, parentPort);
         // 旧 Team 补组织必须与网络代理读取共用同一个 Setting 实例及写队列。
         // 只注入 service 会跳过默认装配分支，导致缺组织的升级用户永远无法恢复连接。

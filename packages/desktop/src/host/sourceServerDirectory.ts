@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { Emitter, type Event } from "@zcode/rpc";
 import {
   buildServerRemoteWorkspaceIdentity,
+  DATA_DIR_NAME,
   isCredentialDecryptError,
   isValidWslUser,
   parseRemoteWorkspaceIdentity,
@@ -170,7 +171,7 @@ export class SourceServerDirectory {
       options.migrateControllerIdentity ??
       (async (input) =>
         await migrateControllerRemoteWorkspaceIdentity({
-          dbPath: join(getDataBaseDir(), ".zcode", "v2", "tasks-index.sqlite"),
+          dbPath: join(getDataBaseDir(), DATA_DIR_NAME, "v2", "tasks-index.sqlite"),
           ...input,
         }));
   }

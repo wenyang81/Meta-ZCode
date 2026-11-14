@@ -5,7 +5,12 @@ import { Session } from "node:inspector";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { getHeapStatistics } from "node:v8";
-import { CLI_MEMORY_DIAGNOSTIC_DIRECTORY, ZCODE_COMMIT, ZCODE_VERSION } from "@zcode/shared";
+import {
+  CLI_MEMORY_DIAGNOSTIC_DIRECTORY,
+  DATA_DIR_NAME,
+  ZCODE_COMMIT,
+  ZCODE_VERSION,
+} from "@zcode/shared";
 import {
   createMemoryDiagnosticRecorder,
   MEMORY_DIAGNOSTIC_INTERVAL_MS,
@@ -93,7 +98,7 @@ export function startCliMemoryDiagnostics(
     }),
     write: (record) =>
       writeMemoryDiagnostic(
-        options.directory ?? join(homedir(), ".zcode", "cli", CLI_MEMORY_DIAGNOSTIC_DIRECTORY),
+        options.directory ?? join(homedir(), DATA_DIR_NAME, "cli", CLI_MEMORY_DIAGNOSTIC_DIRECTORY),
         record,
       ),
   });

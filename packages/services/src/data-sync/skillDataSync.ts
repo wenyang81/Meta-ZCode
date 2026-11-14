@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import { mkdir, readFile, realpath, rename, rm } from "node:fs/promises";
 import { dirname, join, posix } from "node:path";
 import type {
@@ -52,7 +53,7 @@ interface ResolvedUserSkill {
 }
 
 function getCliConfigPath(): string {
-  return join(resolveUserHomeDir(), ".zcode", "cli", "config.json");
+  return join(resolveUserHomeDir(), DATA_DIR_NAME, "cli", "config.json");
 }
 
 function normalizeSkillConfigPath(path: string): string {

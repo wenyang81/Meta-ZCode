@@ -3,6 +3,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { DATA_DIR_NAME } from "@zcode/shared";
 import type {
   DbMessageRecord,
   DbObservation,
@@ -16,11 +17,11 @@ import type {
 } from "./types.js";
 
 export function defaultLogDir(): string {
-  return join(homedir(), ".zcode", "cli", "log");
+  return join(homedir(), DATA_DIR_NAME, "cli", "log");
 }
 
 export function defaultDbPath(): string {
-  return join(homedir(), ".zcode", "cli", "db", "db.sqlite");
+  return join(homedir(), DATA_DIR_NAME, "cli", "db", "db.sqlite");
 }
 
 export async function loadLogs(options: ObservationOptions): Promise<SourceLoadResult<LogRecord>> {

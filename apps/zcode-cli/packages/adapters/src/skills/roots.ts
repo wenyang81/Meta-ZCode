@@ -2,12 +2,12 @@ import { stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 import type { SkillRoot, SkillSource } from "@zcode/contracts";
+import { DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 
 const GIT_MARKER = ".git";
 const HOME_PREFIX = "~/";
 const PRIORITY_STEP = 10;
 const SKILLS_DIR = "skills";
-const ZCODE_DIR = ".zcode";
 const AGENTS_DIR = ".agents";
 
 export interface SkillRootResolutionOptions {
@@ -111,8 +111,10 @@ function skillRootsForBase(
 ): SkillRoot[] {
   // 合并而不是 fallback：用户可能同时安装原生 `.zcode` skill 和兼容 `.agents` skill。
   // 同一级别仍保持 `.zcode` 优先，后续同名按 root 顺序解析。
+  // 用户根走可品牌化的数据叶子，项目根走固定的工作区契约名，两者不可混用。
+  const zcodeDir = scope === "user" ? DATA_DIR_NAME : WORKSPACE_CONFIG_DIR_NAME;
   return [
-    root(join(baseDirectory, ZCODE_DIR, SKILLS_DIR), scope, "zcode", nextPriority()),
+    root(join(baseDirectory, zcodeDir, SKILLS_DIR), scope, "zcode", nextPriority()),
     root(join(baseDirectory, AGENTS_DIR, SKILLS_DIR), scope, "agents", nextPriority()),
   ];
 }
