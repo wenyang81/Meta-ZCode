@@ -4,14 +4,15 @@
 
 用途：Apache-2.0 第 4(b) 条要求分发修改版时对被修改的文件给出显著说明。本 fork 不在上游源文件里逐个加“已修改”头注释（那会把同步冲突面扩大到每个 seam），改为集中提供本清单，配合 git 历史与 [上游同步规范](upstream-sync.md)、[品牌身份 seam](brand-identity.md) 一起构成修改声明。
 
-- 生成时间：2026-11-14 04:23:02 UTC
+- 生成时间：2026-11-14 05:08:50 UTC
 - 比较基线：`c5904686ea`（上游同步提交 chore: sync ZCode source v3.18.1）
-- 工作区状态：已跟踪改动 73 个文件，未跟踪新增 0 个文件
+- 工作区状态：已跟踪改动 74 个文件，未跟踪新增 0 个文件
 
 状态含义：`M` 修改、`A` 新增、`D` 删除、`R` 重命名、`?` 未跟踪（尚未提交）。
 
-## (仓库根)（6）
+## (仓库根)（7）
 
+- `A` .env.fusionfinlab.example
 - `M` .gitignore
 - `M` AGENTS.md
 - `M` architecture-policy.yaml
@@ -21,7 +22,7 @@
 
 ## docs/（4）
 
-- `M` docs/brand-identity.md
+- `A` docs/brand-identity.md
 - `M` docs/development-mise-runtime.md
 - `A` docs/upstream-service-dependencies.md
 - `A` docs/upstream-sync.md
