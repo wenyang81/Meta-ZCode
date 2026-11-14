@@ -126,6 +126,10 @@
 | CLI bin 名 `zcode`                                                                           | 用户已安装的脚本与 PATH 依赖它；改名影响二开之外的工作流                                                                                                                                                         |
 | 分享落地页与分享管理页的 `ShareBrandMark`                                                    | `packages/web/src/share/ConversationShareLandingPage.tsx:249` 仍内联上游 Z 图形与 "ZCode" 字形 path，同页 `ZCODE_DOWNLOAD_URL = https://zcode.z.ai` 会把访客引到上游下载。这两处对外可见，但换标要连同本 fork 的下载/落地地址一起定，未决策前不动 |
 
+上表最后两行（条款链接、分享落地地址）本质是**服务依赖**而不是图形依赖，处置档位与其余上游域名
+一起登记在 [上游服务依赖清单](upstream-service-dependencies.md)；品牌 seam 只负责图形与文案取值，
+不代为决定这些地址指向哪里。
+
 ## 开源合规边界（Apache-2.0）
 
 上游 `zai-org/zcode` 以 Apache-2.0 发布（根 `LICENSE`，`package.json` 的 `license: Apache-2.0`）。
