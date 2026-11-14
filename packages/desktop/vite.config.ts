@@ -228,6 +228,8 @@ export default defineConfig(({ command, mode }) => {
       __ZCODE_ENV__: JSON.stringify(zcodeEnv),
       __ZCODE_PRODUCT_FLAVOR__: JSON.stringify(zcodeProductFlavor),
       ...buildTimeConfigDefines,
+      // renderer 里的路径提示必须和 main/host 用同一个叶子，否则设置页显示的目录与实际写入的目录不一致。
+      __ZCODE_DATA_DIR_NAME__: JSON.stringify(process.env.ZCODE_DATA_DIR_NAME?.trim() ?? ""),
       __ZCODE_LOCAL_DEVELOPMENT_RUNTIME__: JSON.stringify(mode !== "production"),
       "import.meta.env.VITE_ZCODE_BASE_URL": JSON.stringify(zcodeEndpointOrigin),
       // 兼容旧 renderer 读取名；新代码统一读 VITE_ZCODE_BASE_URL。
@@ -239,6 +241,14 @@ export default defineConfig(({ command, mode }) => {
       // Bugfix: E2E store bridge 只能由 WDIO 专用变量打开，避免把 ZCODE_ENV=test 产品环境误当成测试运行态。
       "import.meta.env.VITE_ZCODE_E2E_STORE_BRIDGE": JSON.stringify(
         e2eStoreBridgeEnabled ? "1" : "",
+      ),
+      // 登录页用户协议/隐私政策与授权登录同走 env（.env.fusionfinlab 第 4 节）：render 进包前
+      // 由这里注入，空值回落上游地址，见 WelcomeScreen.tsx 的 readLoginLegalLinkEnv。
+      "import.meta.env.VITE_ZCODE_TERMS_URL": JSON.stringify(
+        env.VITE_ZCODE_TERMS_URL?.trim() || process.env.VITE_ZCODE_TERMS_URL?.trim() || "",
+      ),
+      "import.meta.env.VITE_ZCODE_PRIVACY_URL": JSON.stringify(
+        env.VITE_ZCODE_PRIVACY_URL?.trim() || process.env.VITE_ZCODE_PRIVACY_URL?.trim() || "",
       ),
     },
     // Electron 用 file:// 协议加载页面，资源路径必须是相对路径，否则会 ERR_FILE_NOT_FOUND

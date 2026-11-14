@@ -114,21 +114,32 @@
   不假装完成。
 - 图标是构建资源，不进 `biz-brand` 包；母版在 `biz-brand`，派生产物在 `packages/desktop/build/`。
 
+### 5. 数据目录叶子名（越过后来的决策，规范另立文档）
+
+本节原先登记在「明确不改的边界」里，理由是「全仓 40+ 处硬编码，改名属数据迁移议题」。实测规模是
+7 个路径权威 / 约 85 个生产源文件，且本 fork 与上游正式版共用 home 已经造成真实事故
+（`<home>/.zcode/v2/setting.json` 是单一全局文件，上游写入的 `dataBaseDir` 会劫持本 fork 的数据根），
+因此决策改为：**叶子品牌化成本 fork 自己的名字，且不做数据迁移**。
+
+规则不在本文展开——owner、注入优先级、七类权威的调用点清单、不改名单（`.zcode-plugin` /
+`.zcode-share` / 项目内 `.zcode/config.json` / `.zcode-install-manifest`）、门禁与验收场景都在
+[数据目录叶子名](data-dir-name.md)。本文只保留一条边界：叶子名**不是** `biz-brand` 的字段，
+它归 `@zcode/shared`，因为读它的一直是文件系统层而不是品牌图形/文案层。
+
 ## 明确不改的边界
 
 | 项                                                                                           | 理由                                                                                                                                                                                                             |
 | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.zcode` 数据目录名                                                                          | `packages/services/src/storage/adapters/rootsResolver.ts:9` 有常量，但全仓 40+ 处硬编码 join；改名会让存量会话、凭据、日志全部失联，属于数据迁移议题而不是品牌议题                                               |
 | `zcode://` deep link scheme                                                                  | 授权回调、Linux scheme 注册、provider 配置多处硬编码；与租户 OAuth2 回调地址一起决策才有意义                                                                                                                     |
 | `ZCODE_*` 环境变量前缀                                                                       | 约 529 个变量名，改动等于重做所有启动配方与 CI                                                                                                                                                                   |
 | i18n 语料与注释里的 "ZCode" 字面量（ui 907 / services 182 / desktop 103 / shared 89 个文件） | 全量替换会把 upstream 同步冲突面扩大到每个包；本轮按“品牌包 + seam”收口。已从语料里摘出的只有 `login.title` / `login.description` / `login.copyright` 三个 key（见 2.1），其余正文文案留给后续单独决策 |
-| 登录页页脚版权与`用户协议`/`隐私政策`链接                                                    | 现指向上游 `https://zcode.z.ai/*`，条款主体与地址属法务边界，需要本 fork 自己给出文案和 URL，不能由品牌 seam 编造。页脚版权行已跟随品牌名改成 `{brand}`                                                                                  |
+| 登录页页脚版权与`用户协议`/`隐私政策`链接                                                    | 版权行已跟随品牌名改成 `{brand}`。协议链接（2026-11-15 起）与授权登录同走 env：`VITE_ZCODE_TERMS_URL` / `VITE_ZCODE_PRIVACY_URL`（`.env.fusionfinlab` 第 4 节，desktop vite.config.ts 注入 renderer），留空回落上游 `https://zcode.z.ai/{terms,privacy}`——地址仍需本 fork 自己给出法务文本后才填，seam 不编造 |
 | CLI bin 名 `zcode`                                                                           | 用户已安装的脚本与 PATH 依赖它；改名影响二开之外的工作流                                                                                                                                                         |
 | 分享落地页与分享管理页的 `ShareBrandMark`                                                    | `packages/web/src/share/ConversationShareLandingPage.tsx:249` 仍内联上游 Z 图形与 "ZCode" 字形 path，同页 `ZCODE_DOWNLOAD_URL = https://zcode.z.ai` 会把访客引到上游下载。这两处对外可见，但换标要连同本 fork 的下载/落地地址一起定，未决策前不动 |
 
-上表最后两行（条款链接、分享落地地址）本质是**服务依赖**而不是图形依赖，处置档位与其余上游域名
+上表中条款链接与分享落地地址本质是**服务依赖**而不是图形依赖，处置档位与其余上游域名
 一起登记在 [上游服务依赖清单](upstream-service-dependencies.md)；品牌 seam 只负责图形与文案取值，
-不代为决定这些地址指向哪里。
+不代为决定这些地址指向哪里。条款链接的注入机制已按 env 落地（见上表），分享落地地址仍待决策。
 
 ## 开源合规边界（Apache-2.0）
 
@@ -150,8 +161,8 @@
   各显示一行上游来源声明（`about.ts` 的 `upstreamNotice`，256×312 窗口实测不裁切）；
   登录页页脚同理换成品牌名——UI 上的运营主体署名不是 §4(c) 要求保留的源文件归属声明，
   许可与归属义务由 `LICENSE` / `NOTICE.md` / `THIRD-PARTY-NOTICES.md` 与关于面板的来源行承担。
-  仍属第三方法务文本、不由品牌 seam 自行编造或删除的，只剩 `用户协议`/`隐私政策` 的地址与
-  分享页引到上游下载站的链接，待决策项见上表。
+  仍属第三方法务文本、不由品牌 seam 自行编造或删除的，只剩分享页引到上游下载站的链接；
+  `用户协议`/`隐私政策` 的地址已可通过 env 配置（见上表），填不填、填什么仍是法务决策。
 
 ## 验收场景
 
@@ -203,3 +214,4 @@
 | `packages/ui/src/v4/ConversationDraftEmptyState.tsx`                                         | 草稿首页品牌水印    |
 | `packages/ui/src/WelcomeScreen.tsx` + `i18n/locales/*.ts` 的 `login.*`                       | 登录页品牌文案占位  |
 | `packages/desktop/src/main/about.ts`、`desktopTray.ts`、`packages/shared/src/desktopMenu.ts` | 原生外壳文案        |
+| `packages/shared/src/dataDirName.ts`                                                         | 数据目录叶子名 owner（见 [data-dir-name.md](data-dir-name.md)） |

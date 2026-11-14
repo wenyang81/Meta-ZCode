@@ -129,8 +129,22 @@ export function CredentialStoreRecovery({
   );
 }
 
-const LOGIN_TERMS_URL = "https://zcode.z.ai/terms";
-const LOGIN_PRIVACY_URL = "https://zcode.z.ai/privacy";
+type LoginLegalLinkImportMetaEnv = {
+  VITE_ZCODE_TERMS_URL?: string;
+  VITE_ZCODE_PRIVACY_URL?: string;
+};
+
+// 协议链接与授权登录同走环境变量：desktop vite.config.ts 从仓库根 .env* 注入 define，
+// 空值回落上游地址——品牌方没填时链接仍然有效，填了整体替换（docs/brand-identity.md 法务边界行）。
+function readLoginLegalLinkEnv(): LoginLegalLinkImportMetaEnv {
+  return ((import.meta as ImportMeta & { env?: LoginLegalLinkImportMetaEnv }).env ??
+    {}) as LoginLegalLinkImportMetaEnv;
+}
+
+const loginLegalLinkEnv = readLoginLegalLinkEnv();
+const LOGIN_TERMS_URL = loginLegalLinkEnv.VITE_ZCODE_TERMS_URL?.trim() || "https://zcode.z.ai/terms";
+const LOGIN_PRIVACY_URL =
+  loginLegalLinkEnv.VITE_ZCODE_PRIVACY_URL?.trim() || "https://zcode.z.ai/privacy";
 
 /** 登录页正文里的品牌名：中文界面用中文名，其余界面用拉丁名，两个值都只在 biz-brand 存一份。 */
 function loginBrandName(locale: string): string {
