@@ -1,6 +1,9 @@
 import type { ZCodeEnv } from "./env.js";
 
-export const DEFAULT_ZCODE_ENDPOINT_ORIGIN = "https://zcode.z.ai";
+// 融智坊（fork）【临时验证包】：默认控制面指到本机后端（127.0.0.1:18091），
+// 用于在无环境变量的机器上直接验证打包客户端。正式包发布前要恢复上游默认
+// https://zcode.z.ai 并改走安装器/环境变量注入（docs/fusionfinlab-packaging.md §6）。
+export const DEFAULT_ZCODE_ENDPOINT_ORIGIN = "http://127.0.0.1:18091";
 export const TEST_ZCODE_ENDPOINT_ORIGIN = "https://zcode.z.ai";
 export const CODING_PLAN_LOCAL_WEBVIEW_ORIGIN = "http://localhost:3000";
 export const DEFAULT_BIGMODEL_API_ORIGIN = "https://bigmodel.cn";

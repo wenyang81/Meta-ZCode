@@ -2019,15 +2019,15 @@ describe("background task per-tool provider lookup", () => {
       status: "failed",
       runStatus: "errored",
       error: "script threw TypeError",
-      scriptPath: "/tmp/.zcode/workflow-drafts/audit.dwf.ts",
+      scriptPath: "/tmp/.dlMeta/workflow-drafts/audit.dwf.ts",
     });
 
     expect(text).toContain(
-      'The run\'s script is at .zcode/workflow-drafts/audit.dwf.ts. Edit that file in place, then call AmendWorkflow (run_id="dwfrun-1", path=".zcode/workflow-drafts/audit.dwf.ts")',
+      'The run\'s script is at .dlMeta/workflow-drafts/audit.dwf.ts. Edit that file in place, then call AmendWorkflow (run_id="dwfrun-1", path=".dlMeta/workflow-drafts/audit.dwf.ts")',
     );
     expect(text).not.toContain("Fix the script and submit it with AmendWorkflow");
     // 路径只进指引，不进 XML 块：用户面一概不显示它（spec 的「What the user sees」）。
-    expect(text.indexOf(".zcode/workflow-drafts")).toBeGreaterThan(
+    expect(text.indexOf(".dlMeta/workflow-drafts")).toBeGreaterThan(
       text.indexOf("</task-notification>"),
     );
   });
@@ -2048,11 +2048,11 @@ describe("background task per-tool provider lookup", () => {
       status: "cancelled",
       runStatus: "stopped",
       stopReason: "model",
-      scriptPath: "/tmp/.zcode/workflow-drafts/audit.dwf.ts",
+      scriptPath: "/tmp/.dlMeta/workflow-drafts/audit.dwf.ts",
     });
 
     expect(text).toContain(
-      "Its script is at .zcode/workflow-drafts/audit.dwf.ts: edit that file and pass `path`.",
+      "Its script is at .dlMeta/workflow-drafts/audit.dwf.ts: edit that file and pass `path`.",
     );
   });
 

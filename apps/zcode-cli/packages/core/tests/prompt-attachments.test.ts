@@ -948,7 +948,7 @@ describe("prompt attachment provider content order", () => {
   it("keeps pasted temporary text attachments out of prompt_attachment system reminders", () => {
     const pastedContent = "secret pasted text ".repeat(400);
     const localReferenceText = [
-      "Attached text/plain: /Users/test/.zcode/tmp/paste-attachments/2026-06-30/pasted-text.txt",
+      "Attached text/plain: /Users/test/.dlMeta/tmp/paste-attachments/2026-06-30/pasted-text.txt",
       "The file was sent by local path because it is a pasted-text temporary attachment that is deferred to keep the model context small.",
       "Use the available file reading tools if you need to inspect the file contents.",
     ].join("\n");
@@ -960,7 +960,7 @@ describe("prompt attachment provider content order", () => {
         },
         filename: "pasted-text.txt",
         metadata: {
-          originalUrl: "/Users/test/.zcode/tmp/paste-attachments/2026-06-30/pasted-text.txt",
+          originalUrl: "/Users/test/.dlMeta/tmp/paste-attachments/2026-06-30/pasted-text.txt",
           recoverability: "metadata_only",
           sizeBytes: Buffer.byteLength(pastedContent, "utf8"),
           storageKind: "local_ref",
@@ -968,14 +968,14 @@ describe("prompt attachment provider content order", () => {
         mime: "text/plain",
         source: {
           type: "file",
-          path: "/Users/test/.zcode/tmp/paste-attachments/2026-06-30/pasted-text.txt",
+          path: "/Users/test/.dlMeta/tmp/paste-attachments/2026-06-30/pasted-text.txt",
           text: {
-            value: "/Users/test/.zcode/tmp/paste-attachments/2026-06-30/pasted-text.txt",
+            value: "/Users/test/.dlMeta/tmp/paste-attachments/2026-06-30/pasted-text.txt",
             start: 0,
             end: 71,
           },
         },
-        url: "/Users/test/.zcode/tmp/paste-attachments/2026-06-30/pasted-text.txt",
+        url: "/Users/test/.dlMeta/tmp/paste-attachments/2026-06-30/pasted-text.txt",
       },
     ] satisfies ResolvedTurnAttachment[]);
 
@@ -1000,7 +1000,7 @@ describe("prompt attachment provider content order", () => {
   });
 
   it("resolves pasted temporary text files as local references without reading contents", async () => {
-    const path = "/Users/test/.zcode/tmp/paste-attachments/2026-06-30/pasted-text.txt";
+    const path = "/Users/test/.dlMeta/tmp/paste-attachments/2026-06-30/pasted-text.txt";
     const fileSystemPort = {
       async stat(request) {
         expect(request.path).toBe(path);

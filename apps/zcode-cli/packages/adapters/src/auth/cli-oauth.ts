@@ -11,6 +11,11 @@ export interface CliOAuthClientOptions {
   providerId: CliOAuthProviderId;
   httpClient: HttpClientPort;
   trace?: TraceContext;
+  /**
+   * 开发/测试开关：放行 http 的 authorize_url（局域网自托管后端联调用）。
+   * 默认 false，保持上游 https 硬校验；由调用方从 env 显式传入，本模块不读环境。
+   */
+  allowInsecureAuthorizeUrl?: boolean;
 }
 
 export interface CliOAuthInitInput {
@@ -95,7 +100,7 @@ export function createCliOAuthClient(options: CliOAuthClientOptions): CliOAuthCl
         },
         runOptions,
       );
-      return parseInitData(envelope.data);
+      return parseInitData(envelope.data, options.allowInsecureAuthorizeUrl === true);
     },
 
     async poll(
@@ -169,7 +174,7 @@ async function requestJsonEnvelope(
   };
 }
 
-function parseInitData(value: unknown): CliOAuthInitData {
+function parseInitData(value: unknown, allowInsecureAuthorizeUrl = false): CliOAuthInitData {
   const data = asRecord(value);
   if (
     !data ||
@@ -184,7 +189,9 @@ function parseInitData(value: unknown): CliOAuthInitData {
     throw new CliOAuthError("Invalid OAuth init response data");
   }
   try {
-    if (new URL(readString(data.authorize_url)!).protocol !== "https:") throw new Error();
+    const protocol = new URL(readString(data.authorize_url)!).protocol;
+    if (protocol !== "https:" && !(allowInsecureAuthorizeUrl && protocol === "http:"))
+      throw new Error();
   } catch {
     throw new CliOAuthError("Invalid OAuth authorization URL");
   }

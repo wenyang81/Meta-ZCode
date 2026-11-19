@@ -13,6 +13,7 @@ import {
   type FileHandle,
 } from "node:fs/promises";
 import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared/dataDirName";
 import {
   MAX_FILE_BYTES,
   OfficeError,
@@ -191,7 +192,7 @@ export function createDocumentImporter(
   };
   async function parent(create = true) {
     const base = await root();
-    const directory = join(base, ".zcode", "document-imports");
+    const directory = join(base, WORKSPACE_CONFIG_DIR_NAME, "document-imports");
     if (create) await mkdir(directory, { recursive: true });
     else if (!(await lstat(directory).catch(() => null))) return null;
     if (!inside(base, await realpath(directory)))

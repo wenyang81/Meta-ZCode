@@ -1,6 +1,7 @@
 import { join, resolve } from "node:path";
 
 import type { FileSystemPort, Logger, TraceContext } from "@zcode/contracts";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 
 import { ensureMemoryDirectoryExists } from "../memory/directory.js";
 import type { MemoryRuntimeConfig } from "../runtime/types.js";
@@ -27,8 +28,8 @@ export function resolvePersistentAgentMemoryRoot(input: {
   }
   const workspace = resolve(input.workspaceRoot);
   return input.scope === "project"
-    ? join(workspace, ".zcode", "agent-memory", agentKey)
-    : join(workspace, ".zcode", "agent-memory-local", agentKey);
+    ? join(workspace, WORKSPACE_CONFIG_DIR_NAME, "agent-memory", agentKey)
+    : join(workspace, WORKSPACE_CONFIG_DIR_NAME, "agent-memory-local", agentKey);
 }
 
 function isPersistentAgentMemoryEnabled(

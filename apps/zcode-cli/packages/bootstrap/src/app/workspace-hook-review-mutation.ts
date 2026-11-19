@@ -4,6 +4,7 @@ import {
   type WorkspaceHookBundleSnapshot,
 } from "@zcode/contracts";
 import { digestSummary, workspaceIdentitySummary } from "@zcode/core";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import {
   buildWorkspaceHookBundleSnapshot,
   readWorkspaceHookProjectSources,
@@ -28,7 +29,7 @@ export function createWorkspaceHookReviewMutationPort(
   options: WorkspaceHookReviewMutationPortOptions,
 ): WorkspaceHookReviewMutationPort {
   const workingDirectory = resolve(options.workingDirectory);
-  const editableConfigPath = resolve(workingDirectory, ".zcode", "config.json");
+  const editableConfigPath = resolve(workingDirectory, WORKSPACE_CONFIG_DIR_NAME, "config.json");
   const lockKey = editableConfigPath;
 
   return {

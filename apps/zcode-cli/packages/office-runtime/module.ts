@@ -4,7 +4,7 @@
  */
 export const officeRuntimeModule = {
   id: "office-runtime",
-  requires: [],
+  requires: ["shared"],
   provides: ["office-runtime"],
   publicEntrypoints: ["index.ts", "contract.ts"],
 } as const;

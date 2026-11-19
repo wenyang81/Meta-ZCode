@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import {
   BUILTIN_WORKFLOW_COMMAND_NAME,
   expandBuiltinWorkflowCommandPrompt,
@@ -99,13 +100,13 @@ function buildInitAgentsPrompt(params: {
     "Target:",
     `- Workspace directory: ${params.workingDirectory}`,
     `- Instruction file: ${params.targetPath}`,
-    `- Existing hidden instruction candidates: ${join(params.workingDirectory, ".zcode", "AGENTS.md")} and ${join(params.workingDirectory, ".agents", "AGENTS.md")}`,
+    `- Existing hidden instruction candidates: ${join(params.workingDirectory, WORKSPACE_CONFIG_DIR_NAME, "AGENTS.md")} and ${join(params.workingDirectory, ".agents", "AGENTS.md")}`,
     "- File name must be exactly AGENTS.md.",
-    "- This command targets the current workspace only. Do not write ~/.zcode/AGENTS.md.",
+    `- This command targets the current workspace only. Do not write ~/${WORKSPACE_CONFIG_DIR_NAME}/AGENTS.md.`,
     additionalInstructions,
     "",
     "Process:",
-    "1. First check whether .zcode/AGENTS.md or .agents/AGENTS.md exists in the workspace. If either exists, tell the user they already have an instructions file, mention the path found, and stop without creating a new AGENTS.md.",
+    `1. First check whether ${WORKSPACE_CONFIG_DIR_NAME}/AGENTS.md or .agents/AGENTS.md exists in the workspace. If either exists, tell the user they already have an instructions file, mention the path found, and stop without creating a new AGENTS.md.`,
     "2. Inspect the repository before writing. Prefer Read, Glob, Grep, and safe Bash commands such as ls, find, git status, and package-manager script inspection.",
     "3. If AGENTS.md already exists, read it first and update it with Edit instead of replacing it wholesale.",
     "4. If AGENTS.md does not exist, create it at the workspace root.",

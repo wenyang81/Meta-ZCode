@@ -56,6 +56,7 @@ import type {
 import { ZCODE_OFFICIAL_PLUGIN_MARKETPLACE, isOfficialMarketplaceId } from "@zcode/contracts";
 import {
   DEFAULT_PLUGIN_MARKETPLACES,
+  WORKSPACE_CONFIG_DIR_NAME,
   ZCODE_CUA_OFFICIAL_PLUGIN_ID,
   isZCodeCuaInternalFeatureEnabled,
 } from "@zcode/shared";
@@ -1068,7 +1069,7 @@ async function configureZCodePluginLocked(options: ConfigureZCodePluginOptions):
     configPath: resolvePluginConfigPath(options, configResult, workingDirectory),
     options: normalizedOptions,
     plugin,
-    // workspace 配置固定写 <workingDirectory>/.zcode/config.json，它的 baseDir 就是 workingDirectory。
+    // workspace 配置固定写 <workingDirectory>/.dlMeta/config.json，它的 baseDir 就是 workingDirectory。
     scope:
       options.scope === "workspace"
         ? { kind: "workspace", root: workingDirectory }
@@ -1460,10 +1461,10 @@ function resolvePluginConfigPath(
     return configResult.sources.user.path;
   }
 
-  // Workspace Plugin 配置固定落在当前 `<workspace>/.zcode/config.json`。嵌套 workspace
+  // Workspace Plugin 配置固定落在当前 `<workspace>/.dlMeta/config.json`。嵌套 workspace
   // 可能同时发现仓库根与自身的配置，读取端 innermost 优先；写入端也必须锁定当前
   // workspace，不能用 project discovery 的第一个 outermost 文件。
-  const workspaceConfigPath = join(workingDirectory, ".zcode", "config.json");
+  const workspaceConfigPath = join(workingDirectory, WORKSPACE_CONFIG_DIR_NAME, "config.json");
   const projectConfigPaths = [
     ...(options.projectConfigPath ? [options.projectConfigPath] : []),
     ...configResult.sources.project.paths,
@@ -1484,10 +1485,13 @@ export function isWorkspacePluginConfigPath(
   if (platform === "win32") {
     return (
       win32.basename(path).toLowerCase() === "config.json" &&
-      win32.basename(win32.dirname(path)).toLowerCase() === ".zcode"
+      win32.basename(win32.dirname(path)).toLowerCase() === WORKSPACE_CONFIG_DIR_NAME.toLowerCase()
     );
   }
-  return basename(path) === "config.json" && basename(dirname(path)) === ".zcode";
+  return (
+    basename(path) === "config.json" &&
+    basename(dirname(path)).toLowerCase() === WORKSPACE_CONFIG_DIR_NAME.toLowerCase()
+  );
 }
 
 export function resolveMarketplaceRefreshTargetIds(input: {

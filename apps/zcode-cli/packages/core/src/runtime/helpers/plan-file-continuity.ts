@@ -8,6 +8,7 @@ import {
   type SessionId,
   type TraceContext,
 } from "@zcode/contracts";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import {
   systemReminderAttachmentEntry,
   type RuntimeMessageEntry,
@@ -21,7 +22,7 @@ export function resolveApprovedPlanFilePath(input: {
 }): string {
   return join(
     input.workspaceRoot,
-    ".zcode",
+    WORKSPACE_CONFIG_DIR_NAME,
     "plans",
     `plan-${sanitizePlanFileSessionId(input.sessionId)}.md`,
   );

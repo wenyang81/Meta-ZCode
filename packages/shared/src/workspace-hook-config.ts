@@ -21,8 +21,9 @@ export type WorkspaceHookEventName = (typeof WORKSPACE_HOOK_EVENT_NAMES)[number]
 
 /**
  * 项目级 hook 配置的种类标签，同时是它在 git 仓库里的相对路径。
- * 走 WORKSPACE_CONFIG_DIR_NAME：工作区 `.zcode` 是随仓库走的跨工具契约、不随品牌叶子改名，
- * 但它必须和下面拼候选路径的常量同源（docs/data-dir-name.md）。
+ * 走 WORKSPACE_CONFIG_DIR_NAME：fork 已把工作区契约目录改为 `.dlMeta`，kind 取值跟着常量走，
+ * 与下面拼候选路径的常量同源（docs/data-dir-name.md）；contracts 侧的快照 schema 另保留上游
+ * 时期的 ".zcode/config.json" 作为遗留解析取值。
  */
 export const WORKSPACE_HOOK_PROJECT_CONFIG_KIND =
   `${WORKSPACE_CONFIG_DIR_NAME}/config.json` as const;
@@ -30,7 +31,10 @@ export const WORKSPACE_HOOK_PROJECT_CONFIG_KIND =
 export type WorkspaceHookConfigFileKind =
   | "zcode.json"
   | typeof WORKSPACE_HOOK_PROJECT_CONFIG_KIND
-  | "explicit";
+  | "explicit"
+  // 上游时期落盘快照的遗留 kind（contracts 快照 schema 同样保留该枚举值），
+  // 只为旧信任库记录可解析；新快照不会再产生这个取值。
+  | ".zcode/config.json";
 
 const positiveNumberSchema = z.number().finite().positive();
 

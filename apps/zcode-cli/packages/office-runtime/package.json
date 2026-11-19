@@ -15,6 +15,9 @@
     "test": "vitest run",
     "lint": "oxlint src ui scripts module.ts index.ts contract.ts contract.example.ts contract.test.ts --no-ignore"
   },
+  "dependencies": {
+    "@zcode/shared": "workspace:*"
+  },
   "devDependencies": {
     "@aiden0z/pptx-renderer": "1.2.4",
     "@extend-ai/react-xlsx": "0.16.0",

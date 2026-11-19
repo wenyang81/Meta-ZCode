@@ -261,6 +261,8 @@ function createOAuthClient(options: LoginZCodeCliOptions, env: EnvRecord): CliOA
       options.baseUrl ?? buildZCodeEndpointUrls(resolveCliZCodeEndpointOrigin(env)).apiBaseUrl,
     providerId: options.providerId ?? "zai",
     httpClient: options.httpClient ?? createDefaultHttpClient(env),
+    // 与桌面端 services 路径同一开关：局域网自托管后端只有 http 时联调用，生产不带该变量。
+    allowInsecureAuthorizeUrl: env.ZCODE_OAUTH_ALLOW_INSECURE_HTTP?.trim() === "1",
   });
 }
 

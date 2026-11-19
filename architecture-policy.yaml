@@ -1091,7 +1091,7 @@ modules:
     roots:
       - apps/zcode-cli/packages/office-runtime
     managed: true
-    requires: []
+    requires: [ shared ]
     publicEntrypoints:
       - apps/zcode-cli/packages/office-runtime/index.ts
       - apps/zcode-cli/packages/office-runtime/contract.ts

@@ -1,6 +1,6 @@
 import { isAbsolute, relative } from "node:path";
 
-import { DATA_DIR_NAME } from "@zcode/shared";
+import { DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 
 import { resolveWorkspacePath } from "../tool/path-policy.js";
 
@@ -17,9 +17,10 @@ const SENSITIVE_MEMORY_PATH_SEGMENTS = new Set([
   "objects",
   "refs",
   ".claude",
-  // 工作区契约名固定为 `.zcode`，品牌化的只是用户级数据叶子，两条都必须挡：
-  // 只保留其中一个会让品牌包出现「另一半目录不再受保护」的口子。默认叶子下两者同值，Set 自动去重。
+  // 工作区契约名已随 fork 改为 `.dlMeta`（WORKSPACE_CONFIG_DIR_NAME）；磁盘上仍可能存在
+  // 上游时期留下的 `.zcode` 工作区目录，敏感段黑名单三条都挡，缺一个就少保护一类目录。
   ".zcode",
+  WORKSPACE_CONFIG_DIR_NAME,
   DATA_DIR_NAME,
   "skills",
   "commands",

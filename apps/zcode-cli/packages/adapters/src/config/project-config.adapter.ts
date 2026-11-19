@@ -1,4 +1,5 @@
 import { basename, dirname, isAbsolute, resolve } from "node:path";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import type { McpServerConfig, RuntimeConfigPatch } from "@zcode/contracts";
 import {
   createWorkspaceHookSourceInput,
@@ -113,7 +114,7 @@ export function summarizeProjectConfigs(files: ProjectConfigFile[]): ProjectConf
 
 function getProjectConfigBaseDir(path: string): string {
   const configDirectory = dirname(path);
-  return basename(configDirectory) === ".zcode" ? dirname(configDirectory) : configDirectory;
+  return basename(configDirectory) === WORKSPACE_CONFIG_DIR_NAME ? dirname(configDirectory) : configDirectory;
 }
 
 function normalizeProjectConfig(config: RuntimeConfigPatch, baseDir: string): RuntimeConfigPatch {

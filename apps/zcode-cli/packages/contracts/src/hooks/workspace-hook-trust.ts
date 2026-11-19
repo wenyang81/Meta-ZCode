@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared/dataDirName";
 
 export const WORKSPACE_HOOK_DIGEST_SCHEMA_VERSION = 1 as const;
 export const WORKSPACE_HOOK_REVIEW_TIMEOUT_MS = 10 * 60 * 1000;
@@ -250,7 +251,14 @@ export const workspaceHookBundleSnapshotSchema = z
           canonicalPath: nonEmptyStringSchema,
           baseDir: nonEmptyStringSchema,
           discoveryOrder: nonnegativeIntegerSchema,
-          configFileKind: z.enum(["zcode.json", ".zcode/config.json", "explicit"]),
+          // 项目档 kind 与 shared/workspace-hook-config 的 WORKSPACE_HOOK_PROJECT_CONFIG_KIND 同源；
+          // ".zcode/config.json" 是上游时期落盘快照的遗留取值，去掉会让旧信任库记录解析失败。
+          configFileKind: z.enum([
+            "zcode.json",
+            `${WORKSPACE_CONFIG_DIR_NAME}/config.json`,
+            ".zcode/config.json",
+            "explicit",
+          ]),
           explicitProjectConfig: z.boolean(),
           editable: z.boolean(),
           hooksRoot: z

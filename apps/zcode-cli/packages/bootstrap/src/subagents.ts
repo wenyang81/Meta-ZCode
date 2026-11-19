@@ -3,6 +3,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 import { parseRuntimeSubagentConfig } from "./runtime-subagents/index.js";
 import { migrateUserSubagentMarkdown, migrateSubagentStateFile } from "@zcode/shared/node";
+import { WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import {
   parseAgentProfileFromMarkdown,
   type AgentProfile,
@@ -54,14 +55,14 @@ export async function loadZCodeAgentProfiles(
   await migrateSubagentStateFile(join(input.storageRoot, "v2", "agents-state.json"));
   const roots: Array<{ path: string; source: "user" | "project"; namespace?: string }> = [
     { path: join(input.storageRoot, "agents"), source: "user" as const },
-    { path: join(input.workingDirectory, ".zcode", "agents"), source: "project" as const },
+    { path: join(input.workingDirectory, WORKSPACE_CONFIG_DIR_NAME, "agents"), source: "project" as const },
   ];
   for (const directory of new Set(
     (input.additionalDirectories ?? []).map((path) => resolve(path)),
   )) {
     if (directory === resolve(input.workingDirectory)) continue;
     roots.push({
-      path: join(directory, ".zcode", "agents"),
+      path: join(directory, WORKSPACE_CONFIG_DIR_NAME, "agents"),
       source: "project",
       namespace: basename(directory),
     });
