@@ -56,6 +56,7 @@ import {
   unregisterLegacyServiceForRoot,
 } from "./runtime/serviceInstallation.js";
 import { ProxyStdioError, runProxyStdio } from "./server-core/proxyStdio.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 export interface CliIO {
   stdout?: { write(value: string): void };
@@ -397,7 +398,7 @@ async function runServe(
           stdio: "ignore",
           env: {
             ...process.env,
-            ZCODE_DATA_BASE_DIR: layout.dataBaseDir,
+            [DLMETA_DATA_BASE_DIR_ENV]: layout.dataBaseDir,
             ZCODE_SERVER_ROOT: layout.serverRoot,
           },
         },
@@ -501,7 +502,7 @@ async function runServe(
           : process.execPath;
         const inheritedEnv = {
           ...process.env,
-          ZCODE_DATA_BASE_DIR: layout.dataBaseDir,
+          [DLMETA_DATA_BASE_DIR_ENV]: layout.dataBaseDir,
           ZCODE_SERVER_ROOT: layout.serverRoot,
         };
         const releaseWiring = runtimeRoot

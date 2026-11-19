@@ -9,6 +9,7 @@ import { join, resolve } from "node:path";
 import { setTimeout } from "node:timers/promises";
 import { promisify, stripVTControlCharacters } from "node:util";
 import { pathToFileURL } from "node:url";
+import { DLMETA_DATA_BASE_DIR_ENV } from "../packages/shared/src/dataDirName.ts";
 
 const exec = promisify(execFile);
 const archive = process.argv[2];
@@ -19,7 +20,7 @@ const runner = join(root, "bin/zcode.mjs");
 const workspace = join(directory, "workspace");
 const env = {
   ...process.env,
-  ZCODE_DATA_BASE_DIR: join(directory, "data"),
+  [DLMETA_DATA_BASE_DIR_ENV]: join(directory, "data"),
   NODE_PATH: "",
   NODE_OPTIONS: "",
   TERM: "xterm-256color",

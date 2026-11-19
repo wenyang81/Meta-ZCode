@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 const home = await mkdtemp(join(tmpdir(), "oauth-attribution-recovery-"));
-process.env.ZCODE_DATA_BASE_DIR = home;
+process.env[DLMETA_DATA_BASE_DIR_ENV] = home;
 const { createCredentialService, createOAuthService } = await import("@zcode/services/node");
 const file = join(home, ".zcode/v2/credentials.json");
 await mkdir(join(home, ".zcode/v2"), { recursive: true });

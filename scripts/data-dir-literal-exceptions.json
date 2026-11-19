@@ -1,93 +1,17 @@
 {
-  "$comment": "data-dir-literal 门禁的例外清单（规范见 docs/data-dir-name.md）。每条必须写理由：门禁只保证「用户级数据叶子不再写死 .zcode」，落在同一个路径段上的另外四类名字——固定的工作区契约名、发给模型的英文提示词、刻意读取上游目录的兼容代码、不随品牌包分发的工程脚本——都不算违规。新增例外前先确认它真的不属于品牌运行期的数据根。",
+  "$comment": "data-dir-literal 门禁的例外清单（规范见 docs/data-dir-name.md）。每条必须写理由：门禁只保证「数据叶子不再写死 .zcode」，落在同一个路径段上的另外几类名字——上游时期落盘的协议遗留取值、刻意读取上游目录的兼容代码、不随品牌包分发的工程脚本——都不算违规。2026-11-17 工作区契约目录已改为 `.dlMeta`（WORKSPACE_CONFIG_DIR_NAME），产品运行期代码一律引用常量，不再出现在本清单。新增例外前先确认它真的不属于品牌运行期的数据根。",
   "exceptions": [
     {
-      "path": "apps/zcode-cli/packages/adapters/src/config/project-config.adapter.ts",
-      "reason": "工作区契约：判定 `<workspace>/.zcode/config.json` 是否项目配置目录，该目录名固定为 `.zcode`，不随品牌叶子变化。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/bootstrap/src/app/script-workflow-tool-port.ts",
-      "reason": "同一函数里 `join(workingDirectory, \".zcode\", ...)` 是工作区候选路径；用户候选已走 DATA_DIR_NAME。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/bootstrap/src/app/script-workflow-utils.ts",
-      "reason": "按脚本路径反推 scope：project 分支比较工作区契约目录，user 分支已走 DATA_DIR_NAME。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/bootstrap/src/app/workspace-hook-review-mutation.ts",
-      "reason": "工作区 Hook 评审写的是 `<workspace>/.zcode/config.json`，属跨工具契约文件。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/bootstrap/src/plugins.ts",
-      "reason": "识别 `<workspace>/.zcode/config.json` 的插件配置来源，工作区契约名固定。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/bootstrap/src/runtime-subagents/contract.example.ts",
-      "reason": "跨工具契约示例路径（文档性常量），不参与真实 IO。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/bootstrap/src/subagents.ts",
-      "reason": "项目级与 additionalDirectories 的 `<dir>/.zcode/agents` 扫描根，均为工作区契约名。"
+      "path": "packages/shared/src/workspace-hook-config.ts",
+      "reason": "WorkspaceHookConfigFileKind 类型保留 \".zcode/config.json\"：上游时期落盘快照的遗留 kind，仅为旧信任库记录可解析；新快照的 kind 由 WORKSPACE_HOOK_PROJECT_CONFIG_KIND（走常量）产生。"
     },
     {
       "path": "apps/zcode-cli/packages/contracts/src/hooks/workspace-hook-trust.ts",
-      "reason": "zod enum 字面量是协议取值（`.zcode/config.json` 作为一种 configFileKind），改动会破坏已在存的信任库记录。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/contracts/src/tools/saved-workflow.ts",
-      "reason": "SAVED_WORKFLOW_PROJECT_DIR / WORKFLOW_DRAFTS_DIR 始终拼在 workingDirectory 上，是工作区契约目录；全局目录已走 DATA_DIR_NAME。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/core/src/runtime/helpers/plan-file-continuity.ts",
-      "reason": "工作区内 `.zcode` 计划文件续跑判定，契约名固定。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/core/src/subagent/persistent-memory.ts",
-      "reason": "subagent 记忆写在 `<workspace>/.zcode/agent-memory*`，属工作区契约目录。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/dynamic-workflow-runtime/src/child-entry-file.ts",
-      "reason": "`<cwd>/.zcode/workflow-runs` 是项目内运行产物目录，契约名固定；该包也没有 @zcode/shared 依赖。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/office-runtime/src/adapters/files.ts",
-      "reason": "base 是 realpath(workspace)，document-imports 落在工作区契约目录下；该包无 @zcode/shared 依赖。"
+      "reason": "快照 schema 的 configFileKind 枚举保留 \".zcode/config.json\"：上游时期落盘的信任库记录用这个取值，删掉会让旧记录解析失败；当前取值走 WORKSPACE_CONFIG_DIR_NAME 模板。"
     },
     {
       "path": "apps/zcode-cli/packages/core/src/memory/memory-file-path.ts",
-      "reason": "敏感段黑名单：`.zcode` 挡固定的工作区契约名，DATA_DIR_NAME 挡品牌叶子，两条必须同时在，只留一个会留下未受保护的目录。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/bootstrap/src/builtin-prompt-command.ts",
-      "reason": "发给模型的英文提示词文本，按品牌决策保持上游写法（只改中文文案与 main 进程对话框）。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/core/src/tool/handlers/agent.ts",
-      "reason": "工具描述里的 `.zcode/agents/*.md` 指向工作区契约目录，且是发给模型的英文文本。"
-    },
-    {
-      "path": "apps/zcode-cli/packages/core/src/tool/handlers/list-saved-workflows.ts",
-      "reason": "发给模型的英文工具说明，按决策保持上游写法。"
-    },
-    {
-      "path": "packages/shared/src/zcode-slash-command-help.ts",
-      "reason": "斜杠命令英文帮助文本（已回退为上游原样），非中文用户文案。"
-    },
-    {
-      "path": "packages/ui/src/i18n/locales/en-US.ts",
-      "reason": "非中文语言包按品牌决策不插值叶子名，保持上游文本以便同步。"
-    },
-    {
-      "path": "packages/ui/src/i18n/locales/ja-JP.ts",
-      "reason": "同 en-US：只改 zh-CN 与 main 进程对话框。"
-    },
-    {
-      "path": "packages/ui/src/i18n/locales/ko-KR.ts",
-      "reason": "同 en-US：只改 zh-CN 与 main 进程对话框。"
-    },
-    {
-      "path": "packages/ui/src/i18n/locales/ru-RU.ts",
-      "reason": "同 en-US：只改 zh-CN 与 main 进程对话框。"
+      "reason": "敏感段黑名单：WORKSPACE_CONFIG_DIR_NAME（.dlMeta）挡当前契约名，\".zcode\" 挡上游时期留在磁盘上的工作区目录，DATA_DIR_NAME 挡品牌叶子；缺一个就少保护一类目录。"
     },
     {
       "path": "apps/zcode-cli/packages/restore-legacy-sessions-plugin/skills/restore-legacy-sessions/scripts/restore-conversation.mjs",
@@ -96,22 +20,6 @@
     {
       "path": "apps/zcode-cli/packages/restore-legacy-sessions-plugin/skills/restore-legacy-sessions/scripts/scan-legacy-sessions.mjs",
       "reason": "同上：扫描的是上游遗留会话目录。"
-    },
-    {
-      "path": "packages/desktop/src/main/mcpUserDirectory/types.ts",
-      "reason": "该描述符只登记 zcodeagentmcp（见 MCP_SOURCE_DESCRIPTORS），`claudeclimcp` 分支取不到描述符即抛错，是死路径；它的一份 segments 数组同时服务 user 与 workspace 两个分支，改叶子会让工作区分支跟着变。"
-    },
-    {
-      "path": "packages/desktop/src/main/mcpUserDirectory/index.ts",
-      "reason": "workspaceConfigDirSegments 是工作区契约目录（userConfigDirSegments 已走 DATA_DIR_NAME）。"
-    },
-    {
-      "path": "packages/ui/src/components/workflow-timeline/workflowRunSave.ts",
-      "reason": "落点预览的项目档分支显示 `<workspace>/.zcode/workflows/...`，全局档分支已走 DATA_DIR_NAME。"
-    },
-    {
-      "path": "packages/desktop/wdio.conf.ts",
-      "reason": "E2E 夹具自建的家目录与工作区 `.zcode`（该文件不在 e2e 目录下，门禁扫得到），测试环境不产出品牌包数据。"
     },
     {
       "path": ".agents/skills/zcode-large-task-fixture/scripts/generate-large-task-fixture.mjs",
@@ -138,10 +46,6 @@
       "reason": "MCP Apps host 夹具的自有临时目录名，与产品数据根无关。"
     },
     {
-      "path": "scripts/create-workspace-hook-trust-uat-fixture.mjs",
-      "reason": "工程脚本创建 `<workspace>/.zcode` Hook 信任 UAT 夹具；scripts/ 无 @zcode/shared 依赖。"
-    },
-    {
       "path": "scripts/dev-official-mcp-server.mjs",
       "reason": "本地开发脚本读写开发者机器上的上游 CLI 配置，不进入品牌包。"
     },
@@ -152,18 +56,6 @@
     {
       "path": "scripts/test-web-app-gateway-reset.mjs",
       "reason": "Web 网关重置测试脚本自造临时数据目录。"
-    },
-    {
-      "path": "apps/dev-docs/src/App.tsx",
-      "reason": "开发者文档站的展示缺省值；该 app 无 @zcode/shared 依赖，按决策不纳入品牌化。"
-    },
-    {
-      "path": "apps/dev-docs/src/data/protocolDocs.ts",
-      "reason": "文档站里的示例命令文本。"
-    },
-    {
-      "path": "apps/dev-docs/vite.config.ts",
-      "reason": "文档站 dev server 读取本机上游 stdio 抓包目录，只在开发者机器生效。"
     }
   ]
 }

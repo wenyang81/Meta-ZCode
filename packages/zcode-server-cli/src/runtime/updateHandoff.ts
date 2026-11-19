@@ -7,6 +7,7 @@ import type { ServerLayout } from "./paths.js";
 import { ReleaseManager } from "./releaseManager.js";
 import { stopSupervisorAndWait } from "./shutdownWait.js";
 import type { UpdateDaemonHandoff } from "./updateCommand.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 const DAEMON_START_TIMEOUT_MS = 45_000;
 const MAX_DIAGNOSTIC_CHARS = 16_384;
@@ -42,7 +43,7 @@ async function runDaemonLauncher(
     {
       env: {
         ...process.env,
-        ZCODE_DATA_BASE_DIR: layout.dataBaseDir,
+        [DLMETA_DATA_BASE_DIR_ENV]: layout.dataBaseDir,
         ZCODE_SERVER_ROOT: layout.serverRoot,
       },
       stdio: ["ignore", "pipe", "pipe"],

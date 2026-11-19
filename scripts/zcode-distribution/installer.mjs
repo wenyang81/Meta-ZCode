@@ -5,9 +5,10 @@ export function installScriptSource(baseUrl) {
 set -eu
 
 BASE_URL="\${ZCODE_DIST_BASE_URL:-${baseUrl}}"
-# 运行时目录挂在用户级数据叶子下，叶子名跟着 ZCODE_DATA_DIR_NAME 走：品牌包不配这个变量就会
-# 把 runtime 装进上游 .zcode、把数据写进品牌叶子。未设置时与上游一致。
-INSTALL_DIR="\${ZCODE_DIST_HOME:-$HOME/\${ZCODE_DATA_DIR_NAME:-.zcode}/runtime}"
+# 运行时目录挂在用户级数据叶子下，叶子名跟着 DLMETA_DATA_DIR_NAME 走（单一来源
+# @zcode/shared 的 dataDirName.ts，shell 模板无法 import，改名时两处同步）：品牌包不配这个
+# 变量就会把 runtime 装进上游 .zcode、把数据写进品牌叶子。未设置时与上游一致。
+INSTALL_DIR="\${ZCODE_DIST_HOME:-$HOME/\${DLMETA_DATA_DIR_NAME:-.zcode}/runtime}"
 BIN_DIR="\${ZCODE_DIST_BIN_DIR:-$HOME/.local/bin}"
 
 need_cmd() {

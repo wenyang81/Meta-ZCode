@@ -314,6 +314,7 @@ if (appArg < 0) {
       import {app, BrowserWindow, session} from 'electron';
       import {readFile} from 'node:fs/promises';
       import {applyDesktopChromiumNetworkPolicies, createCustomCaCertificateVerifyProc, readCustomCaCertificatesFromPem} from './src/main/desktopNetworkPolicy.ts';
+import { DLMETA_DATA_BASE_DIR_ENV, DLMETA_DESKTOP_USER_DATA_DIR_ENV } from "../../shared/src/dataDirName.ts";
       void (async () => {
       app.setPath('userData', ${JSON.stringify(resolve(artifact, "user-data"))});
       await app.whenReady();
@@ -348,9 +349,9 @@ if (appArg < 0) {
 const env = {
   ...process.env,
   HOME: home,
-  ZCODE_DATA_BASE_DIR: home,
+  [DLMETA_DATA_BASE_DIR_ENV]: home,
   ZCODE_DESKTOP_HOME_DIR: home,
-  ZCODE_DESKTOP_USER_DATA_DIR: resolve(artifact, "user-data"),
+  [DLMETA_DESKTOP_USER_DATA_DIR_ENV]: resolve(artifact, "user-data"),
   ZCODE_DESKTOP_SESSION_DATA_DIR: resolve(artifact, "session"),
   ZCODE_DESKTOP_APPLICATION_NAME: "ZCode CA Constraints Acceptance",
 };

@@ -12,7 +12,7 @@ import {
   ZCODE_BUILD_COMMIT_ID_ENV,
   ZCODE_AGENT_RUNTIME,
   ZCODE_COMMIT,
-  ZCODE_DATA_DIR_NAME_ENV,
+  DLMETA_DATA_DIR_NAME_ENV,
   ZCODE_DYNAMIC_WORKFLOW_MODE_ENV,
   ZCODE_ENV,
   ZCODE_PRODUCT_FLAVOR,
@@ -41,6 +41,7 @@ import {
   type ResolveRemoteCdnOptions,
 } from "./remoteCdn.js";
 import { getElectronAppPath, isElectronAppPackaged } from "./desktopElectronApp.js";
+import { DLMETA_DATA_BASE_DIR_ENV, DLMETA_DESKTOP_USER_DATA_DIR_ENV } from "@zcode/shared/dataDirName";
 
 declare const __ZCODE_PACKAGED_AGENT_TELEMETRY_ENV__: Readonly<Record<string, string>> | undefined;
 
@@ -66,13 +67,18 @@ function isTruthyRuntimeEnvOverride(name: string): boolean {
 // 触发 Electron 单实例锁后只激活已有窗口，Chromedriver 无法接管测试进程。
 // 这里允许测试显式隔离运行时身份，正常桌面/远控路径保持默认的按身份分目录。
 const runtimeApplicationBaseName = brandIdentity.productName;
+// 运行时身份后缀：dev / Preview 与正式版区分，托盘展示名复用同一后缀保持语义一致。
+const runtimeFlavorSuffix = isLocalDevelopmentRuntime
+  ? " Dev"
+  : isPreviewPackagedRuntime
+    ? " Preview"
+    : "";
 export const runtimeApplicationName =
   readRuntimeEnvOverride("ZCODE_DESKTOP_APPLICATION_NAME") ??
-  (isLocalDevelopmentRuntime
-    ? `${runtimeApplicationBaseName} Dev`
-    : isPreviewPackagedRuntime
-      ? `${runtimeApplicationBaseName} Preview`
-      : runtimeApplicationBaseName);
+  `${runtimeApplicationBaseName}${runtimeFlavorSuffix}`;
+// 原生外壳（托盘、应用菜单、关于页）的展示名：基名取 i18nBrandName（DLMetaWork）而非 productName。
+// 不能直接用 app.name（那是 FusionFinLab，同时决定 %APPDATA% userData 目录，改了会换 profile）。
+export const nativeDisplayName = `${brandIdentity.i18nBrandName}${runtimeFlavorSuffix}`;
 // Electron 的 app.getPath("home") 不一定跟随测试进程里的 HOME 覆盖。
 // e2e 默认工作区依赖 home 路径，因此提供显式覆盖，避免测试写到开发者真实项目目录。
 export const runtimeHomePath = readRuntimeEnvOverride("ZCODE_DESKTOP_HOME_DIR");
@@ -81,7 +87,7 @@ export const shouldUseElectronDefaultUserDataPath = isTruthyRuntimeEnvOverride(
   "ZCODE_DESKTOP_USE_ELECTRON_DEFAULT_USER_DATA",
 );
 export const runtimeUserDataPath =
-  readRuntimeEnvOverride("ZCODE_DESKTOP_USER_DATA_DIR") ??
+  readRuntimeEnvOverride(DLMETA_DESKTOP_USER_DATA_DIR_ENV) ??
   (shouldUseElectronDefaultUserDataPath
     ? undefined
     : join(getElectronAppPath("appData"), runtimeApplicationName));
@@ -584,7 +590,7 @@ export function buildHostProcessEnv(hostProcessLocalEnv: Record<string, string>)
     // inheritedEnv 从 .env 通用变量补齐 ZCode/ZAI 链接，未覆盖时统一使用线上默认值。
     ZCODE_ENV,
     // Preview 与生产版共享任务、配置和凭据，但不同版本的 Helper 不能互相覆盖或触发降级保护。
-    // 只隔离 computer-use 下的运行组件，不改写 ZCODE_HOME / ZCODE_DATA_BASE_DIR 业务数据根。
+    // 只隔离 computer-use 下的运行组件，不改写 ZCODE_HOME / DLMETA_DATA_BASE_DIR 业务数据根。
     ...(isPreviewPackagedRuntime ? { ZCODE_CUA_HELPER_INSTALL_VARIANT: "preview" } : {}),
     // Dynamic Workflow 灰度的本地覆盖：Main 决策后写入，production 包为空对象（继承值已在上面删除）。
     ...dynamicWorkflowModeHostEnv,
@@ -597,8 +603,8 @@ export function buildHostProcessEnv(hostProcessLocalEnv: Record<string, string>)
     // 数据目录叶子名由 Main 一次性解析（外部 env > 构建期 define > `.zcode`），这里显式下发给
     // Host/Agent。子进程不靠继承外部环境决定叶子名：任何一个 spawn 路径漏传就会让一半数据落
     // `.zcode`、一半落品牌叶子。放在 dataBaseDir 之前，两者共同构成完整数据根。
-    [ZCODE_DATA_DIR_NAME_ENV]: DATA_DIR_NAME,
-    ...(dataBaseDir !== homedir() ? { ZCODE_DATA_BASE_DIR: dataBaseDir } : {}),
+    [DLMETA_DATA_DIR_NAME_ENV]: DATA_DIR_NAME,
+    ...(dataBaseDir !== homedir() ? { [DLMETA_DATA_BASE_DIR_ENV]: dataBaseDir } : {}),
     ...(windowsAppInstallDir ? { [ZCODE_WINDOWS_APP_INSTALL_DIR_ENV]: windowsAppInstallDir } : {}),
     ...(bundledCuaHelperAppPath
       ? { [ZCODE_CUA_BUNDLED_HELPER_APP_PATH_ENV]: bundledCuaHelperAppPath }

@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import { createInterface } from "node:readline";
 import { z } from "zod";
 import { providerProvisioningEnvelopeSchema } from "@zcode/shared";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 const KEYS = [
   "oauth:active_provider",
@@ -46,7 +47,7 @@ class Runtime {
       process.execPath,
       [require.resolve("tsx/cli"), resolve("test/e2e/fixtures/oauth-provisioning/runtime.ts")],
       {
-        env: { ...process.env, HOME: home, ZCODE_DATA_BASE_DIR: home, ZCODE_ENV: "test" },
+        env: { ...process.env, HOME: home, [DLMETA_DATA_BASE_DIR_ENV]: home, ZCODE_ENV: "test" },
         stdio: ["pipe", "pipe", "pipe"],
       },
     );

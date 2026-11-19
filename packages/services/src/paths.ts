@@ -9,10 +9,11 @@ import {
   DATA_DIR_NAME,
   ZCODE_AGENT_RUNTIME,
 } from "@zcode/shared";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 let _dataBaseDir: string | null = null;
 export const ZCODE_WINDOWS_APP_INSTALL_DIR_ENV = "ZCODE_WINDOWS_APP_INSTALL_DIR";
-const envDataBaseDir = process.env.ZCODE_DATA_BASE_DIR?.trim() || null;
+const envDataBaseDir = process.env[DLMETA_DATA_BASE_DIR_ENV]?.trim() || null;
 const defaultDataBaseDir = process.env.HOME?.trim() || homedir();
 
 export interface DataBaseDirTargetValidationOptions {
@@ -34,7 +35,7 @@ export function setDataBaseDir(dir: string | null): void {
   _dataBaseDir = dir?.trim() || null;
 }
 
-/** Get the current base directory. Priority: setDataBaseDir() > env ZCODE_DATA_BASE_DIR > homedir(). */
+/** Get the current base directory. Priority: setDataBaseDir() > env DLMETA_DATA_BASE_DIR > homedir(). */
 export function getDataBaseDir(): string {
   if (_dataBaseDir) return _dataBaseDir;
   if (envDataBaseDir) return envDataBaseDir;
@@ -43,7 +44,7 @@ export function getDataBaseDir(): string {
   return defaultDataBaseDir;
 }
 
-/** `{dataBaseDir}/{数据叶子}`；叶子名默认 `.zcode`，品牌构建由 `ZCODE_DATA_DIR_NAME` 决定。 */
+/** `{dataBaseDir}/{数据叶子}`；叶子名默认 `.zcode`，品牌构建由 `DLMETA_DATA_DIR_NAME`（单一来源 @zcode/shared）决定。 */
 export function getZCodeDataRootDir(): string {
   return join(getDataBaseDir(), DATA_DIR_NAME);
 }
@@ -62,7 +63,7 @@ export function getAppConfigDir(): string {
  * Agent 侧用户级默认指令（个性化）文件的 home 解析。
  * 必须与 CLI adapter（apps/zcode-cli/packages/adapters/src/context/index.ts 的
  * resolveUserHomeDir）保持完全一致：只认 HOME/USERPROFILE。不能改用
- * ZCODE_DATA_BASE_DIR（CLI 读该文件时忽略它）或 ZCODE_DESKTOP_HOME_DIR
+ * DLMETA_DATA_BASE_DIR（CLI 读该文件时忽略它）或 ZCODE_DESKTOP_HOME_DIR
  * （agent 子进程不认），否则 App 写的文件和 Agent 读的文件会分叉。
  */
 export function resolveAgentUserInstructionsHomeDir(env: NodeJS.ProcessEnv = process.env): string {

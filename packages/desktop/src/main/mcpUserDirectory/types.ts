@@ -2,7 +2,7 @@
  * MCP 用户目录模块 - 类型和常量定义
  */
 
-import type { CliMcpSource, McpFileFormat } from "@zcode/shared";
+import { DATA_DIR_NAME, type CliMcpSource, type McpFileFormat } from "@zcode/shared";
 
 /**
  * MCP 配置键名类型
@@ -37,7 +37,7 @@ export interface McpSourceDescriptor {
 export const MCP_SOURCE_DESCRIPTORS: McpSourceDescriptor[] = [
   {
     source: "zcodeagentmcp",
-    configDirSegments: [".zcode", "cli"],
+    configDirSegments: [DATA_DIR_NAME, "cli"],
     fileName: "config.json",
     format: "json",
     configKeyName: "mcp.servers",

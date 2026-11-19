@@ -26,6 +26,7 @@ import {
   createBotsServiceHarness,
   createFeishuConfig,
 } from "../bots/helpers/bots-service-harness.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 /** 真实 Host/CLI，只有模型 HTTP、飞书 HTTP 和 Bot 配置存储使用隔离夹具。 */
 export async function createBotWorkerIntegration(baseUrl: string, dropTextContaining?: string) {
@@ -162,7 +163,7 @@ export async function createBotWorkerIntegration(baseUrl: string, dropTextContai
         env: {
           HOME: home,
           USERPROFILE: home,
-          ZCODE_DATA_BASE_DIR: home,
+          [DLMETA_DATA_BASE_DIR_ENV]: home,
           ZCODE_RUNTIME_ENV: "development",
           ZCODE_BUILTIN_PROVIDER_CONFIG_FILE: builtin,
           ZCODE_PERSONAL_PROVIDER_CONFIG_FILE: personalFilePath,

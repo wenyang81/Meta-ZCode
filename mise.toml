@@ -17,7 +17,8 @@ run = "mise exec -- node scripts/mise-run.mjs pnpm bootstrap"
 
 [tasks.dev]
 description = "Start the desktop app in an isolated local test environment."
-env = { ZCODE_DATA_BASE_DIR = "{{env.HOME}}/.zcode-dev-home" }
+# 变量名单一来源 @zcode/shared 的 dataDirName.ts（TOML 无法 import，改名时两处同步）。
+env = { DLMETA_DATA_BASE_DIR = "{{env.HOME}}/.zcode-dev-home" }
 run = "mise exec -- node scripts/mise-run.mjs pnpm dev:desktop:test"
 
 [tasks.dev-desktop-prod]

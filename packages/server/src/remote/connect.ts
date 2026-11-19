@@ -5,7 +5,7 @@ import {
   SERVICE_AUTHORITY_MODE_ENV,
   TOPIC_RESOURCE_RELAY_CHANNEL,
   ZCODE_APP_VERSION_ENV,
-  ZCODE_DATA_DIR_NAME_ENV,
+  DLMETA_DATA_DIR_NAME_ENV,
   ZCODE_DESKTOP_CONTEXT_PROMPT_ENABLED_ENV,
   ZCODE_DYNAMIC_WORKFLOW_MODE_ENV,
   DATA_DIR_NAME,
@@ -384,7 +384,7 @@ function buildRemoteServerCommand(
     `${SERVICE_AUTHORITY_MODE_ENV}="desktop-attached-remote"`,
     // 远端 server 由 SSH/WSL/Docker 单独起进程，不继承桌面 host env。叶子名必须和运行根一起显式下发，
     // 否则品牌包里「目录写到 .dlMeta、进程自己解析回 .zcode」，远端凭据与缓存各落一半。
-    `${ZCODE_DATA_DIR_NAME_ENV}=${quotePosixShellArg(DATA_DIR_NAME)}`,
+    `${DLMETA_DATA_DIR_NAME_ENV}=${quotePosixShellArg(DATA_DIR_NAME)}`,
     `ZCODE_SERVER_RUNTIME_ROOT="$HOME/${DATA_DIR_NAME}/server"`,
   ];
   for (const [key, value] of Object.entries(

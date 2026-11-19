@@ -2,6 +2,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { defineConfig } from "tsup";
+import { DLMETA_DATA_DIR_NAME_ENV } from "@zcode/shared/dataDirName";
 import { getBuildMetadata } from "./scripts/build-metadata.mjs";
 import { resolveDesktopProductFlavor } from "./scripts/desktop-product-identity.mjs";
 const { copyGenUiRuntimeAssets } = await import(
@@ -199,8 +200,9 @@ function createSharedDefines() {
     __ZCODE_PRODUCT_FLAVOR__: JSON.stringify(zcodeProductFlavor),
     ...buildTimeConfigDefines,
     // Data root 叶子名是路径事实，不是显示文案：品牌包在构建期带上叶子，用户机器不需要配环境变量。
-    // 空串表示未品牌化，shared 回落到运行时 ZCODE_DATA_DIR_NAME，再回落 .zcode（与上游一致）。
-    __ZCODE_DATA_DIR_NAME__: JSON.stringify(process.env.ZCODE_DATA_DIR_NAME?.trim() ?? ""),
+    // 空串表示未品牌化，shared 回落到运行时 DLMETA_DATA_DIR_NAME，再回落 .zcode（与上游一致）。
+    // 变量名单一来源是 @zcode/shared 的 DLMETA_DATA_DIR_NAME_ENV，这里只引用不写死。
+    __ZCODE_DATA_DIR_NAME__: JSON.stringify(process.env[DLMETA_DATA_DIR_NAME_ENV]?.trim() ?? ""),
     // Computer Use Helper build identity — helperInstaller 读它决定下载哪个 Helper bundle。
     // 缺失时 installer 抛 "Packaged ZCode is missing its embedded Computer Use Helper build identity"。
     // CI 构建时通过 ZCODE_CUA_HELPER_BUILD_ID env 注入；dev 为空串走兜底（dev helper 不走下载）。

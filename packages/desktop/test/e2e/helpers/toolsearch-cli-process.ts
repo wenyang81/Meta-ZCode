@@ -13,6 +13,7 @@ import {
   toolSearchResponseStage,
   type ToolSearchRequest,
 } from "./toolsearch-provider.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 export interface CliWireRequest {
   body: ToolSearchRequest;
@@ -95,7 +96,7 @@ export async function createToolSearchCliFixture(
     TMPDIR: process.env.TMPDIR,
     NODE_ENV: "test",
     ...(options.modelIo ? { ZCODE_RUNTIME_ENV: "development" } : {}),
-    ZCODE_DATA_BASE_DIR: root,
+    [DLMETA_DATA_BASE_DIR_ENV]: root,
     ZCODE_PERSONAL_PROVIDER_CONFIG_FILE: personalPath,
     ZCODE_BUILTIN_PROVIDER_CONFIG_FILE: join(repoRoot, "config/provider/zcode-builtin.json"),
   };

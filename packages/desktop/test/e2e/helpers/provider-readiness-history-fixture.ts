@@ -4,6 +4,7 @@ import { promisify } from "node:util";
 import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 const exec = promisify(execFile);
 
@@ -68,7 +69,7 @@ export async function seedProviderReadinessHistoryFixture(
       ...process.env,
       HOME: options.e2eHomeDir,
       USERPROFILE: options.e2eHomeDir,
-      ZCODE_DATA_BASE_DIR: options.e2eHomeDir,
+      [DLMETA_DATA_BASE_DIR_ENV]: options.e2eHomeDir,
     },
     timeout: 30_000,
     windowsHide: true,

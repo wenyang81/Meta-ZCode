@@ -12,20 +12,31 @@
  * 本文件不得 import `node:*`：它经 `packages/shared/src/index.ts` 暴露给浏览器端 bundle。
  */
 
-/** 运行时覆盖变量。只允许 fork 的启动包装与构建 define 注入点写入，业务代码不得自行读取。 */
-export const ZCODE_DATA_DIR_NAME_ENV = "ZCODE_DATA_DIR_NAME" as const;
+/** 运行时覆盖变量。只允许 fork 的启动包装与构建 define 注入点写入，业务代码不得自行读取。
+ *  变量名用 fork 自己的 DLMETA_ 命名空间，不与上游/其他 ZCode 系产品的环境变量互相踩。 */
+export const DLMETA_DATA_DIR_NAME_ENV = "DLMETA_DATA_DIR_NAME" as const;
 
-/** 上游默认叶子名。未注入时与上游行为一致，非品牌构建不受影响。 */
-export const DEFAULT_DATA_DIR_NAME = ".zcode";
+/** fork 命名空间的数据根覆盖变量（上游同义变量是 ZCODE_DATA_BASE_DIR，互不读取）。
+ *  「隔离开发态」判定与 dev/e2e 注入都用它。 */
+export const DLMETA_DATA_BASE_DIR_ENV = "DLMETA_DATA_BASE_DIR" as const;
+
+/** fork 命名空间的 Electron userData 目录覆盖变量（登录态/localStorage 落点）。 */
+export const DLMETA_DESKTOP_USER_DATA_DIR_ENV = "DLMETA_DESKTOP_USER_DATA_DIR" as const;
+
+/** fork 默认叶子名。未注入任何覆盖时（dev 无 define、打包没配变量）也落 `.dlMeta`，
+ *  与同机上游正式版的 `.zcode` 天然隔离——这是 2026-11-16 打包验证事故（品牌包读到
+ *  上游会话）的根治：隔离不再依赖「打包时记得设变量」。上游仍为 `.zcode`。 */
+export const DEFAULT_DATA_DIR_NAME = ".dlMeta";
 
 /**
- * 工作区（项目目录）内的点目录名，与用户数据根叶子**不是一回事**：
- * `<workspace>/.zcode/{config.json,skills,commands}` 随 git 仓库走，是跨工具共享的项目级契约，
- * 上游正式版与本 fork 打开同一个项目时必须读到同一份配置，所以它不跟随品牌变量。
+ * 工作区（项目目录）内的点目录名，与用户数据根叶子**同品牌但不同义**：
+ * `<workspace>/.dlMeta/{config.json,skills,commands,plans}` 随项目目录走。
+ * 2026-11-17 起跟随品牌改成 `.dlMeta`（用户确认）：上游正式版继续读写 `<workspace>/.zcode`，
+ * 两个工具打开同一项目时项目级配置不再互通（各自一份）。
  * 代码里 `userDirectorySegments` / `workspaceDirectorySegments` 这类成对命名就是这条分界；
  * 改动任何一处的判定前先看调用方传的是 home 还是 workspacePath。
  */
-export const WORKSPACE_CONFIG_DIR_NAME = ".zcode";
+export const WORKSPACE_CONFIG_DIR_NAME = ".dlMeta";
 
 /**
  * 单个安全路径段：允许前导点的 ASCII 名，禁止路径分隔符、`.`、`..`、空白与非 ASCII。
@@ -40,7 +51,7 @@ export function normalizeDataDirName(value: string | undefined | null): string |
   if (!trimmed) return null;
   if (trimmed === "." || trimmed === ".." || !DATA_DIR_NAME_PATTERN.test(trimmed)) {
     throw new Error(
-      `非法的 ${ZCODE_DATA_DIR_NAME_ENV}=${JSON.stringify(value)}：只允许单个路径段` +
+      `非法的 ${DLMETA_DATA_DIR_NAME_ENV}=${JSON.stringify(value)}：只允许单个路径段` +
         "（字母、数字、. _ -，且不能是 . 或 ..）",
     );
   }
@@ -62,7 +73,7 @@ declare const __ZCODE_DATA_DIR_NAME__: string;
 export function resolveDataDirName(
   env: Record<string, string | undefined> = typeof process === "undefined" ? {} : process.env,
 ): string {
-  const fromEnv = normalizeDataDirName(env[ZCODE_DATA_DIR_NAME_ENV]);
+  const fromEnv = normalizeDataDirName(env[DLMETA_DATA_DIR_NAME_ENV]);
   if (fromEnv) return fromEnv;
   const fromBuild =
     typeof __ZCODE_DATA_DIR_NAME__ !== "undefined"

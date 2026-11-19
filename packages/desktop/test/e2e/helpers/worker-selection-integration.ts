@@ -21,6 +21,7 @@ import { BUILTIN_MODEL_PROVIDER_IDS } from "@zcode/shared";
 import { TaskIndexRepo } from "../../../../services/src/session/taskIndexRepo.js";
 import { createZCodeTaskIndexSyncer } from "../../../../services/src/zcode-agent/zcodeTaskIndexSyncer.js";
 import { getE2EAppDataPaths } from "./desktop-app.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 /** 独立测试 Host + 真实 stdio Worker；仅账号上游和模型 HTTP 使用隔离 fixture。 */
 export async function createWorkerSelectionIntegration(
@@ -126,7 +127,7 @@ export async function createWorkerSelectionIntegration(
       env: {
         HOME: home,
         USERPROFILE: home,
-        ZCODE_DATA_BASE_DIR: home,
+        [DLMETA_DATA_BASE_DIR_ENV]: home,
         ZCODE_RUNTIME_ENV: "development",
         ZCODE_BUILTIN_PROVIDER_CONFIG_FILE: runtimePaths.zcodeBuiltinFilePath,
         ZCODE_PERSONAL_PROVIDER_CONFIG_FILE: runtimePaths.personalFilePath,

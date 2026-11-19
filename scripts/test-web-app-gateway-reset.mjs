@@ -7,6 +7,7 @@ import { connect as connectTcp, createServer as createTcpServer } from "node:net
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { DLMETA_DATA_BASE_DIR_ENV } from "../packages/shared/src/dataDirName.ts";
 
 const repoRoot = resolve(import.meta.dirname, "..");
 const startScript = join(repoRoot, "docker/web-app/start.mjs");
@@ -75,7 +76,7 @@ setTimeout(() => {
       NODE_OPTIONS: appendNodeImport(process.env.NODE_OPTIONS, injectResetEntry),
       PORT: String(publicPort),
       ZCODE_BACKEND_PORT: String(backendPort),
-      ZCODE_DATA_BASE_DIR: dataDir,
+      [DLMETA_DATA_BASE_DIR_ENV]: dataDir,
       ZCODE_SERVER_ENTRY: backendEntry,
       ZCODE_AGENT_ENTRY: agentEntry,
       ZCODE_SERVER_WORKSPACE: workspaceDir,

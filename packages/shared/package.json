@@ -21,6 +21,7 @@
     "./node": "./src/node.ts",
     "./sqlite-migrations": "./src/sqlite-migrations/index.ts",
     "./zcodeEndpoint": "./src/zcodeEndpoint.ts",
+    "./dataDirName": "./src/dataDirName.ts",
     "./workspaceFileSearch": "./src/workspaceFileSearch.ts",
     "./workspaceFileEntriesCodec": "./src/workspaceFileEntriesCodec.ts",
     "./zcode-protocol-v4": "./src/zcode-protocol-v4/index.ts",

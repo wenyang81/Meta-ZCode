@@ -8,12 +8,13 @@ import { fileURLToPath } from "node:url";
 import WebSocket from "ws";
 import { Emitter, VSBuffer, SocketProtocol, type ISocket, type IServerChannel } from "@zcode/rpc";
 import { ZCODE_RPC_HOST_CAPABILITY_HEADER } from "@zcode/shared";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 const childMode = process.argv.includes("--stdio-child");
 const home = childMode
-  ? process.env.ZCODE_DATA_BASE_DIR!
+  ? process.env[DLMETA_DATA_BASE_DIR_ENV]!
   : await mkdtemp(join(tmpdir(), "credential-rpc-"));
-process.env.ZCODE_DATA_BASE_DIR = home;
+process.env[DLMETA_DATA_BASE_DIR_ENV] = home;
 process.env.ZCODE_DESKTOP_HOME_DIR = home;
 const { createHttpServer } = await import("@zcode/server");
 const { createStdioServer } = await import("@zcode/server/stdio");

@@ -6,6 +6,7 @@ import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { resolveZCodeEndpointOrigin } from "@zcode/shared/zcodeEndpoint";
+import { DLMETA_DATA_DIR_NAME_ENV } from "@zcode/shared/dataDirName";
 import { pdfJsCMapsPlugin } from "../ui/vite/pdfJsCMapsPlugin.js";
 import { getBuildMetadata } from "./scripts/build-metadata.mjs";
 import { resolveDesktopProductFlavor } from "./scripts/desktop-product-identity.mjs";
@@ -229,7 +230,8 @@ export default defineConfig(({ command, mode }) => {
       __ZCODE_PRODUCT_FLAVOR__: JSON.stringify(zcodeProductFlavor),
       ...buildTimeConfigDefines,
       // renderer 里的路径提示必须和 main/host 用同一个叶子，否则设置页显示的目录与实际写入的目录不一致。
-      __ZCODE_DATA_DIR_NAME__: JSON.stringify(process.env.ZCODE_DATA_DIR_NAME?.trim() ?? ""),
+      // 变量名单一来源是 @zcode/shared 的 DLMETA_DATA_DIR_NAME_ENV，这里只引用不写死。
+      __ZCODE_DATA_DIR_NAME__: JSON.stringify(process.env[DLMETA_DATA_DIR_NAME_ENV]?.trim() ?? ""),
       __ZCODE_LOCAL_DEVELOPMENT_RUNTIME__: JSON.stringify(mode !== "production"),
       "import.meta.env.VITE_ZCODE_BASE_URL": JSON.stringify(zcodeEndpointOrigin),
       // 兼容旧 renderer 读取名；新代码统一读 VITE_ZCODE_BASE_URL。

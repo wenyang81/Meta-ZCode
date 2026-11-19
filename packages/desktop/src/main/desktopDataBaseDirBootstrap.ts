@@ -4,14 +4,15 @@ import { join } from "node:path";
 import { DATA_DIR_NAME } from "@zcode/shared";
 import { setDataBaseDir } from "@zcode/services/node";
 import { isElectronAppPackaged } from "./desktopElectronApp.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 /**
- * 隔离态：未打包运行（源码 dev / e2e / 冒烟）且调用方显式给出了 ZCODE_DATA_BASE_DIR。
+ * 隔离态：未打包运行（源码 dev / e2e / 冒烟）且调用方显式给出了 DLMETA_DATA_BASE_DIR。
  * 命中时 setting.json 里的 `dataBaseDir` 不再覆盖数据根，见 docs/development-mise-runtime.md「约定」。
  * 早期 bootstrap 与 app-ready 后的设置加载都必须用这一判定，避免两条写入路径语义分叉。
  */
 export function isExplicitDevDataBaseDir(): boolean {
-  return !isElectronAppPackaged() && Boolean(process.env.ZCODE_DATA_BASE_DIR?.trim());
+  return !isElectronAppPackaged() && Boolean(process.env[DLMETA_DATA_BASE_DIR_ENV]?.trim());
 }
 
 export function resolveBootstrapSettingsFile(homePath: string = homedir()): string {
@@ -49,7 +50,7 @@ function readBootstrapDataBaseDirFromDisk(
 
 export function applyEarlyDataBaseDirBootstrap(): string | null {
   // 修复原因：setting.json 是全局单一文件，正式版把 dataBaseDir 钉到自定义目录后，
-  // 这里无条件覆盖会让 dev / e2e 显式注入的 ZCODE_DATA_BASE_DIR 失效，两套版本因此共享
+  // 这里无条件覆盖会让 dev / e2e 显式注入的 DLMETA_DATA_BASE_DIR 失效，两套版本因此共享
   // 同一份任务索引与凭据，跨版本读取直接刷 task-index meta_json 非法。
   // 隔离态下跳过覆盖，让 services/paths.ts 的 env 优先级生效；打包运行行为不变。
   // 见 docs/development-mise-runtime.md「约定」。

@@ -1,6 +1,7 @@
 import { join, posix, resolve } from "node:path";
 import { readdir, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 export const E2E_RUNTIME_RELATIVE_ROOT = ".zcode-e2e";
 export const E2E_RUNTIME_ROOT_REPLAY_TOKEN = "{{e2eRuntimeRoot}}";
@@ -17,7 +18,7 @@ export function resolveE2EHomeDir({
 }: ResolveE2EHomeDirOptions = {}): string {
   const configuredHome =
     env.ZCODE_E2E_HOME_DIR?.trim() ||
-    env.ZCODE_DATA_BASE_DIR?.trim() ||
+    env[DLMETA_DATA_BASE_DIR_ENV]?.trim() ||
     env.ZCODE_DESKTOP_HOME_DIR?.trim();
   return resolve(cwd, configuredHome || ".e2e-home");
 }

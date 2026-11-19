@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { cp, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 /*
  * 官方插件缓存预热（docs/testing/conversation-session-automatic-e2e-ci.md「官方插件缓存预热」）。
@@ -39,7 +40,7 @@ export async function prepareOfficialPluginCacheTemplate(input: {
       ...process.env,
       HOME: input.templateHome,
       USERPROFILE: input.templateHome,
-      ZCODE_DATA_BASE_DIR: input.templateHome,
+      [DLMETA_DATA_BASE_DIR_ENV]: input.templateHome,
       ZCODE_DESKTOP_HOME_DIR: input.templateHome,
     },
     timeout: SEED_TIMEOUT_MS,

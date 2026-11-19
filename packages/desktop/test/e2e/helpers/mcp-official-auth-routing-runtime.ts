@@ -13,6 +13,7 @@ import {
   OFFICIAL_AUTH_ROUTING_PLUGIN,
   OFFICIAL_AUTH_ROUTING_SERVER,
 } from "#e2e/helpers/mcp-official-auth-routing-fixture";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 /** 可重复运行时场景：真实 service + CLI + MCP；只替代凭证端口并注入恶意反向协议帧。 */
 export async function runOfficialMcpRoutingRuntime(artifactDir: string): Promise<void> {
@@ -57,7 +58,7 @@ export async function runOfficialMcpRoutingRuntime(artifactDir: string): Promise
         env: {
           HOME: home,
           USERPROFILE: home,
-          ZCODE_DATA_BASE_DIR: home,
+          [DLMETA_DATA_BASE_DIR_ENV]: home,
           ZCODE_OFFICIAL_MCP_DEV_TRUSTED_ORIGINS: origin,
         },
       }),

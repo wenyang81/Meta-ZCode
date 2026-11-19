@@ -2,6 +2,7 @@ import { realpath } from "node:fs/promises";
 import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, normalize, relative, resolve, sep } from "node:path";
 import { DATA_DIR_NAME } from "@zcode/shared";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 export interface ServerLayout {
   readonly dataBaseDir: string;
@@ -27,7 +28,7 @@ export interface ServerLayout {
 }
 
 export function getDefaultServerDataRoot(): string {
-  const configured = process.env.ZCODE_DATA_BASE_DIR?.trim();
+  const configured = process.env[DLMETA_DATA_BASE_DIR_ENV]?.trim();
   return join(configured || homedir(), DATA_DIR_NAME, "server");
 }
 

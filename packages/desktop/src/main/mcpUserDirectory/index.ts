@@ -15,7 +15,7 @@ import type {
   NativeMcpServerRecord,
   SaveCliMcpToUserDirectoryRequest,
 } from "@zcode/shared";
-import { DATA_DIR_NAME } from "@zcode/shared";
+import { DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared";
 import { readJsonObjectFileForUpdate, updateJsonObjectFile } from "@zcode/services/node";
 import type { McpConfigKeyName } from "./types.js";
 import { isRecord } from "./utils.js";
@@ -41,7 +41,7 @@ const ZCODE_MCP_DESCRIPTOR: DirectoryMcpDescriptor = {
   source: "zcodeagentmcp",
   directorySource: "zcode",
   userConfigDirSegments: [DATA_DIR_NAME, "cli"],
-  workspaceConfigDirSegments: [".zcode"],
+  workspaceConfigDirSegments: [WORKSPACE_CONFIG_DIR_NAME],
   fileName: "config.json",
   format: "json",
   configKeyName: "mcp.servers",
@@ -352,14 +352,14 @@ async function readDirectoryServersFromPreferredSources(
     scope,
     workspacePath,
   );
-  // `.zcode` 是强优先级来源；只要读到 MCP server，同 scope 的 `.agents` 就不再参与。
+  // `zcode` 描述符（用户级 DATA_DIR_NAME/cli、工作区 .dlMeta）是强优先级来源；只要读到 MCP server，同 scope 的 `.agents` 就不再参与。
   if (zcodeServers.length > 0) {
     return zcodeServers;
   }
   return readDirectoryServersFromFile(AGENTS_MCP_DESCRIPTOR, scope, workspacePath);
 }
 
-/** 写前重读 `.zcode` 的 server map，只改 update 涉及的 server，其他字段原样保留。 */
+/** 写前重读 zcode 描述符指向的配置文件的 server map，只改 update 涉及的 server，其他字段原样保留。 */
 async function updateZCodeServersInFile(
   scope: Exclude<McpScope, "common">,
   workspacePath: string | undefined,

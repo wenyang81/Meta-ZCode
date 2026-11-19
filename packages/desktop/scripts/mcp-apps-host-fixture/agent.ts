@@ -5,6 +5,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ZCodeProtocolClient } from "../../../services/src/zcode-agent/zcodeProtocolClient.js";
 import { ZCodeStdioTransport } from "../../../services/src/zcode-agent/zcodeStdioTransport.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 export class Events<T> {
   readonly history: T[] = [];
@@ -72,7 +73,7 @@ export async function startAgent(
       HOME: data,
       USERPROFILE: data,
       ZCODE_LOG_DIR: join(data, "logs"),
-      ZCODE_DATA_BASE_DIR: data,
+      [DLMETA_DATA_BASE_DIR_ENV]: data,
       ZCODE_SESSION_DB: join(data, "session.sqlite"),
       ZCODE_STORAGE_DIR: data,
       LANG: "en_US.UTF-8",

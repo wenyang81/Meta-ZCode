@@ -45,6 +45,7 @@ import {
 
 import { waitForUpstreamNetworkCapture } from "#e2e/helpers/upstream-capture";
 import { loginWithApiKey, prepareV4ConversationE2E } from "#e2e/helpers/v4-conversation";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 describe("虚拟项目", () => {
   before(async () => {
@@ -827,7 +828,7 @@ describe("虚拟项目", () => {
           ...process.env,
           HOME: serverHome,
           USERPROFILE: serverHome,
-          ZCODE_DATA_BASE_DIR: serverHome,
+          [DLMETA_DATA_BASE_DIR_ENV]: serverHome,
           ZCODE_DESKTOP_HOME_DIR: serverHome,
         },
         stdio: ["pipe", "pipe", "pipe"],

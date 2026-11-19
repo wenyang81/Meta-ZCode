@@ -10,8 +10,9 @@ import {
   EmptyAccountProviderConfigSource,
   OAuthCredentialRepo,
 } from "@zcode/services/node";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
-const base = process.env.ZCODE_DATA_BASE_DIR;
+const base = process.env[DLMETA_DATA_BASE_DIR_ENV];
 if (!base?.includes("oauth-provisioning-e2e-"))
   throw new Error("isolated provisioning HOME required");
 const configDir = join(base, ".zcode", "v2");

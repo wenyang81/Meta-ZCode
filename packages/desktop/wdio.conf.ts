@@ -31,6 +31,7 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { tmpdir, userInfo } from "node:os";
+import { DATA_DIR_NAME, WORKSPACE_CONFIG_DIR_NAME } from "@zcode/shared/dataDirName";
 import {
   resolveE2EChromedriverExecutable,
   startE2EChromedriverServer,
@@ -251,8 +252,9 @@ const E2E_HOME_DIR = resolve(
 const E2E_PACKAGED_APP_BINARY_PATH = process.env.ZCODE_E2E_PACKAGED_APP_PATH?.trim()
   ? resolve(process.env.ZCODE_E2E_PACKAGED_APP_PATH)
   : null;
-// 目录隔离已回滚：所有 Desktop E2E 继续使用历史 ~/.zcode 布局。
-const E2E_STORAGE_ROOT = resolve(E2E_HOME_DIR, ".zcode");
+// E2E 夹具与被测 app 走同一份数据目录常量：夹具写哪、app 读哪必须逐字一致，
+// 否则隔离或种子数据会静默失效（历史 ~/.zcode 布局已随 fork 改名）。
+const E2E_STORAGE_ROOT = resolve(E2E_HOME_DIR, DATA_DIR_NAME);
 const E2E_APP_CONFIG_DIR = resolve(E2E_STORAGE_ROOT, "v2");
 const E2E_APP_SETTINGS_FILE = resolve(E2E_APP_CONFIG_DIR, "setting.json");
 const E2E_APP_CREDENTIALS_FILE = resolve(E2E_APP_CONFIG_DIR, "credentials.json");
@@ -3445,9 +3447,9 @@ function seedE2EPluginCdnZipMarketplace(specs: string[] = []) {
 }
 
 // 把插件 MCP skill lifecycle spec 需要的 installed_plugins.json 写到
-// `~/.zcode/cli/plugins/installed_plugins.json`；仅在 spec 命中且 state != not-installed
-// 时执行。注意 storageRoot 在 agent 视角是 `<home>/.zcode`，而 pluginStorageRoot
-// 是 `<home>/.zcode/cli/plugins`，installed_plugins.json 必须落在后者下面才会被
+// `~/.dlMeta/cli/plugins/installed_plugins.json`；仅在 spec 命中且 state != not-installed
+// 时执行。注意 storageRoot 在 agent 视角是 `<home>/.dlMeta`，而 pluginStorageRoot
+// 是 `<home>/.dlMeta/cli/plugins`，installed_plugins.json 必须落在后者下面才会被
 // bootstrap 的 `listInstalledPluginRecords(pluginStorageRoot)` 读到（见
 // `apps/zcode-cli/packages/adapters/src/plugins/marketplace.ts:347`）。
 function seedE2EPluginMcpSkillInstalledPlugins(specs: string[] = []) {
@@ -3465,7 +3467,7 @@ function seedE2EPluginMcpSkillInstalledPlugins(specs: string[] = []) {
     '"__INSTALL_PATH__"',
     JSON.stringify(pluginRoot),
   );
-  // pluginStorageRoot = <home>/.zcode/cli/plugins
+  // pluginStorageRoot = <home>/.dlMeta/cli/plugins
   const targetDir = resolve(E2E_STORAGE_ROOT, "cli/plugins");
   mkdirSync(targetDir, { recursive: true });
   writeFileSync(resolve(targetDir, "installed_plugins.json"), template, "utf-8");
@@ -3836,7 +3838,7 @@ function resolvePluginMcpSkillState(
 
 // 状态 A 不需要写任何文件；B/C 才落 fixture。
 // 这一段必须在 `seedUpstreamE2EModelConfig` 之后调用，因为它要 patch
-// 我们刚写好的 `~/.zcode/cli/config.json`，把 `plugins.enabledPlugins[id]`
+// 我们刚写好的 `~/.dlMeta/cli/config.json`，把 `plugins.enabledPlugins[id]`
 // 置为 false 以表达"已安装但关闭"。
 function seedE2EPluginMcpSkillState(specs: string[] = []) {
   const state = resolvePluginMcpSkillState(specs);
@@ -3888,10 +3890,10 @@ async function seedE2EWorkspacePluginState(specs: string[] = []) {
 
   const workspacePath = resolve(E2E_HOME_DIR, "ZCodeProject");
   const userConfigPath = resolve(E2E_CLI_CONFIG_DIR, "config.json");
-  const workspaceConfigPath = resolve(workspacePath, ".zcode", "config.json");
+  const workspaceConfigPath = resolve(workspacePath, WORKSPACE_CONFIG_DIR_NAME, "config.json");
   const pluginId = "e2e-plugin-mcp-ping@e2e-fixture";
   const pluginRoot = resolve(DESKTOP_DIR, "test/e2e/fixtures/plugin-mcp-skill/e2e-plugin-mcp-ping");
-  await mkdir(resolve(workspacePath, ".zcode"), { recursive: true });
+  await mkdir(resolve(workspacePath, WORKSPACE_CONFIG_DIR_NAME), { recursive: true });
   const userConfig = await readOptionalE2ECliConfig(userConfigPath);
   const userPlugins = (userConfig.plugins as Record<string, unknown> | undefined) ?? {};
   const userEnabledPlugins =
@@ -3971,10 +3973,10 @@ async function seedE2EBuiltinWorkspacePluginDisable(specs: string[] = []) {
   await mkdir(E2E_CLI_CONFIG_DIR, { recursive: true });
   await writeFile(E2E_CLI_CONFIG_FILE, `${JSON.stringify(userConfig, null, 2)}\n`, "utf-8");
 
-  await mkdir(resolve(workspaceA, ".zcode"), { recursive: true });
+  await mkdir(resolve(workspaceA, WORKSPACE_CONFIG_DIR_NAME), { recursive: true });
   await mkdir(workspaceB, { recursive: true });
   await writeFile(
-    resolve(workspaceA, ".zcode", "config.json"),
+    resolve(workspaceA, WORKSPACE_CONFIG_DIR_NAME, "config.json"),
     `${JSON.stringify(
       {
         plugins: {
@@ -4419,7 +4421,7 @@ This child must fail before sending a provider request when the Team scope is un
 
   for (const agentsDir of [E2E_USER_AGENTS_DIR, E2E_CLI_AGENTS_DIR]) {
     // 修复原因：CLI runtime 从 storageRoot/agents 加载用户 subagent profile，
-    // 而设置页/历史路径曾使用 .zcode/cli/agents。双写只作用于本复现 spec，
+    // 而设置页/历史路径曾使用 .zcode/cli/agents（上游遗留布局）。双写只作用于本复现 spec，
     // 避免路径差异让 case 停在 agent type not found，而不是 provider registry 缺失。
     mkdirSync(agentsDir, { recursive: true });
     for (const profile of profileEntries) {
@@ -4982,7 +4984,7 @@ export const config: WebdriverIO.Config = {
     });
   },
   async beforeSession(_config, capabilities, specs, cid) {
-    // Bugfix: 现有 e2e 会读写 ~/.zcode/v2；如果多个 spec 复用真实 HOME，
+    // Bugfix: 现有 e2e 会读写 ~/.dlMeta/v2；如果多个 spec 复用真实 HOME，
     // 上一个 spec 的凭据、最近项目和 localStorage 会串到下一个 spec，
     // 既污染开发者本机数据，也让“首次启动”类断言变得随机。
     // 这里为 e2e 单独准备隔离 HOME，并在每个 session 启动前重置，保证每个 spec 都从干净环境开始。

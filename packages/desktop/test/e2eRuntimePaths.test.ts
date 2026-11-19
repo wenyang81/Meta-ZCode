@@ -16,6 +16,7 @@ import {
   resolveE2EShellPath,
   resolveE2EToolPath,
 } from "./e2e/helpers/e2e-runtime-paths.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 const DESKTOP_TEST_DIR = import.meta.dirname;
 const E2E_DIR = join(DESKTOP_TEST_DIR, "e2e");
@@ -73,14 +74,14 @@ describe("Desktop E2E runtime paths", () => {
     expect(
       resolveE2EHomeDir({
         cwd: resolve("root", "desktop"),
-        env: { ZCODE_DATA_BASE_DIR: resolve("root", "data-base") },
+        env: { [DLMETA_DATA_BASE_DIR_ENV]: resolve("root", "data-base") },
       }),
     ).toBe(resolve("root", "data-base"));
     expect(
       resolveE2EHomeDir({
         cwd: resolve("root", "desktop"),
         env: {
-          ZCODE_DATA_BASE_DIR: resolve("root", "data-base"),
+          [DLMETA_DATA_BASE_DIR_ENV]: resolve("root", "data-base"),
           ZCODE_E2E_HOME_DIR: resolve("root", "explicit-home"),
         },
       }),

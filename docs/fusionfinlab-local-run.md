@@ -47,8 +47,8 @@
 Windows 上就是 `C:\Users\<你>\.zcode`。跑 dev 前显式指定：
 
 ```bash
-export ZCODE_DATA_BASE_DIR=/f/data/zcode-dev-home      # 缓存/会话/日志都跟着走
-export ZCODE_DESKTOP_USER_DATA_DIR=/f/data/fusionfinlab-dev/userData   # Electron userData（登录态、localStorage）
+export DLMETA_DATA_BASE_DIR=/f/data/zcode-dev-home      # 缓存/会话/日志都跟着走
+export DLMETA_DESKTOP_USER_DATA_DIR=/f/data/fusionfinlab-dev/userData   # Electron userData（登录态、localStorage）
 ```
 
 两者是**不同**的目录：前者是 agent 数据根，后者只影响 Electron userData
@@ -123,7 +123,7 @@ dev 起来后的进程与端口：
 - 任务栏/开始菜单图标是**融智坊**，且开发态身份独立：AUMID 为 `com.meta.fusionfinlab.desktop.dev`
   （[packages/desktop/scripts/desktop-product-identity.mjs:89-93](../packages/desktop/scripts/desktop-product-identity.mjs#L89-L93)）。
   看到上游旧 Z 图标 = 图标缓存或 seam 失效。
-- 会话数据写进 `ZCODE_DATA_BASE_DIR` 指向的目录，`C:\Users\<你>\.zcode` 没有新增文件。
+- 会话数据写进 `DLMETA_DATA_BASE_DIR` 指向的目录，`C:\Users\<你>\.zcode` 没有新增文件。
 
 ## 5. 把客户端指到自己的后端 / 模型网关
 
@@ -176,7 +176,7 @@ pnpm verify:pre-push           # push 时 husky 自动执行
 1. `pnpm bootstrap` 与 `check-workspace-freshness.mjs` 输出真实结果（含失败项）。
 2. dev 窗口打开，且日志出现 `perf_agent_ready reported`。
 3. 任务栏图标与关于窗体显示**融智坊 / FusionFinLab**，关于窗体含上游来源归属行。
-4. `ZCODE_DATA_BASE_DIR` 指向非 C 盘目录，C 盘 `.zcode` 无新增写入。
+4. `DLMETA_DATA_BASE_DIR` 指向非 C 盘目录，C 盘 `.zcode` 无新增写入。
 5. 登录/模型请求打到 `.env.development.local` 里配置的地址（抓包或日志确认零请求打到 `*.z.ai`）。
 6. 本次改动过的文件已列进 `pnpm fork:changes` 重新生成的 [docs/fork-changes.md](fork-changes.md)。
 7. `pnpm typecheck` / `pnpm lint` 的真实退出码与新增失败条数。

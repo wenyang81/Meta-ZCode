@@ -28,11 +28,12 @@ import {
 import { dismissOccupationOnboarding } from "./occupation-onboarding.js";
 import { sel } from "./selectors.js";
 import { projectSectionSelector } from "./project-sidebar.js";
+import { DLMETA_DATA_BASE_DIR_ENV } from "@zcode/shared/dataDirName";
 
 const DEFAULT_E2E_HOME_DIR = resolve(process.cwd(), ".e2e-home");
 const E2E_HOME_DIR =
   process.env.ZCODE_E2E_HOME_DIR?.trim() ||
-  process.env.ZCODE_DATA_BASE_DIR?.trim() ||
+  process.env[DLMETA_DATA_BASE_DIR_ENV]?.trim() ||
   process.env.ZCODE_DESKTOP_HOME_DIR?.trim() ||
   // 修复原因：WDIO worker 环境不稳定时，helper 曾回落到真实 HOME，
   // 导致 provider 诊断和清理读写开发者本机配置，而不是当前 e2e sandbox。
