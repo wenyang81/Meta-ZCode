@@ -19,6 +19,9 @@ import {
 import { createServiceDescriptor } from "../descriptors.js";
 import type { ModelConnectivityResult } from "@zcode/shared";
 import { createServiceLogger } from "../logger/serviceLogger.js";
+import type { ProviderGatewayModelSyncer, ProviderGatewayModelSyncResult } from "./providerGatewayModelSync.js";
+
+export type { ProviderGatewayModelSyncResult } from "./providerGatewayModelSync.js";
 
 export type {
   ProviderSettingsProviderView,
@@ -68,6 +71,8 @@ export interface IProviderSettingsService {
   testModelConnectivity(
     input: ProviderSettingsConnectivityRequest,
   ): Promise<ModelConnectivityResult>;
+  /** 融智坊（fork）：凭已保存的 API Key 从供应商网关拉取 /v1/models 并合并进个人层。 */
+  syncProviderGatewayModels(providerId: string): Promise<ProviderGatewayModelSyncResult>;
 }
 
 export const IProviderSettingsService = createServiceDescriptor<IProviderSettingsService>(
@@ -110,6 +115,7 @@ export function createProviderSettingsService(
   facade: ProviderSettingsFacade,
   ensureReady: () => Promise<void> = async () => {},
   testConnectivity?: ProviderSettingsConnectivityTester,
+  syncGatewayModels?: ProviderGatewayModelSyncer,
 ): IProviderSettingsService {
   return {
     onDidChange: toEvent((listener) => facade.onDidChange(listener)),
@@ -205,6 +211,14 @@ export function createProviderSettingsService(
         providerId: input.providerId,
         modelId: input.modelId,
       });
+    },
+    syncProviderGatewayModels: async (providerId) => {
+      await ensureReady();
+      if (!syncGatewayModels) {
+        throw new Error("当前 Environment 未装配网关模型清单拉取能力");
+      }
+      await facade.waitForProviderOperations(providerId);
+      return syncGatewayModels(providerId);
     },
   };
 }

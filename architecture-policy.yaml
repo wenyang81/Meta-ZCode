@@ -1944,6 +1944,11 @@ exceptions:
       - packages/services/src/model-provider/accountProjectTokenClient.ts
       - packages/services/src/credential/credentialService.ts
     reason: 已有项目 Token 与凭据存储增加派生缓存的局部恢复端口，并把换证请求失败按固定类别分码（ZCT-2111046389485834240）；已确认的 PAT 签发临时故障仅在原 pending 内重试一次，不扩展到 Key 创建或 OAuth；保持原有 owner 和共享文件锁，不接管全目录。
+  - id: metarouter-gateway-model-sync-new-file
+    rule: unmanaged-new-file
+    paths:
+      - packages/services/src/model-provider/providerGatewayModelSync.ts
+    reason: fork 专属 MetaRouter 供应商的网关模型清单拉取（spec 见 docs/metarouter-provider.md），由 providerFacadeServices 的服务装配调用；只新增单文件、不动上游 model-provider 目录结构，故按文件登记例外而非接管目录。
   - id: plugin-agent-permission-mode-restrict-only-existing-edit
     rule: unmanaged-new-file
     paths:

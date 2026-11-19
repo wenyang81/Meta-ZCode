@@ -146,11 +146,6 @@ const LOGIN_TERMS_URL = loginLegalLinkEnv.VITE_ZCODE_TERMS_URL?.trim() || "https
 const LOGIN_PRIVACY_URL =
   loginLegalLinkEnv.VITE_ZCODE_PRIVACY_URL?.trim() || "https://zcode.z.ai/privacy";
 
-/** 登录页正文里的品牌名：中文界面用中文名，其余界面用拉丁名，两个值都只在 biz-brand 存一份。 */
-function loginBrandName(locale: string): string {
-  return locale.startsWith("zh") ? brandIdentity.displayName : brandIdentity.productName;
-}
-
 interface WelcomeScreenProps {
   onComplete: (reason: LoginCompleteReason) => void | Promise<void>;
 }
@@ -166,7 +161,7 @@ export function resolveLoginRegionForLocale(locale: string): SingleLoginRegion {
 }
 
 export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl } = useZCodeIntl();
   const platform = usePlatform();
   return (
     <main className="relative h-full min-h-dvh overflow-hidden bg-background text-foreground">
@@ -204,7 +199,7 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
               {intl.formatMessage({ id: "login.agreement.privacy" })}
             </button>
           </p>
-          <p>{intl.formatMessage({ id: "login.copyright" }, { brand: loginBrandName(locale) })}</p>
+          <p>{intl.formatMessage({ id: "login.copyright" })}</p>
         </footer>
       </div>
     </main>
@@ -487,11 +482,8 @@ export function LoginPanel({ active, onComplete }: LoginPanelProps) {
   return (
     <>
       <LoginPanelHeader
-        title={intl.formatMessage({ id: "login.title" }, { brand: loginBrandName(locale) })}
-        description={intl.formatMessage(
-          { id: "login.description" },
-          { brand: loginBrandName(locale) },
-        )}
+        title={intl.formatMessage({ id: "login.title" })}
+        description={intl.formatMessage({ id: "login.description" })}
       >
         {null}
       </LoginPanelHeader>

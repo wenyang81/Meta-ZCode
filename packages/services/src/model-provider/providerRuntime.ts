@@ -24,6 +24,7 @@ import {
   type ModelSelectionConfiguredDefaultSource,
   type ProviderSettingsConnectivityTester,
 } from "./providerFacadeServices.js";
+import { createProviderGatewayModelSyncer } from "./providerGatewayModelSync.js";
 import { createServiceLogger } from "#src/logger/serviceLogger.js";
 
 const log = createServiceLogger("provider-runtime");
@@ -108,6 +109,12 @@ export class ProviderRuntime {
       settingsFacade,
       ensureReady,
       dependencies.testConnectivity,
+      createProviderGatewayModelSyncer({
+        getView: async () => settingsFacade.getView(),
+        addModel: (providerId, modelId) =>
+          // 空配置 + useRecommendedConfig：与设置页「添加模型」默认路径一致，推理地址继承供应商 api.baseUrl。
+          settingsFacade.addPersonalModel(providerId, modelId, {}, true),
+      }),
     );
     this.#modelSelectionRuntime = createModelSelectionService(
       createNodeModelSelectionFacade(this.registryService),

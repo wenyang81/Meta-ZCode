@@ -35,17 +35,23 @@ export function ProviderTemplatePicker({
   const { intl, locale } = useZCodeIntl();
   const { dismissFeedback, showFeedback } = useProviderDetailFeedback();
   const customLabel = intl.formatMessage({ id: "settings.modelProvider.newProviderName" });
+  // 融智坊（fork）：MetaRouter 置顶独立成组；上游智谱四项并入「其他」，不再单独成组。
+  // 见 docs/metarouter-provider.md 第 1 节。
   const zhipuIds = ["bigmodel-api", "zai-api", "bigmodel-standard-api", "zai-standard-api"];
+  const metarouterIds = ["metarouter"];
   const groups = [
     {
-      id: "zhipu",
-      templates: zhipuIds.flatMap((id) =>
+      id: "metarouter",
+      templates: metarouterIds.flatMap((id) =>
         templates.filter((template) => template.templateId === id),
       ),
     },
     {
       id: "other",
-      templates: templates.filter((template) => !zhipuIds.includes(template.templateId)),
+      templates: templates.filter(
+        (template) =>
+          !zhipuIds.includes(template.templateId) && !metarouterIds.includes(template.templateId),
+      ),
     },
   ] as const;
   const createWithFeedback = async (create: () => Promise<void>) => {

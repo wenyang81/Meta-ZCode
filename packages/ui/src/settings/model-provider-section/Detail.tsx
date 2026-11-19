@@ -20,7 +20,9 @@ import {
 } from "@/lib/providerSettingsFormTypes.js";
 import { ArrowRightIcon, AstroidIcon, UsersIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { brandIdentity } from "@zcode/biz-brand";
 import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { Button } from "@/components/ui/button.js";
 import {
   type CodingPlanStatus,
   type CodingPlanProviderId,
@@ -254,6 +256,7 @@ export function ModelProviderSectionDetail({
   onOpenApiKeyUrl,
   onOpenBigModelRegistration,
   onCodingPlanPurchaseComplete,
+  onAddMetaRouter,
   onSelectNavItem,
   providerSettingsView: providerSettingsViewOverride,
 }: {
@@ -304,6 +307,7 @@ export function ModelProviderSectionDetail({
   onOpenApiKeyUrl: (url: string) => void;
   onOpenBigModelRegistration: () => void;
   onCodingPlanPurchaseComplete: () => void | Promise<void>;
+  onAddMetaRouter: () => Promise<void>;
   onSelectNavItem?: (item: ModelProviderNavItem) => void;
   providerSettingsView?: ProviderSettingsView | null;
 }) {
@@ -398,6 +402,11 @@ export function ModelProviderSectionDetail({
 
   if (!selectedNavItem) {
     return <ModelProviderLoadingCard loadingLabel={loadingLabel} />;
+  }
+
+  // 融智坊（fork）：尚未添加 MetaRouter 实例时展示引导卡，一次点击创建。
+  if (selectedNavItem.type === "metarouterSetup") {
+    return <MetaRouterSetupCard onAdd={onAddMetaRouter} />;
   }
 
   if (selectedNavItem.type === "preset") {
@@ -1259,4 +1268,31 @@ function resolveCodingPlanAccessBanner(
           : `settings.modelProvider.codingPlan.description.${status}`,
     }),
   };
+}
+
+/** 融智坊（fork）：MetaRouter 未添加时的引导卡；一次点击创建实例，之后走标准 API Key 表单。 */
+function MetaRouterSetupCard({ onAdd }: { onAdd: () => Promise<void> }) {
+  const { intl } = useZCodeIntl();
+  return (
+    <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-border bg-surface px-6 py-10 text-center">
+      <img
+        src={brandIdentity.logoDataUrl}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        className="size-12"
+      />
+      <div className="space-y-1">
+        <h2 className="text-ui-lg font-semibold text-foreground">
+          {intl.formatMessage({ id: "settings.modelProvider.metarouterSetup.title" })}
+        </h2>
+        <p className="max-w-md text-ui-base text-foreground-subtle">
+          {intl.formatMessage({ id: "settings.modelProvider.metarouterSetup.description" })}
+        </p>
+      </div>
+      <Button type="button" size="sm" onClick={() => void onAdd()}>
+        {intl.formatMessage({ id: "settings.modelProvider.metarouterSetup.action" })}
+      </Button>
+    </div>
+  );
 }

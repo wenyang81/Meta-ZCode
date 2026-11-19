@@ -1,9 +1,31 @@
 {
   "schemaVersion": 1,
-  "revision": 44,
+  "revision": 45,
   "config": {
     "providerConfigRules": {
       "templateRules": [
+        {
+          "templateId": "metarouter",
+          "templateNameMap": {
+            "zh-CN": "MetaRouter",
+            "en-US": "MetaRouter"
+          },
+          "config": {
+            "access": {
+              "type": "api-key",
+              "apiKeyManagementUrl": "metarouter-api-key-url-placeholder"
+            },
+            "api": {
+              "type": "openai-chat-completions",
+              "baseUrl": "metarouter-base-url-env-placeholder"
+            },
+            "builtinModelIds": [],
+            "logo": {
+              "type": "builtin",
+              "key": "metarouter"
+            }
+          }
+        },
         {
           "templateId": "zai-api",
           "templateNameMap": {

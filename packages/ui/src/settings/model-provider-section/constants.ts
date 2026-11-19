@@ -218,9 +218,15 @@ export type ModelProviderNavItem =
       label: string;
       provider: ProviderSettingsFormProvider;
       statusActive: boolean;
+    }
+  | {
+      /** 融智坊（fork）：尚未添加 MetaRouter 实例时的占位入口，详情页引导一次点击创建。 */
+      key: string;
+      type: "metarouterSetup";
+      label: string;
     };
 
-export type ModelProviderNavGroupId = "preset" | "custom";
+export type ModelProviderNavGroupId = "preset" | "custom" | "metarouter";
 
 export interface ModelProviderNavGroup {
   id: ModelProviderNavGroupId;

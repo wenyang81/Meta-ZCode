@@ -813,8 +813,14 @@ export class OAuthService implements IOAuthService {
     }
     const state = authorizeUrl.searchParams.get("state")?.trim();
     const remainingLifetimeMs = expiresAt - this.now();
+    // 上游硬性要求 authorize_url 必须 https。自托管后端在局域网联调时只有 http，这里开一个
+    // 显式 env 开关放行 http：仅 `=1` 生效（与 CLI 登录路径同口径），不设时行为与上游逐字节
+    // 一致。仅限开发/测试环境设置，打包生产绝不带这个变量，否则授权地址可能被中间人替换。
+    const allowInsecureAuthorizeUrl =
+      this.env.ZCODE_OAUTH_ALLOW_INSECURE_HTTP?.trim() === "1" &&
+      authorizeUrl.protocol === "http:";
     if (
-      authorizeUrl.protocol !== "https:" ||
+      (authorizeUrl.protocol !== "https:" && !allowInsecureAuthorizeUrl) ||
       !state ||
       !Number.isFinite(expiresAt) ||
       !Number.isFinite(pollIntervalMs) ||

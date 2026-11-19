@@ -21,7 +21,7 @@ import {
   TID_MODEL_PROVIDER_NAME_INPUT,
   testId,
 } from "@zcode/shared/test-ids";
-import { InfoIcon, LockKeyholeIcon, Plus, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { InfoIcon, LockKeyholeIcon, Plus, Pencil, RefreshCw, Trash2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";
 import {
@@ -353,6 +353,7 @@ export function ProviderModelsSection({
   providerEnabled = true,
   providerAccess,
   models,
+  gatewayModelsSyncable = false,
   onTestModel,
   onModelCommit,
   onModelEnabledChange,
@@ -366,6 +367,8 @@ export function ProviderModelsSection({
   providerEnabled?: boolean;
   providerAccess?: ProviderConfigObject["access"];
   models: ProviderSettingsFormModel[];
+  /** 融智坊（fork）：OpenAI 兼容网关供应商显示「拉取模型」入口。 */
+  gatewayModelsSyncable?: boolean;
   onTestModel?: (model: string) => Promise<ModelConnectivityResult>;
   onModelCommit: (
     originalModelId: string,
@@ -385,6 +388,11 @@ export function ProviderModelsSection({
   const addSavingRef = useRef(false);
   const [addCommitError, setAddCommitError] = useState<string | null>(null);
   const [addModel] = useState(createEmptyModel);
+  // 融智坊（fork）：网关模型清单拉取的进行中/结果/失败态，就地展示不弹窗。
+  const [syncingModels, setSyncingModels] = useState(false);
+  const syncingModelsRef = useRef(false);
+  const [syncModelsMessage, setSyncModelsMessage] = useState<string | null>(null);
+  const [syncModelsError, setSyncModelsError] = useState<string | null>(null);
   const [addDraftErrorField, setAddDraftErrorField] = useState<
     | "id"
     | "contextWindow"
@@ -468,24 +476,74 @@ export function ProviderModelsSection({
       })
     : null;
 
+  const syncGatewayModels = useCallback(async () => {
+    // 保存中的关闭/再打开竞态口径与添加弹窗一致：以实际完成作为结束边界。
+    if (syncingModelsRef.current) return;
+    syncingModelsRef.current = true;
+    setSyncingModels(true);
+    setSyncModelsError(null);
+    setSyncModelsMessage(null);
+    try {
+      const result = await providerSettingsService.syncProviderGatewayModels(providerId);
+      setSyncModelsMessage(
+        intl.formatMessage(
+          { id: "settings.modelProvider.syncGatewayModels.done" },
+          { total: result.fetched.length, added: result.addedCount },
+        ),
+      );
+    } catch (error) {
+      setSyncModelsError(error instanceof Error ? error.message : String(error));
+    } finally {
+      syncingModelsRef.current = false;
+      setSyncingModels(false);
+    }
+  }, [intl, providerId, providerSettingsService]);
+
   return (
     <div>
       <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
         <span className="text-ui-base text-foreground-subtle">
           {intl.formatMessage({ id: "settings.modelProvider.models" })}
         </span>
-        <Button
-          type="button"
-          variant="secondary"
-          size="default"
-          className="rounded-lg"
-          data-testid={TID_MODEL_PROVIDER_ADD_MODEL_BUTTON}
-          onClick={openAddDialog}
-        >
-          <Plus data-icon="inline-start" aria-hidden="true" />
-          {intl.formatMessage({ id: "settings.modelProvider.addModel" })}
-        </Button>
+        <div className="flex items-center gap-2">
+          {gatewayModelsSyncable ? (
+            <Button
+              type="button"
+              variant="secondary"
+              size="default"
+              className="rounded-lg"
+              disabled={syncingModels}
+              onClick={() => void syncGatewayModels()}
+            >
+              <RefreshCw
+                className={syncingModels ? "animate-spin" : undefined}
+                data-icon="inline-start"
+                aria-hidden="true"
+              />
+              {intl.formatMessage({ id: "settings.modelProvider.syncGatewayModels.action" })}
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            variant="secondary"
+            size="default"
+            className="rounded-lg"
+            data-testid={TID_MODEL_PROVIDER_ADD_MODEL_BUTTON}
+            onClick={openAddDialog}
+          >
+            <Plus data-icon="inline-start" aria-hidden="true" />
+            {intl.formatMessage({ id: "settings.modelProvider.addModel" })}
+          </Button>
+        </div>
       </div>
+      {syncModelsMessage ? (
+        <p className="mb-1 text-ui-sm text-foreground-subtle">{syncModelsMessage}</p>
+      ) : null}
+      {syncModelsError ? (
+        <p role="alert" className="mb-1 text-ui-sm text-destructive">
+          {syncModelsError}
+        </p>
+      ) : null}
       {models.length > 0 ? (
         <div className="overflow-hidden rounded-lg border border-input-border bg-input">
           <SortableProviderModelList

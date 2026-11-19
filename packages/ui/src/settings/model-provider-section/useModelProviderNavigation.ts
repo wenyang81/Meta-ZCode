@@ -19,7 +19,6 @@ import {
   CODING_PLAN_PROVIDER_SPECS,
   type CodingPlanEntitlementState,
   type ModelProviderNavGroup,
-  type PresetProviderSpec,
 } from "@/settings/model-provider-section/constants.js";
 import { pickCodingPlanEntitlementProvider } from "@/lib/codingPlanProvider.js";
 import {
@@ -39,12 +38,10 @@ import {
 
 const NO_FAMILIES: readonly ProviderFamilyDomain[] = [];
 
-interface PresetProviderWithConfig extends PresetProviderSpec {
-  provider: ProviderSettingsFormProvider | null;
-}
+/** 融智坊（fork）：MetaRouter 未添加时的占位节点 key，Detail 按类型渲染引导卡。 */
+export const METAROUTER_SETUP_NODE_KEY = "metarouter:setup";
 
 interface UseModelProviderNavigationOptions {
-  presetProviders: PresetProviderWithConfig[];
   modelProviders: ProviderSettingsFormProvider[];
   /**
    * 当前账号明确有权益的 Provider。缺省等价于尚无账号权益；生产设置页始终显式传入。
@@ -69,7 +66,6 @@ interface UseModelProviderNavigationOptions {
 }
 
 export function useModelProviderNavigation({
-  presetProviders,
   modelProviders,
   entitledAccountProviderIds = new Set(),
   modelProvidersLoading = false,
@@ -92,8 +88,18 @@ export function useModelProviderNavigation({
     const allCustomProviders = modelProviders.filter(
       (provider) => provider.config.group === "standard-personal",
     );
-    // 这里复用模型菜单的展示排序，确保设置页和聊天框供应商顺序一致。
-    return sortModelProvidersForDisplay(allCustomProviders, displayOrder);
+    // 融智坊（fork）：MetaRouter 实例提到左侧第一个分组，其余个人供应商留在自定义组。
+    // 两组各自复用模型菜单的展示排序，确保设置页和聊天框供应商顺序一致。
+    // 见 docs/metarouter-provider.md 第 1 节。
+    const metarouterProviders = sortModelProvidersForDisplay(
+      allCustomProviders.filter((provider) => provider.templateId === "metarouter"),
+      displayOrder,
+    );
+    const restProviders = sortModelProvidersForDisplay(
+      allCustomProviders.filter((provider) => provider.templateId !== "metarouter"),
+      displayOrder,
+    );
+    return { metarouterProviders, restProviders };
   }, [displayOrder, modelProviders]);
 
   const codingPlanItems = useMemo(
@@ -192,42 +198,34 @@ export function useModelProviderNavigation({
   );
 
   const navigationGroups = useMemo<ModelProviderNavGroup[]>(() => {
+    // 融智坊（fork）：左侧默认只展示 MetaRouter（未添加时给引导占位），上游智谱
+    // 预设（Z.ai / Start Plan）与套餐入口不再进入侧栏；codingPlanItems 仍参与
+    // 连接方式与营销导航推导，只是不渲染分组。见 docs/metarouter-provider.md 第 1 节。
+    const metarouterItems: ModelProviderNavGroup["items"] =
+      customProviders.metarouterProviders.map((provider) => ({
+        key: createCustomProviderNodeKey(provider.providerId),
+        type: "custom" as const,
+        label: getProviderFormLabel(provider),
+        provider,
+        statusActive: provider.executable === true,
+      }));
+    if (metarouterItems.length === 0) {
+      metarouterItems.push({
+        key: METAROUTER_SETUP_NODE_KEY,
+        type: "metarouterSetup",
+        label: "MetaRouter",
+      });
+    }
     const groups: ModelProviderNavGroup[] = [
       {
-        id: "preset",
-        title: intl.formatMessage({ id: "settings.modelProvider.presetTitle" }),
-        items: [
-          ...presetProviders.map(({ id, displayName, provider }) => {
-            const statusProvider = resolvePresetFamilyStatusProvider({
-              presetId: id,
-              provider,
-              connectionModeItems: connectionModeCodingPlanItems,
-              connectionSelections,
-              modelProviders,
-            });
-            return {
-              key: createPresetProviderNodeKey(id),
-              type: "preset" as const,
-              presetId: id,
-              label: displayName,
-              logo: modelProviders.find(
-                (candidate) =>
-                  candidate.providerId ===
-                  resolveModelProviderFamilySpecByProviderId(id)?.individualCodingPlanProviderId,
-              )?.config.logo,
-              provider,
-              displayName,
-              statusProvider,
-              statusActive: statusProvider?.executable === true,
-            };
-          }),
-          ...codingPlanItems.filter((item) => isStartPlanModelProviderId(item.presetId)),
-        ],
+        id: "metarouter",
+        title: intl.formatMessage({ id: "settings.modelProvider.templateGroup.metarouter" }),
+        items: metarouterItems,
       },
       {
         id: "custom",
         title: intl.formatMessage({ id: "settings.modelProvider.customTitle" }),
-        items: customProviders.map((provider) => ({
+        items: customProviders.restProviders.map((provider) => ({
           key: createCustomProviderNodeKey(provider.providerId),
           type: "custom" as const,
           label: getProviderFormLabel(provider),
@@ -238,18 +236,7 @@ export function useModelProviderNavigation({
     ];
 
     return groups;
-  }, [
-    customProviders,
-    codingPlanItems,
-    connectionModeCodingPlanItems,
-    // 左侧导航分组标题在这个 memo 内格式化。
-    // 语言切换时 provider/权益引用可能不变，必须依赖 intl 才能刷新旧 locale 的文案。
-    intl,
-    connectionSelections,
-    pendingConnectionSelections,
-    presetProviders,
-    modelProviders,
-  ]);
+  }, [customProviders, intl]);
 
   const navigationItems = useMemo(() => {
     const visibleItems = navigationGroups.flatMap((group) => group.items);
@@ -352,38 +339,6 @@ function shouldShowCodingPlanForProviderFamilyDomain(
   }
   const family = resolveProviderFamilyDomainFromOAuthProvider(oauthProviderId);
   return family === providerFamilyDomain || (family !== null && availableFamilies.includes(family));
-}
-
-function resolvePresetFamilyStatusProvider({
-  presetId,
-  provider,
-  connectionModeItems,
-  connectionSelections,
-  modelProviders,
-}: {
-  presetId: PresetProviderSpec["id"];
-  provider: ProviderSettingsFormProvider | null;
-  connectionModeItems: ModelProviderNavGroup["items"];
-  connectionSelections: ProviderFamilyConnectionSelectionSettings;
-  modelProviders: ProviderSettingsFormProvider[];
-}): ProviderSettingsFormProvider | null {
-  const familySpec = resolveModelProviderFamilySpecByProviderId(presetId);
-  if (!familySpec) {
-    return provider;
-  }
-  const connectionItem = pickFamilyModeNavigationItem(
-    connectionModeItems.filter((item) => item.type !== "codingPlanLoading"),
-    familySpec.id,
-    connectionSelections,
-  );
-  if (!connectionItem || !isPlanConnectionNavigationItem(connectionItem)) {
-    return null;
-  }
-  // 菜单 Team 项可能从个人项派生，携带的 provider 不是团队执行身份。
-  // 必须按具体套餐 ID 回到 Settings View，不能用菜单权益或继承的 provider 点灯。
-  return (
-    modelProviders.find((candidate) => candidate.providerId === connectionItem.presetId) ?? null
-  );
 }
 
 export function resolveFallbackModelProviderNodeKey({
@@ -574,7 +529,8 @@ export function connectionSelectionMatchesNavigationItem(
   selection: ProviderFamilyConnectionSelection,
   item: Exclude<ModelProviderNavGroup["items"][number], { type: "codingPlanLoading" }>,
 ): boolean {
-  if (item.type === "custom") return false;
+  // 融智坊（fork）：metarouterSetup 占位项与 custom 一样不参与套餐连接匹配。
+  if (item.type === "custom" || item.type === "metarouterSetup") return false;
   const familySpec = resolveModelProviderFamilySpecByProviderId(item.presetId ?? "");
   if (familySpec?.id !== family) return false;
   if (selection.kind === "start-plan") {
