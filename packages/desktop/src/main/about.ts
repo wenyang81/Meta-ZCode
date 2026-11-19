@@ -54,7 +54,9 @@ interface AboutSnapshotOptions {
   };
 }
 
-const ABOUT_APPLICATION_NAME = brandIdentity.productName;
+// 关于页展示名走 i18nBrandName（DLMetaWork），与托盘/应用菜单同一套原生外壳展示名；
+// 打包名 productName 不出现在关于页正文里。
+const ABOUT_APPLICATION_NAME = brandIdentity.i18nBrandName;
 // 自定义 About 内容本体是 256x280；原生窗口如果同尺寸会让内容贴满透明窗口边界。
 // 这里给 BrowserWindow 额外留出背景呼吸空间，避免正式 About 看起来比 demo 更局促。
 const ABOUT_WINDOW_WIDTH = 256;
@@ -72,21 +74,21 @@ const ABOUT_MESSAGES: Record<
   }
 > = {
   "zh-CN": {
-    aboutTitle: `关于 ${brandIdentity.displayName}`,
+    aboutTitle: `关于 ${brandIdentity.i18nBrandName}`,
     versionLabel: "版本",
     okButtonLabel: "确定",
     optimizedForAppleSilicon: "已针对 Apple Silicon 优化。",
-    copyright: (year) => `版权所有 © ${year} ${brandIdentity.displayName}。`,
+    copyright: (year) => `版权所有 © ${year} ${brandIdentity.i18nBrandName}。`,
     // Apache-2.0 §6 不授予商标权，所以本 fork 换掉上游标识；同时 §4 的归属义务要求
     // 保留来源说明，改名不等于消除上游版权。见 docs/brand-identity.md「开源合规边界」。
     upstreamNotice: "本应用基于上游 ZCode（zai-org/zcode）构建，依 Apache-2.0 许可发布。",
   },
   "en-US": {
-    aboutTitle: `About ${brandIdentity.productName}`,
+    aboutTitle: `About ${brandIdentity.i18nBrandName}`,
     versionLabel: "version",
     okButtonLabel: "OK",
     optimizedForAppleSilicon: "Optimized for Apple Silicon.",
-    copyright: (year) => `Copyright © ${year} ${brandIdentity.productName}.`,
+    copyright: (year) => `Copyright © ${year} ${brandIdentity.i18nBrandName}.`,
     upstreamNotice:
       "Built from upstream ZCode (zai-org/zcode), provided under the Apache-2.0 license.",
   },

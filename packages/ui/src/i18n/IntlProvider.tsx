@@ -8,6 +8,7 @@ import {
   resolveLocaleFromLanguageTag,
 } from "@zcode/shared";
 import type { BroadcastMessage, IBroadcastService, ISettingService } from "@zcode/services";
+import { brandIdentity } from "@zcode/biz-brand";
 import { readNavigatorLanguage, readSafeLocalStorage, writeSafeLocalStorage } from "@/lib/browserEnvironment.js";
 import { LOCALE_MESSAGES as MESSAGES } from "./localeMessages.js";
 
@@ -91,16 +92,21 @@ export function shouldApplyLocaleBroadcastMessage(
   return true;
 }
 
+/**
+ * 语料里的品牌名统一写 {brand} 占位（docs/brand-identity.md 2.1），值唯一来自
+ * biz-brand 的 i18nBrandName，中英文界面显示同一个名字。调用方显式传 brand 时以调用方为准。
+ */
+const I18N_BRAND_NAME = brandIdentity.i18nBrandName;
+
 function createIntl(locale: Locale): IntlInstance {
   // noUncheckedIndexedAccess：用 ?? 回退到默认语言的翻译
   const messages = MESSAGES[locale] ?? MESSAGES[DEFAULT_LOCALE]!;
   return {
     formatMessage({ id }, values) {
       let msg = messages[id] ?? id;
-      if (values) {
-        for (const [key, val] of Object.entries(values)) {
-          msg = msg.replaceAll(`{${key}}`, String(val));
-        }
+      const resolvedValues = { brand: I18N_BRAND_NAME, ...values };
+      for (const [key, val] of Object.entries(resolvedValues)) {
+        msg = msg.replaceAll(`{${key}}`, String(val));
       }
       return msg;
     },

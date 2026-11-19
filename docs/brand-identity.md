@@ -21,6 +21,7 @@
 | `productName`         | 打包与文件系统用的 ASCII 名             | `FusionFinLab`                  |
 | `displayName`         | 界面、托盘、菜单、关于页展示名          | `融智坊`                        |
 | `displayNameEn`       | 副名 / wordmark 次要文字                | `FUSIONFINLAB`                  |
+| `i18nBrandName`       | i18n 文案 `{brand}` 占位的值，中英文统一 | `DLMetaWork`                    |
 | `appId`               | electron-builder appId 与 Windows AUMID | `com.meta.fusionfinlab.desktop` |
 | `linuxExecutableName` | Linux 可执行与包名                      | `fusionfinlab`                  |
 | `logoSvg`             | 品牌标记母版（viewBox 0 0 120 120）     | SVG 源码字符串                  |
@@ -48,8 +49,10 @@
 所以 dev 的**默认** userData 目录从 `%APPDATA%\ZCode Dev` 变成 `%APPDATA%\FusionFinLab Dev`；
 本机 dev 靠显式 `ZCODE_DESKTOP_USER_DATA_DIR`（数据根隔离）指到 F 盘，不受这次改名影响，
 但没有该覆盖的启动会新建一个空白 profile，窗口位置与本地存储看起来像初始化。
-`build/installer.nsh` 的日志名（`ZCode-installer.log`）与内部 `ZCode*` 变量/宏名属于安装器实现，
-跟随打包验收一起决策，本轮不改。`scripts/devElectronAppBundle.mjs` 的
+`build/installer.nsh` 的用户可见文案（`DetailPrint "DLMetaWork: ..."` 前缀、进程占用/数据目录
+两处弹窗，2026-11-18 用户指定随窗口标题一起换）已品牌化；但日志文件名（`ZCode-installer.log`）
+与内部 `ZCode*` 变量/宏名仍属于安装器实现，跟随打包验收一起决策——注意 DetailPrint 前缀与
+日志文件名当前不一致，是刻意的。`scripts/devElectronAppBundle.mjs` 的
 `DEV_ELECTRON_APP_NAME = "ZCode Dev"` 也只在本轮之外：它仅写 macOS dev bundle 的
 `CFBundleName`/`CFBundleDisplayName`，不参与 userData 目录计算，改名会让开发态 .app 与
 已安装的 dev bundle 目录名分叉。
@@ -75,10 +78,17 @@
 | key                                                        | 位置                                                                                   | 接管                                                                                             |
 | ---------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `login.title`、`login.description`、`login.copyright`      | `packages/ui/src/i18n/locales/{zh-CN,en-US,ja-JP,ko-KR,ru-RU}.ts`                      | 品牌名一律写成 `{brand}` 占位；五种语言同步改造，不留一种还显示上游名                            |
-| 消费方                                     | `packages/ui/src/WelcomeScreen.tsx`（`LoginPanelHeader` 标题/副标题、页脚版权）        | `loginBrandName(locale)`：`zh*` 取 `displayName`，其余取 `productName`；调用点只传值不拼字符串 |
+| 消费方                                     | `packages/ui/src/WelcomeScreen.tsx`（`LoginPanelHeader` 标题/副标题、页脚版权）        | 不再显式传值，直接走 `IntlProvider` 的默认 `{brand}` 注入                                        |
 
 `login.description` 原文点名登录提供方（`登录 Z.AI`）。租户 OAuth2 尚未落地，登录目标随时可能改，
 所以文案改成不点名的「登录即可开始使用 {brand}」——既不再声明上游商标，也不提前替未定的认证方案背书。
+
+语言包全量品牌化沿用同一占位约定：消息值里的品牌名一律写 `{brand}`，不在语料里复制任何字面量。
+`IntlProvider.createIntl` 的 `formatMessage` 在调用方未显式传 `brand` 时注入 `brandIdentity.i18nBrandName`
+（中英文界面统一显示该值，2026-11-18 定为 `DLMetaWork`），因此全仓文案调用点零改动。
+五个语言包（zh-CN / en-US / ja-JP / ko-KR / ru-RU）已于 2026-11-18 全部完成值替换；
+键名（如 `titleBar.menu.help.toggleZCodeStdioTap`）与第三方 URL（如邀请文案里的 `zcode.z.ai`）
+不是品牌展示位，保持原样；URL 待分享/下载域名定稿后单独收口。
 
 **不要动** `packages/ui/src/assets/provider-icons/logo-zai.svg`：它同时是 Z.AI 服务商图标
 （`packages/ui/src/lib/oauthProviderIcon.tsx:6`），属于第三方 provider 品牌，不是本应用标识。
@@ -89,20 +99,25 @@
 | -------------------------------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
 | `packages/desktop/src/main/index.ts:316,329`                                     | `app.setName(runtimeApplicationName)`、`process.title` | 名称来自 `biz-brand`：`desktopRuntimeEnv.ts:66` 用 `productName` 拼 dev/preview 后缀                                 |
 | `packages/desktop/src/main/index.ts:1637,1672,1928,2751`                         | `nativeImage` / `icon`                                 | 图标文件路径不变，内容随派生图标更新                                                                                 |
-| `packages/desktop/src/main/desktopTray.ts:14`（图标）与 tooltip                  | 托盘                                                   | tooltip 用 `{appName}` 模板插 `app.name`（dev 下即 `FusionFinLab Dev`），图标文件换成派生产物                        |
-| `packages/desktop/src/main/about.ts:56,73,80`                                    | “关于 ZCode” 窗口标题与文案                            | 读 `biz-brand`                                                                                                       |
+| `packages/desktop/src/main/desktopTray.ts:14`（图标）与 tooltip                  | 托盘                                                   | tooltip 与托盘菜单的 `{appName}` 插 `nativeDisplayName`（`i18nBrandName` + dev/preview 后缀，即 `DLMetaWork Dev`；2026-11-18 用户指定托盘不显示 FusionFinLab），图标文件换成派生产物 |
+| `packages/desktop/src/main/about.ts:56,73,80`                                    | “关于 ZCode” 窗口标题与文案                            | 读 `biz-brand`；2026-11-18 起展示名统一走 `i18nBrandName`（关于 DLMetaWork），上游归属声明按 Apache-2.0 保留          |
 | `packages/desktop/src/main/aboutWindow.ts:174`（内联 SVG path）                  | 自定义关于窗体                                         | 改为 `<img src="${logoDataUrl}">`，`.app-logo` 尺寸样式不动                                                          |
-| `packages/shared/src/desktopMenu.ts:51,115,167`                                  | 应用菜单首项与 About/Quit 标签                         | 菜单 id 文案改成 `{appName}` 模板，由 `desktopApplicationMenu.ts` / `desktopTray.ts` 用 `app.name` 插值              |
-| `packages/desktop/src/renderer/index.html`、`packages/web/index.html`            | 首屏启动壳图形、文档标题、favicon                      | 标题写 `融智坊`；启动壳内联母版副本（静态壳不能 import TS）；web favicon 换成母版 data URL                           |
+| `packages/shared/src/desktopMenu.ts:51,115,167`                                  | 应用菜单首项与 About/Quit 标签                         | 菜单 id 文案改成 `{appName}` 模板：应用菜单与托盘分别由 `desktopApplicationMenu.ts` / `desktopTray.ts` 用 `nativeDisplayName` 插值（2026-11-18 起不再用 `app.name`） |
+| `packages/desktop/src/renderer/index.html`、`packages/web/index.html`            | 首屏启动壳图形、文档标题、favicon                      | 文档标题写 `DLMetaWork`（2026-11-18 同托盘决策）；启动壳内联母版副本（静态壳不能 import TS）；web favicon 换成母版 data URL |
 | `packages/desktop/src/renderer/cua-permission-panel.html`、`plugin-sandbox.html` | 子窗口文档标题                                         | 本轮不改：前者标题不可见且面板名是 Computer Use 助手身份（跟随 Helper 二进制一起决策），后者是沙箱页的 devtools 标题 |
+| `packages/web/src/main.tsx` 各路由 `document.title`、`share/` 与 `share-manage/` 的品牌文案、`web-remote-control/domain/webRemoteControlScreenCopy.ts` 的故障指引 | Web 端浏览器标签标题、分享面与手机远控故障文案 | 品牌段读 `biz-brand.i18nBrandName`（2026-11-18 补录：初版清单漏了 web 标签标题，当时仍是上游 `ZCode - ...` 字面量；分享落地页、管理页与远控 copy 同日清完）。`share/` 下的 mock 客户端文案属开发假数据，不消费；落地页 `ZCODE_DOWNLOAD_URL` 仍是上游域名，待分享/下载域名定稿后单独收口 |
 
 ### 4. 派生图标（唯一允许生成二进制的环节）
 
 `packages/desktop/build/` 的 `icons/{16..1024}x{16..1024}.png`、`icon.png`、`icon_windows.png`、
 `icon_installer.png`、`icon.ico`、`icon_installer.ico`（打包态复制为 `tray_icon.ico`，见
-`electron-builder.config.js:868,890`）与 `packages/web/public/favicon.ico` 由
+`electron-builder.config.js:868,890`）、`packages/web/public/favicon.ico`，以及仓库根 `public/`
+的同名图标集——`public/logo/icons/{16..1024}x{16..1024}.png`、`public/logo/icons/icon.ico`
+（README 头图与 web-remote-control favicon 设计稿的消费源）与 `public/icon_512@2x.png`
+（1024 母版，`packages/ui/src/UpdateStatusDialog.tsx` 的 macOS dock 图标）——由
 `node scripts/render-brand-icons.mjs`（在 `packages/desktop` 下执行）从 `logoSvg` 母版栅格化，
-输入只有母版与目标尺寸，产物可重跑覆盖。
+输入只有母版与目标尺寸，产物可重跑覆盖。根 `public/logo/icons/icon.icns` 属 macOS 产物，
+Windows 上无法再生成，保持上游原样并视为未换标。
 
 - 图标构图与上游一致：深色圆角方块（`#000 → #151718`，圆角占画布 23%）+ 居中品牌标记，
   与 App 内启动壳、关于页的 logo 壳同一套底色；16px 下纯描边母版不可读，所以图标不能直接用裸标记。

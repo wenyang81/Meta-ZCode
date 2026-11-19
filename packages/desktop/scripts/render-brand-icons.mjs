@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * 由 `@zcode/biz-brand` 的品牌母版派生 `packages/desktop/build/` 图标集。
+ * 由 `@zcode/biz-brand` 的品牌母版派生 `packages/desktop/build/` 图标集与仓库根 `public/`
+ * 的同名图标集（README 头图、UpdateStatusDialog 的 macOS dock 图标）。
  *
  * 仓库没有栅格化依赖（sharp / @resvg），这里改用本机 Edge/Chrome headless 截图：
  * 输入只有母版 SVG 与目标尺寸，产物可重跑覆盖，见 docs/brand-identity.md「派生图标」。
@@ -251,12 +252,17 @@ export async function renderBrandIcons({
   const written = [];
   for (const [size, png] of rendered) {
     written.push(await writeAsset(join(desktopRoot, "build", "icons", `${size}x${size}.png`), png));
+    written.push(
+      await writeAsset(join(workspaceRoot, "public", "logo", "icons", `${size}x${size}.png`), png),
+    );
   }
 
   const master = rendered.get(1024) ?? [...rendered.values()].at(-1);
   for (const name of ["icon.png", "icon_windows.png", "icon_installer.png"]) {
     written.push(await writeAsset(join(desktopRoot, "build", name), master));
   }
+  // public/icon_512@2x.png 名为 512@2x，实际内容一直是 1024 母版（macOS dock 用）。
+  written.push(await writeAsset(join(workspaceRoot, "public", "icon_512@2x.png"), master));
 
   const icoEntries = icoSizes
     .filter((size) => rendered.has(size))
@@ -266,6 +272,7 @@ export async function renderBrandIcons({
     for (const name of ["icon.ico", "icon_installer.ico"]) {
       written.push(await writeAsset(join(desktopRoot, "build", name), ico));
     }
+    written.push(await writeAsset(join(workspaceRoot, "public", "logo", "icons", "icon.ico"), ico));
     written.push(
       await writeAsset(
         join(workspaceRoot, "packages", "web", "public", "favicon.ico"),

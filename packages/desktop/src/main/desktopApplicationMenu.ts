@@ -12,6 +12,7 @@ import {
 } from "@zcode/shared";
 import { readZCodeStdioTapDevState } from "@zcode/services/node";
 import { CHECK_FOR_UPDATE_MENU_ID, setAutoUpdaterMenuLocale } from "./autoUpdater.js";
+import { nativeDisplayName } from "./desktopRuntimeEnv.js";
 import {
   DESKTOP_ZOOM_MAX_LEVEL,
   DESKTOP_ZOOM_MIN_LEVEL,
@@ -98,7 +99,7 @@ function buildApplicationMenuTemplate(options: {
   const getLabel = (id: (typeof desktopMenuMessageIds)[keyof typeof desktopMenuMessageIds]) =>
     getDesktopMenuLabel(options.currentApplicationLocale, id);
   const getAppLabel = (id: (typeof desktopMenuMessageIds)[keyof typeof desktopMenuMessageIds]) =>
-    getLabel(id).replaceAll("{appName}", app.name);
+    getLabel(id).replaceAll("{appName}", nativeDisplayName);
   const stdioTapState = readZCodeStdioTapDevState();
   const isLocalDevelopmentRuntime = !app.isPackaged;
   const currentZoomLevel = clampDesktopZoomLevel(options.currentZoomLevel ?? 0);
@@ -114,7 +115,9 @@ function buildApplicationMenuTemplate(options: {
     ...(process.platform === "darwin"
       ? [
           {
-            label: app.name,
+            // macOS 应用菜单标题实际由 Info.plist（CFBundleName）决定，这里只是模板占位；
+            // 仍写 nativeDisplayName 保持与 Windows/Linux 菜单语义一致。
+            label: nativeDisplayName,
             submenu: [
               {
                 label: getAppLabel(desktopMenuMessageIds.helpAbout),

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { ArrowUpRightIcon, MoonIcon, SunIcon } from "lucide-react";
 import type { ConversationSharePreview } from "@zcode/shared";
+import { brandIdentity } from "@zcode/biz-brand";
 import { ConversationShareReadonlyTimeline } from "@zcode/ui/conversation-share-readonly";
 import {
   WebRegionalLoginActions,
@@ -101,9 +102,13 @@ interface Copy {
 // 站点首页本身就是下载入口，没有 /download 这个 path（单独的下载链接会 404）。
 const ZCODE_DOWNLOAD_URL = "https://zcode.z.ai";
 
+// 分享页不挂 IntlProvider（登录前独立页面），文案是静态 COPY 表；
+// 品牌名仍只从 biz-brand 取，不在语料里复制字面量。
+const SHARE_BRAND = brandIdentity.i18nBrandName;
+
 const COPY: Record<ConversationShareLandingLocale, Copy> = {
   "zh-CN": {
-    brand: "ZCode 会话分享",
+    brand: `${brandIdentity.i18nBrandName} 会话分享`,
     loading: "正在加载分享内容",
     loadingDescription: "请稍候，我们正在验证分享链接。",
     loginTitle: "登录后查看分享",
@@ -131,22 +136,22 @@ const COPY: Record<ConversationShareLandingLocale, Copy> = {
     networkDescription: "请检查网络后重试。",
     invalidTitle: "无法读取分享内容",
     invalidDescription: "分享服务返回了无法识别的数据，请提供错误详情。",
-    outdatedTitle: "需要更新 ZCode",
-    outdatedDescription: "这个分享由更新版本的 ZCode 创建，请升级后再查看。",
+    outdatedTitle: `需要更新 ${SHARE_BRAND}`,
+    outdatedDescription: `这个分享由更新版本的 ${SHARE_BRAND} 创建，请升级后再查看。`,
     unavailableTitle: "分享不可访问",
     unavailableDescription: "当前账号没有权限，或者分享内容已不存在。",
     retry: "重试",
-    continueInZCode: "去 ZCode 继续",
+    continueInZCode: `去 ${SHARE_BRAND} 继续`,
     switchToDarkTheme: "切换到深色主题",
     switchToLightTheme: "切换到浅色主题",
-    continueHelp: "如果没有自动打开 ZCode，请先下载客户端，或再次尝试打开。",
-    downloadZCode: "下载 ZCode",
+    continueHelp: `如果没有自动打开 ${SHARE_BRAND}，请先下载客户端，或再次尝试打开。`,
+    downloadZCode: `下载 ${SHARE_BRAND}`,
     artifactCountOne: "{count} 个结果物",
     artifactCountOther: "{count} 个结果物",
     retryOpen: "再次打开",
   },
   "en-US": {
-    brand: "ZCode Conversation Share",
+    brand: `${brandIdentity.i18nBrandName} Conversation Share`,
     loading: "Loading shared conversation",
     loadingDescription: "Please wait while we verify this share link.",
     loginTitle: "Sign in to view this share",
@@ -177,18 +182,18 @@ const COPY: Record<ConversationShareLandingLocale, Copy> = {
     invalidTitle: "Unable to read shared content",
     invalidDescription:
       "The sharing service returned unrecognized data. Provide the error details.",
-    outdatedTitle: "Update ZCode to continue",
+    outdatedTitle: `Update ${SHARE_BRAND} to continue`,
     outdatedDescription:
-      "This share was created by a newer version of ZCode. Please update to view it.",
+      `This share was created by a newer version of ${SHARE_BRAND}. Please update to view it.`,
     unavailableTitle: "Share unavailable",
     unavailableDescription:
       "This account is not allowed to view the share, or it no longer exists.",
     retry: "Try again",
-    continueInZCode: "Continue in ZCode",
+    continueInZCode: `Continue in ${SHARE_BRAND}`,
     switchToDarkTheme: "Switch to dark theme",
     switchToLightTheme: "Switch to light theme",
-    continueHelp: "If ZCode did not open, download the app or try opening it again.",
-    downloadZCode: "Download ZCode",
+    continueHelp: `If ${SHARE_BRAND} did not open, download the app or try opening it again.`,
+    downloadZCode: `Download ${SHARE_BRAND}`,
     artifactCountOne: "{count} artifact",
     artifactCountOther: "{count} artifacts",
     retryOpen: "Try again",
@@ -482,7 +487,7 @@ export function ConversationShareLandingPage({
                   ref={brandRef}
                   data-share-brand="true"
                   className="flex shrink-0 items-center gap-2 text-foreground"
-                  aria-label="ZCode"
+                  aria-label={SHARE_BRAND}
                 >
                   <ShareBrandMark />
                 </div>

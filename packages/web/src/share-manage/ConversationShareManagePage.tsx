@@ -6,6 +6,7 @@ import {
   type ConversationShareManagedItem,
   type ConversationShareManagedUpdateRequest,
 } from "@zcode/shared";
+import { brandIdentity } from "@zcode/biz-brand";
 import { applyTheme, type Theme } from "@zcode/ui/useTheme";
 import { Button } from "@zcode/ui/button";
 import {
@@ -111,12 +112,12 @@ interface ManageCopy {
 
 const COPY: Record<ConversationShareLandingLocale, ManageCopy> = {
   "zh-CN": {
-    brand: "ZCode",
+    brand: brandIdentity.i18nBrandName,
     pageTitle: "我的分享",
     loginTitle: "登录后管理分享",
     loginDescription: "请使用创建分享时的账号登录，查看和管理你的分享。",
     emptyTitle: "还没有生效中的分享",
-    emptyDescription: "在 ZCode 中分享会话后会显示在这里。已过期的分享不会显示。",
+    emptyDescription: `在 ${brandIdentity.i18nBrandName} 中分享会话后会显示在这里。已过期的分享不会显示。`,
     statusActive: "生效中",
     statusRevoked: "已撤销",
     createdAt: "创建于 {time}",
@@ -163,13 +164,13 @@ const COPY: Record<ConversationShareLandingLocale, ManageCopy> = {
     switchToLightTheme: "切换到浅色主题",
   },
   "en-US": {
-    brand: "ZCode",
+    brand: brandIdentity.i18nBrandName,
     pageTitle: "My shares",
     loginTitle: "Sign in to manage your shares",
     loginDescription: "Sign in with the account you used to create the shares.",
     emptyTitle: "No active shares",
     emptyDescription:
-      "Conversations you share from ZCode appear here. Expired shares are not shown.",
+      `Conversations you share from ${brandIdentity.i18nBrandName} appear here. Expired shares are not shown.`,
     statusActive: "Active",
     statusRevoked: "Revoked",
     createdAt: "Created {time}",

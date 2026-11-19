@@ -1,5 +1,6 @@
 import { app, Menu, Tray } from "electron";
 import { join } from "node:path";
+import { nativeDisplayName } from "./desktopRuntimeEnv.js";
 import {
   DesktopCommandIds,
   desktopMenuMessageIds,
@@ -52,7 +53,7 @@ export function createDesktopTray(options: {
   }
 
   const getLabel = (id: (typeof desktopMenuMessageIds)[keyof typeof desktopMenuMessageIds]) =>
-    getDesktopMenuMessage(options.getLocale(), id).replaceAll("{appName}", app.name);
+    getDesktopMenuMessage(options.getLocale(), id).replaceAll("{appName}", nativeDisplayName);
   const showTrayWindow = () => {
     void Promise.resolve(options.showCurrentWindow()).catch((error) => {
       options.logger.warn("[desktop-tray] failed to show current window", error);

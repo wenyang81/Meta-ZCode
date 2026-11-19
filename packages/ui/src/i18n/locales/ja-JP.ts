@@ -1,3 +1,5 @@
+import { DATA_DIR_NAME } from "@zcode/shared";
+
 /** Japanese translations（缺失 key 由 IntlProvider 回退到 en-US） */
 const jaJP: Record<string, string> = {
   "plugin.discovery.installAndEnable": "インストールしてこのワークスペースで有効にする",
@@ -107,8 +109,8 @@ const jaJP: Record<string, string> = {
     "このコンピューター上のプロジェクトは、後でこのページの「削除済みプロジェクト」から復元できます。",
   "projectManagement.confirm.restoreRemote":
     "リモートプロジェクトを後で戻すには、そのデバイスから再度追加してください。",
-  "projectManagement.confirm.data.option": "ZCode のデータも削除する",
-  "projectManagement.confirm.data.optionOne": "ZCode のデータも削除する",
+  "projectManagement.confirm.data.option": "{brand} のデータも削除する",
+  "projectManagement.confirm.data.optionOne": "{brand} のデータも削除する",
   "projectManagement.confirm.data.note":
     "このコンピューター上の {count} 個のプロジェクトのセッション、セッションファイル、チェックポイント、メモリ。",
   "projectManagement.confirm.data.noteOne":
@@ -199,8 +201,8 @@ const jaJP: Record<string, string> = {
   "project.hasUnread": "プロジェクトに未読のタスクがあります",
   "project.projectOrder": "プロジェクトの順序",
   "project.taskOrder": "タスクの順序",
-  "project.browseHint": "ZCode はこれらのフォルダを読み取り・編集できます",
-  "project.connectAndBrowseHint": "デバイスの状態: {status}。ZCode が先に接続します。",
+  "project.browseHint": "{brand} はこれらのフォルダを読み取り・編集できます",
+  "project.connectAndBrowseHint": "デバイスの状態: {status}。{brand} が先に接続します。",
   "project.selectHost": "リモート接続を選択",
   "project.back": "戻る",
   "project.next": "次へ",
@@ -213,7 +215,7 @@ const jaJP: Record<string, string> = {
   "project.trustFolderTitle": "このフォルダを信頼しますか？",
   "project.trustFoldersTitle": "これらのフォルダを信頼しますか？",
   "project.trustFoldersDescription":
-    "ZCode はこれらのフォルダ内のファイルを読み取り・編集し、現在の権限設定の範囲でコマンドを実行できます。一覧のすべてのフォルダを信頼できる場合のみ続行してください。",
+    "{brand} はこれらのフォルダ内のファイルを読み取り・編集し、現在の権限設定の範囲でコマンドを実行できます。一覧のすべてのフォルダを信頼できる場合のみ続行してください。",
   "project.trustFoldersAndCreate": "フォルダを信頼して作成",
   "project.trustFoldersAndRestore": "フォルダを信頼して復元",
   "project.existingOnDeviceHint": "このデバイスに既存のプロジェクトがありますか？",
@@ -348,7 +350,7 @@ const jaJP: Record<string, string> = {
   "remote.action.downgrade-server": "リモートを {version}に切り替え",
   "remote.downgradeConfirmTitle": "リモートを {version}に切り替えますか？",
   "remote.downgradeConfirmDescription":
-    "リモートの ZCode サービスを {current}から、このデスクトップアプリと同じ {version}に切り替えます。新しいデスクトップアプリを使っているデバイスは、接続時に再度リモートを更新する必要があります。新しいバージョンで書き込まれた内容は、古いバージョンでは完全に表示されない場合があります。",
+    "リモートの {brand} サービスを {current}から、このデスクトップアプリと同じ {version}に切り替えます。新しいデスクトップアプリを使っているデバイスは、接続時に再度リモートを更新する必要があります。新しいバージョンで書き込まれた内容は、古いバージョンでは完全に表示されない場合があります。",
   "remote.downgradeConfirm": "切り替え",
   "remote.downgradedHint":
     "古いデスクトップアプリによって、このリモートは {from}から現在のバージョンに切り替えられました。リモートは確認後にのみ更新されます。",
@@ -503,7 +505,7 @@ const jaJP: Record<string, string> = {
   "startPlan.recommendation.dismiss": "今後表示しない",
   "occupationOnboarding.stepMode": "UI モード",
   "occupationOnboarding.modeTitle": "UI モードを選択",
-  "occupationOnboarding.modeDescription": "ZCode の作業内容をどのように表示しますか？",
+  "occupationOnboarding.modeDescription": "{brand} の作業内容をどのように表示しますか？",
   "occupationOnboarding.coding": "コーディングモード",
   "occupationOnboarding.codingDescription":
     "開発の過程で、コード、コマンド出力、変更の詳細を確認したい。",
@@ -556,27 +558,27 @@ const jaJP: Record<string, string> = {
   "occupationOnboarding.migrationDescription": "Claude Code から会話履歴を移行します",
   "occupationOnboarding.memory": "ワークスペースメモリを有効にする",
   "occupationOnboarding.memoryDescription":
-    "ZCode があなたの好みや作業のコンテキストを記憶します。",
+    "{brand} があなたの好みや作業のコンテキストを記憶します。",
   "occupationOnboarding.suggestions": "タスクの提案を有効にする",
   "occupationOnboarding.suggestionsDescription":
     "新しい会話で提案を表示します。クリックすると入力欄に入力されます。",
   "occupationOnboarding.close": "オンボーディングを終了",
-  "startup.global.silent": "ZCode を起動中",
+  "startup.global.silent": "{brand} を起動中",
   "startup.global.upgrading": "ローカルデータをアップグレード中",
   "startup.global.initializing": "ローカルデータを初期化中",
   "startup.global.waiting": "データベースの準備を待っています",
   "startup.global.saving": "更新を保存中",
   "startup.global.finishing": "起動処理を完了中",
   "startup.global.servicesFailed":
-    "ローカルデータの準備はできましたが、アプリのサービスを起動できませんでした。診断情報をコピーしてから、ZCode を終了して再度開いてください。",
+    "ローカルデータの準備はできましたが、アプリのサービスを起動できませんでした。診断情報をコピーしてから、{brand} を終了して再度開いてください。",
   "startup.global.starting": "ローカルデータを準備中",
   "startup.global.preparing_host_storage": "タスクのインデックスを準備中",
   "startup.global.preparing_session_storage": "チャット履歴を準備中",
-  "startup.global.starting_services": "ZCode を起動中",
+  "startup.global.starting_services": "{brand} を起動中",
   "startup.global.ready": "ローカルデータの準備ができました",
   "startup.global.failed": "起動の準備に失敗しました",
   "startup.global.help":
-    "準備が完了すると ZCode が開きます。履歴が多い場合は時間がかかることがあります。アプリを起動したままにしてください。",
+    "準備が完了すると {brand} が開きます。履歴が多い場合は時間がかかることがあります。アプリを起動したままにしてください。",
   "startup.global.diagnostic": "診断 ID",
   "startup.global.copy": "診断情報をコピー",
   "startup.global.exportLogs": "ログをエクスポート",
@@ -601,15 +603,15 @@ const jaJP: Record<string, string> = {
   "startup.global.error.open_failed":
     "データベースを開けませんでした。データディレクトリが存在しアクセス可能であることを確認してから再試行してください。",
   "startup.global.error.lock_timeout":
-    "データベースの書き込みロックの待機がタイムアウトしました。別の ZCode または CLI プロセスがデータを更新している可能性があります。完了してから再試行してください。",
+    "データベースの書き込みロックの待機がタイムアウトしました。別の {brand} または CLI プロセスがデータを更新している可能性があります。完了してから再試行してください。",
   "startup.global.error.sql_failed":
     "準備が完了しませんでした。診断情報をコピーしてログを確認し、問題を解決してから手動で再試行してください。アプリは自動では再試行しません。",
   "startup.global.error.startup_status_timeout":
-    "起動ステータスを受信できませんでした。ZCode を終了して再度開いてください。再び失敗する場合は、診断情報をサポートに提供してください。",
+    "起動ステータスを受信できませんでした。{brand} を終了して再度開いてください。再び失敗する場合は、診断情報をサポートに提供してください。",
   "startup.global.error.transport_closed":
-    "準備プロセスが終了したか、接続が切れました。ZCode を終了して再度開き、移行記録をもう一度確認してください。",
+    "準備プロセスが終了したか、接続が切れました。{brand} を終了して再度開き、移行記録をもう一度確認してください。",
   "startup.global.error.unsupported_runtime":
-    "構成されているエージェントはストレージの準備に対応していません。同梱のエージェントに戻してから、ZCode を再度開いてください。",
+    "構成されているエージェントはストレージの準備に対応していません。同梱のエージェントに戻してから、{brand} を再度開いてください。",
 
   "startup.database.checking": "履歴を確認中",
   "startup.database.waiting_for_lock": "別のウィンドウでのデータ準備を待っています",
@@ -666,7 +668,7 @@ const jaJP: Record<string, string> = {
   "offPeak.chatCreated.queuedAt": "待ち順 #{position}",
   "offPeak.chatCreated.open": "アイドル時間タスクへ移動",
   "settings.computerUse.disabledToast":
-    "Computer Use を無効にしました。既存の会話に反映するには ZCode の再起動が必要です。",
+    "Computer Use を無効にしました。既存の会話に反映するには {brand} の再起動が必要です。",
   "settings.modelProvider.connectionUnavailableNotice": "現在のプランは利用できません。",
   "settings.modelProvider.switchConnection": "「{connection}」に切り替え",
   "settings.modelProvider.connectionSuggestionStale":
@@ -786,7 +788,7 @@ const jaJP: Record<string, string> = {
   "manualClaimPlan.claim.share.copyImageSucceeded": "画像をコピーしました",
   "manualClaimPlan.claim.share.actionFailed": "共有操作に失敗しました。もう一度お試しください。",
   "manualClaimPlan.claim.share.twitterText":
-    "ZCode で {subtitle}を受け取りました。ZCode をダウンロード・インストールして、あなたも受け取りましょう。https://zcode.z.ai",
+    "{brand} で {subtitle}を受け取りました。{brand} をダウンロード・インストールして、あなたも受け取りましょう。https://zcode.z.ai",
   "manualClaimPlan.claim.share.twitterTextLabel": "Twitter/X 投稿テキスト",
   // Common
   "common.loading": "読み込み中...",
@@ -836,8 +838,8 @@ const jaJP: Record<string, string> = {
   "conversationShare.readonly.execute": "実行",
   "conversationShare.readonly.changes": "変更",
   "conversationShare.readonly.artifactPreview": "ファイルをダウンロード",
-  "conversation.row.unreadable": "この内容の表示には新しいバージョンの ZCode が必要です",
-  "conversationShare.readonly.unsupportedRows": "一部の内容は新しいバージョンの ZCode が必要です",
+  "conversation.row.unreadable": "この内容の表示には新しいバージョンの {brand} が必要です",
+  "conversationShare.readonly.unsupportedRows": "一部の内容は新しいバージョンの {brand} が必要です",
   "conversationShare.workflowSnapshot":
     "ツール実行時点のスナップショット。リアルタイムには更新されません",
   "conversationShare.shareTitle": "共有タイトル",
@@ -872,7 +874,7 @@ const jaJP: Record<string, string> = {
   "conversationShare.import.notAllowed":
     "この共有は閲覧専用です。インポートを有効にするよう作成者に依頼してください。",
   "conversationShare.import.unsupportedVersion":
-    "この共有形式には対応していません。ZCode をアップデートしてください。",
+    "この共有形式には対応していません。{brand} をアップデートしてください。",
   "conversationShare.issue.ruleLabel": "検証ルール",
   "conversationShare.issue.pathLabel": "フィールドパス",
   "conversationShare.issue.fieldLabel": "フィールド",
@@ -880,7 +882,7 @@ const jaJP: Record<string, string> = {
   "conversationShare.issue.rowKindLabel": "内容の種類",
   "conversationShare.publishFailed": "共有リンクを生成できませんでした。もう一度お試しください。",
   "conversationShare.error.authenticationRequired":
-    "共有する前に ZCode にサインインしてください。既にサインインしている場合は、再度サインインしてから再試行してください。",
+    "共有する前に {brand} にサインインしてください。既にサインインしている場合は、再度サインインしてから再試行してください。",
   "conversationShare.error.featureDisabled":
     "共有は現在利用できません。しばらくしてからもう一度お試しください。",
   "conversationShare.error.artifactNotAllowed":
@@ -892,7 +894,7 @@ const jaJP: Record<string, string> = {
   "conversationShare.error.invalidContractHttp":
     "共有サービスが HTTP {status}を返しました。再試行し、問題が続く場合はエラーの詳細を提供してください。",
   "conversationShare.error.invalidContract":
-    "ZCode が共有サービスの応答を読み取れなかったため、共有を完了できませんでした。しばらくしてからもう一度お試しください。それでも失敗する場合は、エラーの詳細からリクエスト ID をコピーしてサポートにお問い合わせください。",
+    "{brand} が共有サービスの応答を読み取れなかったため、共有を完了できませんでした。しばらくしてからもう一度お試しください。それでも失敗する場合は、エラーの詳細からリクエスト ID をコピーしてサポートにお問い合わせください。",
   "conversationShare.issue.clientRequestIdLabel": "クライアントリクエスト ID",
   "conversationShare.issue.codeLabel": "エラーコード",
   "conversationShare.error.network":
@@ -1092,7 +1094,7 @@ const jaJP: Record<string, string> = {
   "conversationShare.import.committing": "共有された会話を作成中",
   "conversationShare.import.complete": "共有のインポートが完了しました",
   "conversationShare.import.loginRequired":
-    "この共有は匿名ではインポートできません。ZCode にサインインしてもう一度お試しください",
+    "この共有は匿名ではインポートできません。{brand} にサインインしてもう一度お試しください",
   "conversationShare.import.notFound":
     "共有が見つからないか、アクセスが拒否されました。リンクとアカウントを確認してください。",
   "conversationShare.import.expired":
@@ -1215,7 +1217,7 @@ const jaJP: Record<string, string> = {
     "操作または一覧の更新に失敗しました。更新して残りのタスクを確認してください。",
   "taskList.noArchivedTasks": "アーカイブ済みのタスクはありません",
   "bots.title": "ボット",
-  "bots.description": "外部チャットや Webhook を ZCode ボットに接続します。",
+  "bots.description": "外部チャットや Webhook を {brand} ボットに接続します。",
   "bots.listTitle": "ボット",
   "bots.addBot": "新しいボット",
   "bots.addBinding": "バインドを追加",
@@ -1273,9 +1275,9 @@ const jaJP: Record<string, string> = {
   "bots.setup.guide.weixin.create.1":
     "Weixin の QR サインインを開始し、Weixin で QR コードをスキャンしてから、スマートフォンで確認します。",
   "bots.setup.guide.weixin.create.2":
-    "ZCode は iLink から返された bot_token を自動で保存します。スキャン後、Weixin でボットに任意のメッセージを送信してチャットを有効化してください。",
+    "{brand} は iLink から返された bot_token を自動で保存します。スキャン後、Weixin でボットに任意のメッセージを送信してチャットを有効化してください。",
   "bots.setup.guide.weixin.create.3":
-    "ZCode は内蔵の iLink クライアントを使用します: ロングポーリングに `/ilink/bot/getupdates`、返信に `/ilink/bot/sendmessage` を使います。",
+    "{brand} は内蔵の iLink クライアントを使用します: ロングポーリングに `/ilink/bot/getupdates`、返信に `/ilink/bot/sendmessage` を使います。",
   "bots.setup.guide.weixin.bind.1": "バインドしたい Weixin の個別チャットを開きます。",
   "bots.setup.guide.weixin.bind.2": "{command}を送信します。",
   "bots.setup.guide.weixin.bind.3":
@@ -1292,13 +1294,13 @@ const jaJP: Record<string, string> = {
   "bots.setup.guide.feishu.bind.3":
     "バインドに成功したらここに戻り、ワークスペースと CLI のデフォルト設定を完了してください。",
   "bots.setup.guide.webhook.create.1":
-    "Webhook モードではサードパーティ製品側にネイティブボットは不要です。連携先は ZCode にメッセージを POST するだけで済みます。",
+    "Webhook モードではサードパーティ製品側にネイティブボットは不要です。連携先は {brand} にメッセージを POST するだけで済みます。",
   "bots.setup.guide.webhook.create.2":
     "まず共有シークレットを設定します。非同期の返信をプッシュしたい場合は、送信用 Webhook URL も追加してください。",
   "bots.setup.guide.webhook.create.3":
     "バインドや以降のコンテキストが同じ人物に紐づくよう、外部ユーザーごとに固定の userId を使ってください。",
   "bots.setup.guide.webhook.bind.1":
-    "ZCode の `/api/bots/webhook` エンドポイントにプライベートメッセージのコールバックを POST します。",
+    "{brand} の `/api/bots/webhook` エンドポイントにプライベートメッセージのコールバックを POST します。",
   "bots.setup.guide.webhook.bind.2":
     'ペイロードには少なくともこの botId、固定の userId、`chatType: "private"` を含め、text を {command}に設定してください。',
   "bots.setup.guide.webhook.bind.3":
@@ -1443,7 +1445,7 @@ const jaJP: Record<string, string> = {
   "bots.runtime.telegramLongPollingStarting": "Telegram のロングポーリングを開始しています。",
   "bots.runtime.telegramLongPollingStopped": "Telegram のロングポーリングは停止しています。",
   "bots.runtime.telegramLongPollingHandledElsewhere":
-    "Telegram のロングポーリングは別の ZCode ウィンドウで処理されています。",
+    "Telegram のロングポーリングは別の {brand} ウィンドウで処理されています。",
   "bots.runtime.telegramTokenMissing": "Telegram ボットの認証情報がありません。",
   "bots.runtime.telegramPollingFailedRetrying":
     "Telegram のポーリングに失敗しました。再試行しています。",
@@ -1535,7 +1537,7 @@ const jaJP: Record<string, string> = {
   "bots.deleteFailed": "ボットを削除できませんでした: {error}",
 
   // Welcome / Login
-  "welcome.title": "ZCode へようこそ",
+  "welcome.title": "{brand} へようこそ",
   "welcome.username": "ユーザー名",
   "welcome.password": "パスワード",
   "welcome.login": "サインイン",
@@ -1569,9 +1571,10 @@ const jaJP: Record<string, string> = {
   "login.useApiKey": "API Key を使用",
   "login.apiKey.title": "API Key",
   "login.apiKey.placeholder": "API Key を入力",
-  "login.apiKey.providerLabel": "API Key のプロバイダー",
-  "login.apiKey.provider.zai": "Z.ai",
-  "login.apiKey.provider.bigmodel": "BigModel",
+  "login.apiKey.provider.metarouter": "MetaRouter ゲートウェイ",
+  "login.apiKey.baseUrl.placeholder": "ゲートウェイアドレス（例: https://…/v1）",
+  "login.apiKey.validationFailed": "ゲートウェイ検証に失敗しました：{error}",
+  "login.skip": "今はスキップ",
   "login.apiKey.getApiKey": "API Key を取得",
   "login.apiKey.cancel": "キャンセル",
   "login.apiKey.continue": "続行",
@@ -1580,7 +1583,6 @@ const jaJP: Record<string, string> = {
     "{provider}の組み込みプロバイダー構成が見つかりません。しばらくしてからもう一度お試しください。",
   "login.apiKey.saveError": "API Key を保存できませんでした: {error}",
   "login.apiKey.skipError": "API Key の設定をスキップできませんでした: {error}",
-  "login.skip": "今はスキップ",
   "settings.onboarding": "オンボーディング",
   "settings.onboardingDescription":
     "役割、インターフェースモード、各種設定を選び直します。データのインポートには移行設定を使用してください。",
@@ -1590,7 +1592,7 @@ const jaJP: Record<string, string> = {
   "app.currentTheme": "現在: {theme}",
   "app.login": "接続",
   "app.logout": "接続を解除",
-  "logout.confirm.title": "接続を解除して ZCode を再起動しますか？",
+  "logout.confirm.title": "接続を解除して {brand} を再起動しますか？",
   "logout.confirm.descriptionWithRunningSessions":
     "現在 {count} 件のセッションが実行中です。接続を解除するとそれらは中断され、アプリが再起動します。",
   "logout.confirm.descriptionDefault":
@@ -1944,7 +1946,7 @@ const jaJP: Record<string, string> = {
   "modelTrajectory.close": "閉じる",
   "modelTrajectory.loading": "軌跡を読み込み中…",
   "modelTrajectory.empty":
-    "モデル呼び出しの記録はありません（model-io を書き込むのは ZCode Agent のみです）",
+    "モデル呼び出しの記録はありません（model-io を書き込むのは {brand} Agent のみです）",
   "modelTrajectory.error": "軌跡を読み込めませんでした",
   "modelTrajectory.truncatedNotice": "記録が多すぎるため、最新の呼び出しのみ表示しています",
   "modelTrajectory.summaryCalls": "{count} 回の呼び出し",
@@ -2443,14 +2445,14 @@ const jaJP: Record<string, string> = {
   "titleBar.menu.view.actualSize": "実際のサイズ",
   "titleBar.menu.view.zoomIn": "拡大",
   "titleBar.menu.view.zoomOut": "縮小",
-  "titleBar.menu.help.about": "ZCode について",
+  "titleBar.menu.help.about": "{brand} について",
   "titleBar.menu.help.checkForUpdates": "アップデートを確認",
   "titleBar.menu.help.feedback": "フィードバック",
   "sidebar.menu.community": "コミュニティ",
   "titleBar.menu.help.exportLogs": "ログをエクスポート",
   "titleBar.menu.help.toggleDevTools": "開発者ツールの切り替え",
   "titleBar.menu.help.resourceManager": "リソースマネージャー",
-  "titleBar.menu.help.toggleZCodeStdioTap": "エージェントの stdio 通信をキャプチャ",
+  "titleBar.menu.help.toggle{brand}StdioTap": "エージェントの stdio 通信をキャプチャ",
   "titleBar.menu.help.clearAllData": "すべてのデータを消去",
 
   // Directory browser
@@ -2502,7 +2504,7 @@ const jaJP: Record<string, string> = {
   "update.toast.ready": "v{version}をダウンロードしました。再起動してインストールしてください",
   "update.toast.devSkipped": "開発ビルドではアップデートは無効です",
   "update.toast.error": "アップデートの確認に失敗しました: {error}",
-  "forceUpdate.title": "続行するには ZCode をアップデートしてください",
+  "forceUpdate.title": "続行するには {brand} をアップデートしてください",
   "forceUpdate.description":
     "現在のバージョン v{currentVersion}は、サポートされる最低バージョン v{minimalVersion}を下回っています。このクライアントを引き続き使用するには、先にアップデートしてください。",
   "forceUpdate.currentVersion": "現在のバージョン",
@@ -2592,7 +2594,7 @@ const jaJP: Record<string, string> = {
   "remote.error.credentialsRequired":
     "使用できる SSH パスワードまたは秘密鍵の認証情報がありません。設定に戻って追加してください。",
   "remote.error.sourceServerUpgradeRequired":
-    "リモートデバイスはこのバージョンの ZCode Desktop と互換性がないため、アップグレードが必要です。",
+    "リモートデバイスはこのバージョンの {brand} Desktop と互換性がないため、アップグレードが必要です。",
   "remote.error.sourceServerRunningTasks":
     "リモートデバイスでまだタスクが実行中です。完了を待つか、強制更新を確認してください。",
   "remote.error.sourceServerDowngradeUnconfirmed":
@@ -2633,7 +2635,7 @@ const jaJP: Record<string, string> = {
   "remote.error.retryableHint": "しばらくしてからもう一度お試しください。",
   "remote.error.connectionClosed": "リモート接続が閉じられました",
   "workspaceSidebar.unavailableLocalDirectory":
-    "ワークスペースのディレクトリが存在しないか、アクセスできません。現在は履歴の閲覧のみ可能です。続行するにはディレクトリを復元して ZCode を再起動してください。",
+    "ワークスペースのディレクトリが存在しないか、アクセスできません。現在は履歴の閲覧のみ可能です。続行するにはディレクトリを復元して {brand} を再起動してください。",
   "workspaceSidebar.toggleSidebar": "サイドバーの表示切り替え",
   "workspaceSidebar.resizeSidebar": "サイドバーのサイズを変更",
   "workspaceSidebar.showFileTree": "ファイルを表示",
@@ -2670,7 +2672,7 @@ const jaJP: Record<string, string> = {
   "ssh.assetInstallMode.local-download-upload": "ローカルでダウンロードしてアップロード",
   "ssh.assetInstallMode.remote-download": "リモートサーバーでダウンロード",
   "ssh.assetInstallModeDescription":
-    "リモートサーバーでダウンロードするとアップロードの待ち時間を短縮できますが、サーバーが ZCode CDN に接続でき、ダウンロード・展開・チェックサム用のツールを備えている必要があります。",
+    "リモートサーバーでダウンロードするとアップロードの待ち時間を短縮できますが、サーバーが {brand} CDN に接続でき、ダウンロード・展開・チェックサム用のツールを備えている必要があります。",
   "ssh.password": "パスワード",
   "ssh.passwordPlaceholder": "SSH パスワードを入力",
   "ssh.privateKey": "秘密鍵",
@@ -2762,7 +2764,7 @@ const jaJP: Record<string, string> = {
     "接続に失敗しました · 再試行するか、構成を調整してもう一度お試しください",
   "remote.phase.channel": "デバイスに接続",
   "remote.phase.identify": "デバイスを識別",
-  "remote.phase.deploy": "ZCode Server をインストール",
+  "remote.phase.deploy": "{brand} Server をインストール",
   "remote.phase.handshake": "起動して互換性をチェック",
   "remote.phase.workspace": "プロジェクトフォルダを開く",
   "remote.phaseSub.workspaceReading": "{path}を読み込み中",
@@ -2772,7 +2774,7 @@ const jaJP: Record<string, string> = {
   "remote.progress.copyError": "エラーの詳細をコピー",
   "remote.progress.copied": "コピーしました",
   "remote.link.local": "このデバイス",
-  "remote.link.localVersion": "ZCode v{version}",
+  "remote.link.localVersion": "{brand} v{version}",
   "remote.link.deviceHint": "接続後にデバイスの詳細が表示されます",
   "remote.link.devicePending": "リモートデバイス",
   "remote.recognizedDevice": "デバイス {device}に接続しました",
@@ -2804,7 +2806,7 @@ const jaJP: Record<string, string> = {
   "remote.phaseSub.channelEstablished.docker": "コンテナーに接続しました",
   "remote.phaseSub.channelEstablished": "デバイスに接続しました",
   "remote.phaseSub.identifyExisting": "デバイス {device}に接続しました",
-  "remote.phaseSub.identifyNew": "新しいデバイス · ZCode Server は未インストール",
+  "remote.phaseSub.identifyNew": "新しいデバイス · {brand} Server は未インストール",
   "remote.phaseSub.deploySkipped": "リモートは既に v{version}です · デプロイをスキップしました",
   "remote.phaseSub.deployWaitingConfirm": "インストールの確認を待っています…",
   "remote.phaseSub.deployUploading": "{file}をアップロード中 · {sent} / {total}",
@@ -2936,7 +2938,7 @@ const jaJP: Record<string, string> = {
   "remote.kind.wsl": "WSL",
   "remote.kind.docker": "Docker",
   "remote.kind.server.note":
-    "Server（実行中の ZCode サービスへの直接接続）は開発ビルドでのみ表示されます。",
+    "Server（実行中の {brand} サービスへの直接接続）は開発ビルドでのみ表示されます。",
   "remote.addAndConnect": "追加して接続",
   "remote.connect": "接続",
   "remote.connecting": "接続中...",
@@ -2947,16 +2949,16 @@ const jaJP: Record<string, string> = {
   "remote.connectionLog": "接続ログ",
   "remote.connectionLogEmpty": "接続の出力を待っています...",
   "remote.connectingConfirmTitle": "現在の接続を中止しますか？",
-  "remote.sourceServerInstallTitle": "ZCode Server のインストールが必要です",
+  "remote.sourceServerInstallTitle": "{brand} Server のインストールが必要です",
   "remote.sourceServerInstallDescription":
-    "ZCode は対応するリリースをアップロードして ~/.zcode/server にインストールし、リモートサービスを起動します。既存の旧リモートファイルは保持されます。",
+    `{brand} は対応するリリースをアップロードして ~/.${DATA_DIR_NAME}/server にインストールし、リモートサービスを起動します。既存の旧リモートファイルは保持されます。`,
   "remote.sourceServerInstallConfirm": "インストールして続行",
   "remote.installTarget": "インストール先アカウント",
   "remote.installVersion": "インストールするバージョン",
   "remote.installLocation": "インストール先",
   "remote.sourceServerBoundaryTitle": "ローカルがオフラインでもタスクは継続",
   "remote.sourceServerBoundaryDescription":
-    "ZCode を閉じたりコンピューターをスリープさせたりしても、リモートタスクは実行を続けます。",
+    "{brand} を閉じたりコンピューターをスリープさせたりしても、リモートタスクは実行を続けます。",
   "remote.sourceServerBoundaryEyebrow": "新しいリモート接続",
   "remote.sourceServerBoundaryLocalDevice": "このコンピューター",
   "remote.sourceServerBoundaryLocalStatus": "スリープ中 / 終了",
@@ -2980,7 +2982,7 @@ const jaJP: Record<string, string> = {
   "settings.source.retiredEntryNote": "接続先が変更されました。新しい ID を確認済みです",
   "settings.source.retiredNameSuffix": "（旧）",
   "settings.source.reinstallRequired":
-    "ZCode Server はリモートでアンインストールされました。接続とタスクの記録はこのデバイスに残っています。",
+    "{brand} Server はリモートでアンインストールされました。接続とタスクの記録はこのデバイスに残っています。",
   "settings.source.reinstallAndConnect": "再インストールして接続",
   "settings.source.copyDeviceId": "デバイス ID をコピー",
   "common.justNow": "たった今",
@@ -3002,7 +3004,7 @@ const jaJP: Record<string, string> = {
     "このコンピューターのバージョンを使用します。プロジェクトとタスクは保持されます。",
   "settings.source.reinstallRemoteServiceTitle": "リモートサービスを再インストールしますか？",
   "settings.source.reinstallRemoteServiceDescription":
-    "{source}に ZCode Server {version}を再インストールします。破損したプログラムファイルは置き換えられます。プロジェクト、タスク、設定、サインイン情報は保持されます。",
+    "{source}に {brand} Server {version}を再インストールします。破損したプログラムファイルは置き換えられます。プロジェクト、タスク、設定、サインイン情報は保持されます。",
   "settings.source.reinstallRemoteServiceConfirm": "再インストール",
   "settings.source.stopRemoteService": "リモートサービスを停止",
   "settings.source.stopRemoteServiceTitle": "リモートサービスを停止しますか？",
@@ -3012,9 +3014,9 @@ const jaJP: Record<string, string> = {
     "デバイスからタスク一覧が提供されませんでした。",
   "settings.source.remoteServiceNoRunningTasks": "現在このデバイスで実行中のタスクはありません。",
   "settings.source.remoteServiceOtherClientsNotice":
-    "別のコンピューターの ZCode がこのデバイスに接続している場合、リモートサービスが再起動される可能性があります。",
+    "別のコンピューターの {brand} がこのデバイスに接続している場合、リモートサービスが再起動される可能性があります。",
   "settings.source.stopRemoteServiceStartupReconnectNotice":
-    "「起動時に自動で再接続」がオンのため、次回 ZCode を開くとリモートサービスが再び起動します。",
+    "「起動時に自動で再接続」がオンのため、次回 {brand} を開くとリモートサービスが再び起動します。",
   "settings.source.remoteServiceUpdateRequired": "リモートサービスの更新後に利用できます",
   "settings.source.removeOpenProjects": "次の開いているプロジェクトは切断されます:\n{projects}",
   "settings.source.noOpenProjects": "このデバイスに開いているプロジェクトはありません。",
@@ -3022,7 +3024,7 @@ const jaJP: Record<string, string> = {
   "settings.machine.unknownRemote": "リモートデバイス",
   "settings.source.connectionName": "接続名",
   "settings.source.connectionAddress": "アドレス",
-  "settings.source.connectionNameHint": "ZCode 内でこの接続を区別するためだけに使用します。",
+  "settings.source.connectionNameHint": "{brand} 内でこの接続を区別するためだけに使用します。",
   "settings.source.deviceNameRequired": "デバイス名は必須です。",
   "settings.source.error.connection-profile-unavailable":
     "この接続は利用できなくなりました。更新してもう一度お試しください。",
@@ -3068,7 +3070,7 @@ const jaJP: Record<string, string> = {
   "settings.source.updatePhase.checking": "デバイスと更新ファイルをチェック中",
   "settings.source.updatePhase.downloading": "更新ファイルをダウンロード中",
   "settings.source.updatePhase.uploading": "更新ファイルをアップロード中",
-  "settings.source.updatePhase.installing": "ZCode Server をインストール中",
+  "settings.source.updatePhase.installing": "{brand} Server をインストール中",
   "settings.source.updatePhase.reconnecting": "サービスを起動して再接続中",
   "settings.source.updatePhase.completed": "更新が完了しました",
   "settings.source.updateLog": "更新ログ（{count}）",
@@ -3136,13 +3138,13 @@ const jaJP: Record<string, string> = {
   "sourceServer.restartFailedToast":
     "{source}のリモートサービスを再起動できませんでした。詳細を確認してください。",
   "sourceServer.controllerUpdateAvailableToast":
-    "{source} 向けの ZCode の更新があります\nデスクトップ {current} → {available}。この Source に合わせて ZCode を更新してください。",
+    "{source} 向けの {brand} の更新があります\nデスクトップ {current} → {available}。この Source に合わせて {brand} を更新してください。",
   "settings.source.forceUpdate": "強制更新",
   "settings.source.forceUpdateTitle": "このデバイスを強制更新しますか？",
   "settings.source.forceUpdateDescription":
     "強制更新すると、このデバイスで実行中のタスクが停止します。それらのタスクが中断されてもよいか確認してください。",
   "settings.source.controllerUpdateRequired":
-    "先にこの ZCode Desktop を更新してください。ここから Server を更新することはできません。",
+    "先にこの {brand} Desktop を更新してください。ここから Server を更新することはできません。",
   "settings.source.neverConnected": "未接続",
   "settings.source.unidentifiedProfiles": "未接続",
   "settings.source.unidentifiedProfilesDescription":
@@ -3204,7 +3206,7 @@ const jaJP: Record<string, string> = {
   "remote.log.dockerTarget": "Docker コンテナーのターゲット: {container}",
   "remote.log.requestingSession": "ホストプロセスにリモートセッションの作成を要求しています...",
   "remote.log.sessionReady": "リモートセッションを作成しました。次にディレクトリを選択できます。",
-  "server.description": "既に実行中の ZCode サーバーに接続します。",
+  "server.description": "既に実行中の {brand} サーバーに接続します。",
   "server.url": "サーバー URL",
   "server.urlPlaceholder": "例: https://studio.example.com:3030",
   "server.name": "表示名",
@@ -3369,7 +3371,7 @@ const jaJP: Record<string, string> = {
   "chat.changeSummary.reverted": "元に戻しました",
   "chat.changeSummary.rewindDialog.title": "ファイルの変更を元に戻す",
   "chat.changeSummary.rewindDialog.description":
-    "ZCode は書き込む前に現在のファイル内容を再確認します。別のプロセスがファイルを変更していた場合、ファイルは一切書き込まれません。",
+    "{brand} は書き込む前に現在のファイル内容を再確認します。別のプロセスがファイルを変更していた場合、ファイルは一切書き込まれません。",
   "chat.changeSummary.rewindDialog.loading": "元に戻せるファイルを確認中…",
   "chat.changeSummary.rewindDialog.safeTitle": "安全に元に戻せるもの {count}",
   "chat.changeSummary.rewindDialog.unsafeTitle": "安全に元に戻せないもの {count}",
@@ -3415,7 +3417,7 @@ const jaJP: Record<string, string> = {
   "chat.previewCards.video": "動画",
   "chat.previewCards.audio": "音声",
   "chat.previewCards.openExternal": "ブラウザで開く",
-  "chat.message.link.openInZCode": "ZCode で開く",
+  "chat.message.link.openIn{brand}": "{brand} で開く",
   "chat.previewCards.previewInSidePane": "プレビュー",
   "chat.previewCards.openDefaultApp": "既定のアプリで開く",
   "chat.previewCards.openWith": "このアプリで開く",
@@ -3555,7 +3557,7 @@ const jaJP: Record<string, string> = {
     "内蔵ターミナルの起動時に、可能な限りログインシェルの環境、プロキシ、Kubernetes 変数、ローカルのターミナルフォントを継承します。",
   "settings.terminalFontFamily": "ターミナルのフォント",
   "settings.terminalFontFamilyDescription":
-    "空欄の場合はシステムのターミナル設定を自動検出します。値を設定すると ZCode のターミナルフォントを上書きします。",
+    "空欄の場合はシステムのターミナル設定を自動検出します。値を設定すると {brand} のターミナルフォントを上書きします。",
   "settings.terminalFontFamilyPlaceholder": "空欄で継承（例: MesloLGS NF, monospace）",
   "settings.integratedTerminalShell": "統合ターミナルのシェル",
   "settings.integratedTerminalShellDescription":
@@ -3669,7 +3671,7 @@ const jaJP: Record<string, string> = {
     "通知が有効な場合、タスク通知の音だけを個別にミュートできます。",
   "settings.mobilePush": "モバイルプッシュ通知",
   "settings.mobilePushDescription":
-    "デスクトップから離れているとき、タスクの完了・失敗・確認待ちをサインイン中の ZCode App にプッシュします。",
+    "デスクトップから離れているとき、タスクの完了・失敗・確認待ちをサインイン中の {brand} App にプッシュします。",
   "notification.taskWithTitle": "タスク: {title}",
   "notification.taskWaiting": "タスクがあなたの確認を待っています",
   "notification.completed": "タスクが完了しました",
@@ -3708,7 +3710,7 @@ const jaJP: Record<string, string> = {
     "連続する Write、Edit、ApplyPatch の呼び出しを「変更」セクションにまとめます。",
   "settings.zcodeInteractionBehavior": "操作の動作",
   "settings.zcodeInteractionBehaviorDescription":
-    "ZCode の実行中に追加した操作を、キューに入れるか、軌道修正として次のツール呼び出しの後に反映します。",
+    "{brand} の実行中に追加した操作を、キューに入れるか、軌道修正として次のツール呼び出しの後に反映します。",
   "settings.zcodeInteractionBehavior.option.queue": "キュー",
   "settings.zcodeInteractionBehavior.option.guide": "ガイド",
   "settings.askUserQuestionAutoResolution": "質問を自動で続行",
@@ -3745,14 +3747,14 @@ const jaJP: Record<string, string> = {
   "settings.taskAutoArchiveDays.option.30": "30 日後にアーカイブ",
   "settings.dataBaseDir": "データの保存先",
   "settings.dataBaseDirDescription":
-    "アプリデータのルートディレクトリ（デフォルトはユーザーのホームディレクトリ）。既存のデータは新しい場所にコピーされます。.zcode/v2 のサフィックスは変更できません。",
+    `アプリデータのルートディレクトリ（デフォルトはユーザーのホームディレクトリ）。既存のデータは新しい場所にコピーされます。${DATA_DIR_NAME}/v2 のサフィックスは変更できません。`,
   "settings.dataBaseDirPlaceholder": "デフォルト: ユーザーのホームディレクトリ",
   "settings.dataBaseDirBrowse": "フォルダを選択",
   "settings.dataBaseDirSave": "保存",
   "settings.dataBaseDirCopying": "データをコピー中です。アプリを閉じないでください...",
   "settings.dataBaseDirCopyFailed": "データのコピーに失敗しました。パスは変更されていません。",
   "settings.dataBaseDirForbiddenInstallDir":
-    "Windows では、データディレクトリを ZCode のインストールフォルダにすることはできません。アプリのインストール先以外のフォルダを選択してください。",
+    "Windows では、データディレクトリを {brand} のインストールフォルダにすることはできません。アプリのインストール先以外のフォルダを選択してください。",
   "settings.dataBaseDirRestartRequired":
     "データを保存しました。反映するにはアプリを再起動してください。",
   "settings.locale.system": "システムのデフォルト",
@@ -3769,7 +3771,7 @@ const jaJP: Record<string, string> = {
   "settings.migration.title": "移行",
   "settings.migration.sectionTitle": "Claude 履歴の移行",
   "settings.migration.sectionDescription":
-    "このマシン上の Claude Code のネイティブ履歴をスキャンし、必要に応じてワークスペースとアクティビティ期間で絞り込んでから、選択したセッションを対応する ZCode のタスク一覧にインポートします。",
+    "このマシン上の Claude Code のネイティブ履歴をスキャンし、必要に応じてワークスペースとアクティビティ期間で絞り込んでから、選択したセッションを対応する {brand} のタスク一覧にインポートします。",
   "settings.migration.badge.localOnly": "ローカルの Claude 記録",
   "settings.migration.badge.manualOnly": "手動のみ",
   "settings.migration.currentWorkspace": "現在のワークスペース",
@@ -3825,14 +3827,14 @@ const jaJP: Record<string, string> = {
   "settings.usageTitle": "使用状況",
   "settings.usageDescription":
     "ローカルのセッションから集計したおおよそのアクティビティとモデルの使用量を確認します。",
-  "resourceManager.storage.summaryTotal": "ZCode の合計使用量",
+  "resourceManager.storage.summaryTotal": "{brand} の合計使用量",
   "resourceManager.storage.scanning": "計算中…",
   "resourceManager.storage.lastScanned": "最終計算 {time}",
   "resourceManager.storage.idle": "まだ計算していません",
   "resourceManager.storage.failed": "計算に失敗しました",
   "resourceManager.storage.rescan": "再計算",
   "resourceManager.storage.disk": "ディスク",
-  "resourceManager.storage.diskUsage": "ZCode の使用量 {used}",
+  "resourceManager.storage.diskUsage": "{brand} の使用量 {used}",
   "resourceManager.storage.diskFree": "{total} 中 {free} 空き",
   "resourceManager.storage.diskUnknown": "ディスク容量を取得できません",
   "resourceManager.storage.roots": "データディレクトリ",
@@ -3908,7 +3910,7 @@ const jaJP: Record<string, string> = {
   "settings.embeddedBrowserAllowInsecureCertificatesSavedHint":
     "証明書の設定を保存しました。反映にはアプリの再起動が必要です。",
   "settings.browser.data.section": "ブラウザデータ",
-  "settings.browser.desktopOnly": "ブラウザデータは ZCode デスクトップアプリでのみ管理できます。",
+  "settings.browser.desktopOnly": "ブラウザデータは {brand} デスクトップアプリでのみ管理できます。",
   "settings.browser.import.title": "Chrome のサインイン状態をインポート",
   "settings.browser.import.description":
     "Chrome のサインイン状態を内蔵ブラウザに一度取り込むと、AI がサインイン済みのサイトを開けるようになり、作業がスムーズになります。",
@@ -3926,13 +3928,13 @@ const jaJP: Record<string, string> = {
   "settings.browser.import.elevationCancelled":
     "Windows の管理者権限がキャンセルされました。Cookie はインポートされていません。",
   "settings.browser.import.helperVerificationFailed":
-    "ZCode の Windows 用セキュアインポートコンポーネントを検証できませんでした。Cookie をインポートする前に ZCode を再インストールまたは更新してください。",
+    "{brand} の Windows 用セキュアインポートコンポーネントを検証できませんでした。Cookie をインポートする前に {brand} を再インストールまたは更新してください。",
   "settings.browser.import.appBoundFailed":
     "Windows で Chrome の App-Bound Cookie のロックを解除できませんでした。Cookie はインポートされていません。",
   "settings.browser.import.adminConfirmTitle":
     "Chrome の Cookie をインポートするために管理者権限を許可しますか？",
   "settings.browser.import.adminConfirmDescription":
-    "Windows の Chrome は App-Bound 暗号化で Cookie を保護しています。今回のインポートに限り、ZCode は管理者権限を要求して一時的なシステムサービスを起動し、終了後すぐに削除します。Chrome のパスワードが読み取られたりインポートされたりすることはありません。",
+    "Windows の Chrome は App-Bound 暗号化で Cookie を保護しています。今回のインポートに限り、{brand} は管理者権限を要求して一時的なシステムサービスを起動し、終了後すぐに削除します。Chrome のパスワードが読み取られたりインポートされたりすることはありません。",
   "settings.browser.import.adminConsent": "今回の Cookie インポートに限り管理者権限を許可します",
   "settings.browser.import.adminConfirmAction": "続行して権限を要求",
   "settings.browser.import.cookieProtected":
@@ -3998,7 +4000,7 @@ const jaJP: Record<string, string> = {
   "settings.mcp.trust.trusted": "現在の宣言は信頼済みです",
   "settings.mcp.trust.failed":
     "宣言が変更されたか、信頼を設定できません。更新してもう一度お試しください。",
-  "settings.mcp.description": "ZCode Agent が使用する MCP サーバーの構成を管理します。",
+  "settings.mcp.description": "{brand} Agent が使用する MCP サーバーの構成を管理します。",
   "settings.mcp.create.open": "MCP サーバーを追加",
   "settings.mcp.import.open": "外部エージェントから MCP サーバーをインポート",
   "settings.mcp.import.action": "インポート",
@@ -4035,7 +4037,7 @@ const jaJP: Record<string, string> = {
     "認可を開いて、このプラグインの MCP サーバーへの接続を完了してください。",
   "settings.mcp.oauth.openAuthorization": "認可を開く",
   "settings.mcp.statusOnlyUnsupported":
-    "この ZCode Agent は OAuth の状態を更新できません。ZCode をアップグレードまたは再起動してから、MCP 設定を開き直して完全な更新を実行してください。",
+    "この {brand} Agent は OAuth の状態を更新できません。{brand} をアップグレードまたは再起動してから、MCP 設定を開き直して完全な更新を実行してください。",
   "settings.mcp.refreshFailed": "MCP の状態を更新できませんでした: {error}",
   "settings.mcp.status.toolCount": "{count} 個のツール",
   "settings.mcp.status.connectedReason": "接続済みで利用できます。",
@@ -4061,7 +4063,7 @@ const jaJP: Record<string, string> = {
   "settings.mcp.failure.official_origin_untrusted":
     "MCP サーバーの URL がセキュリティチェックを通過しなかったため、接続をブロックしました。",
   "settings.mcp.failure.not_authenticated":
-    "サインインしていません。この MCP サーバーを使用するには ZCode にサインインしてください。",
+    "サインインしていません。この MCP サーバーを使用するには {brand} にサインインしてください。",
   "settings.mcp.failure.coding_plan_required":
     "このアカウントには Coding Plan がありません。この MCP サーバーを使用するには Coding Plan を購入または構成してください。",
   "settings.mcp.failure.server_not_found":
@@ -4081,7 +4083,7 @@ const jaJP: Record<string, string> = {
   "settings.mcp.failureAdvice.config_invalid":
     "MCP のコマンド、引数、サーバーアドレス、環境変数を確認してください。設定を修正してから状態を更新してください。",
   "settings.mcp.failureAdvice.runtime_unavailable":
-    "この MCP を実行しているデバイスで、必要なランタイムをインストールまたは設定し、ZCode が起動コマンドを見つけられるようにしてください。",
+    "この MCP を実行しているデバイスで、必要なランタイムをインストールまたは設定し、{brand} が起動コマンドを見つけられるようにしてください。",
   "settings.mcp.failureAdvice.process_start_failed":
     "この MCP を実行しているデバイスで、起動コマンド、作業ディレクトリ、スクリプトのパス、実行権限を確認してください。Python の依存関係は、そのコマンドのインタプリターまたは仮想環境で、プラグインの requirements ファイル（requirements.txt など）からインストールしてください。Node の MCP では Node.js とパッケージの依存関係を確認してください。環境を修正してから更新してください。",
   "settings.mcp.failureAdvice.network_unreachable":
@@ -4095,11 +4097,11 @@ const jaJP: Record<string, string> = {
   "settings.mcp.failureAdvice.unexpected_disconnect":
     "下のエラーとサーバーログを確認してください。プロセスの終了、依存関係の不足、接続の中断がないか確認してから、状態を更新してください。",
   "settings.mcp.failureAdvice.oauth_authorization_failed":
-    "この MCP サーバーの認可リンクをもう一度開き、ブラウザーで認可を完了してから ZCode に戻り、状態を更新してください。",
+    "この MCP サーバーの認可リンクをもう一度開き、ブラウザーで認可を完了してから {brand} に戻り、状態を更新してください。",
   "settings.mcp.failureAdvice.official_origin_untrusted":
     "プラグインとサーバーアドレスが信頼できる設定に由来するか確認してください。セキュリティチェックを無効にしたり、不明なアドレスにログイン情報を入力したりしないでください。",
   "settings.mcp.failureAdvice.not_authenticated":
-    "ZCode にサインインしてから MCP の状態を更新してください。アカウントがサインイン済みに見える場合は、サインインし直してください。",
+    "{brand} にサインインしてから MCP の状態を更新してください。アカウントがサインイン済みに見える場合は、サインインし直してください。",
   "settings.mcp.failureAdvice.coding_plan_required":
     "モデル設定で、アカウントの Coding Plan と選択中のチームまたはプロジェクトを確認してください。利用可能になったことを確認してから更新してください。",
   "settings.mcp.failureAdvice.server_not_found":
@@ -4171,7 +4173,7 @@ const jaJP: Record<string, string> = {
   "settings.mcpServers.import.targetLabel": "インポート先",
   "settings.mcpServers.import.target.global": "グローバルにインポート",
   "settings.mcpServers.import.target.project": "プロジェクトにインポート",
-  "settings.mcpServers.import.importing": "MCP サーバーを ZCode にインポート中",
+  "settings.mcpServers.import.importing": "MCP サーバーを {brand} にインポート中",
   "settings.mcpServers.import.imported": "インポート済み",
   "settings.mcpServers.import.skipped": "スキップ",
   "settings.mcpServers.import.failed": "失敗",
@@ -4238,6 +4240,11 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.addProviderAction": "プロバイダーを追加",
   "settings.modelProvider.templatePickerTitle": "プロバイダーを追加",
   "settings.modelProvider.templateGroup.zhipu": "Zhipu",
+  "settings.modelProvider.templateGroup.metarouter": "融智坊",
+  "settings.modelProvider.metarouterSetup.title": "MetaRouter に接続",
+  "settings.modelProvider.metarouterSetup.description": "MetaRouter は融智坊のモデルゲートウェイです。追加して API キーを貼り付ければ利用でき、モデル一覧はゲートウェイから自動取得します。",
+  "settings.modelProvider.syncGatewayModels.action": "モデルを取得",
+  "settings.modelProvider.syncGatewayModels.done": "ゲートウェイのモデル一覧を同期しました：計 {total} 件、新規 {added} 件。",
   "settings.modelProvider.templateGroup.other": "その他",
   "settings.modelProvider.templatePickerBack": "プロバイダーの詳細に戻る",
   "settings.modelProvider.addProviderModelReminder":
@@ -4313,7 +4320,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.startPlan.highlight.trial.label": "トライアル期間",
   "settings.modelProvider.startPlan.highlight.trial.value": "5 日間（暦日）",
   "settings.modelProvider.startPlan.highlight.trial.description":
-    "ZCode 3.x にサインインした時点から計算されます。",
+    "{brand} 3.x にサインインした時点から計算されます。",
   "settings.modelProvider.startPlan.highlight.quota.label": "毎日のクォータ",
   "settings.modelProvider.startPlan.highlight.quota.value": "毎日 3M トークン",
   "settings.modelProvider.startPlan.highlight.quota.description":
@@ -4323,7 +4330,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.startPlan.highlight.metering.description":
     "プラットフォームの GLM フラッグシップモデルを使用した場合にのみ計測されます。",
   "settings.modelProvider.startPlan.compatibility":
-    "BYOK と BYOA に対応しています。Base URL、API 形式、API Key は ZCode が自動で管理します。",
+    "BYOK と BYOA に対応しています。Base URL、API 形式、API Key は {brand} が自動で管理します。",
   "settings.modelProvider.codingPlan.title": "{provider} - Coding Plan",
   "settings.modelProvider.codingPlan.webview.title": "プランをアップグレード",
   "settings.modelProvider.codingPlan.webview.authInjectFailed":
@@ -4459,7 +4466,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.codingPlan.purchase.teamMemberNoticeTitle":
     "チームプランにメンバーを割り当てる",
   "settings.modelProvider.codingPlan.purchase.teamMemberNoticeDescription":
-    "BigModel のチームプラン管理ページで、自分または他のメンバーを追加してください。割り当てが完了すると、ZCode でチームのクォータを使用できるようになります。",
+    "BigModel のチームプラン管理ページで、自分または他のメンバーを追加してください。割り当てが完了すると、{brand} でチームのクォータを使用できるようになります。",
   "settings.modelProvider.codingPlan.purchase.manageTeamPlan": "チームプランを管理",
   "settings.modelProvider.codingPlan.manage": "管理",
   "settings.modelProvider.planCard.codingPlan": "Coding Plan",
@@ -4844,7 +4851,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.resetForm": "フォームをリセット",
   "settings.modelProvider.fieldHelp": "{field}について",
   "settings.modelProvider.help.contextWindow":
-    "モデルが一度に処理できるコンテキストの容量（トークン単位）です。ZCode はこの値を使ってコンテキストを管理します。\nモデルの実際の上限を超えないようにしてください。",
+    "モデルが一度に処理できるコンテキストの容量（トークン単位）です。{brand} はこの値を使ってコンテキストを管理します。\nモデルの実際の上限を超えないようにしてください。",
   "settings.modelProvider.help.maxOutputTokens":
     "1 回のモデルリクエストで生成できるトークンの最大数です。\nモデルの実際の上限を超えないようにしてください。",
   "settings.modelProvider.help.inputModalities":
@@ -4860,7 +4867,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.help.advanced":
     "**MFJS tool schema**: Moonshot Flavored JSON Schema との互換性を有効にします。主に Moonshot の Kimi モデル API で使用されます。モデル API がこの形式を必要とする場合にのみ有効にしてください。",
   "settings.modelProvider.help.followRecommendedConfig":
-    "モデル ID、Base URL、API 形式をもとに推奨構成を照合します。ZCode は推奨構成を継続的に更新し、自動的に同期します。\n設定を手動で変更すると、その設定は手動管理となり、推奨構成の更新に追従しなくなります。その他の設定は引き続きスマート構成で管理されます。",
+    "モデル ID、Base URL、API 形式をもとに推奨構成を照合します。{brand} は推奨構成を継続的に更新し、自動的に同期します。\n設定を手動で変更すると、その設定は手動管理となり、推奨構成の更新に追従しなくなります。その他の設定は引き続きスマート構成で管理されます。",
   "settings.modelProvider.modelDefaultsLoaded": "このモデルのスマート構成が適用されました",
   "settings.modelProvider.modelConfigIncomplete": "モデルの構成が不完全です",
   "settings.modelProvider.models": "モデル一覧",
@@ -4939,7 +4946,7 @@ const jaJP: Record<string, string> = {
   "settings.usage.sourceProvider": "ソース: {provider}",
   "settings.usage.billingBanner.title": "{provider} Coding Plan",
   "settings.usage.billingBanner.description":
-    "{provider} アカウントを接続して Coding Plan の利用権を確認し、購入または設定後も引き続き ZCode でコーディングできます。",
+    "{provider} アカウントを接続して Coding Plan の利用権を確認し、購入または設定後も引き続き {brand} でコーディングできます。",
   "settings.usage.billingBanner.compactDescription":
     "{provider} アカウントを接続して使用状況を同期します。",
   "settings.usage.billingBanner.buy": "Coding Plan を購入",
@@ -5006,7 +5013,7 @@ const jaJP: Record<string, string> = {
   "settings.usage.entitlementFiveHourUsage": "5 時間の残り",
   "settings.usage.entitlementWeeklyUsage": "週間の残り",
   "settings.usage.entitlementMonthlyMcpUsage": "ツール呼び出し",
-  "settings.usage.entitlementServerMcpUsage": "ZCode MCP",
+  "settings.usage.entitlementServerMcpUsage": "{brand} MCP",
   "settings.usage.entitlementResetAt": "リセット: {time}",
   "settings.usage.entitlementUsageDetails": "ツール使用状況の詳細",
   "settings.usage.entitlementPromptCap": "5 時間のプロンプトプール",
@@ -5064,10 +5071,10 @@ const jaJP: Record<string, string> = {
   "sidebar.usage.plan.fiveHour": "5 時間",
   "sidebar.usage.plan.weekly": "週間",
   "sidebar.usage.plan.toolCalls": "ツール呼び出し",
-  "sidebar.usage.plan.mcp": "ZCode MCP",
-  "sidebar.usage.plan.zcodeMcp": "ZCode MCP",
+  "sidebar.usage.plan.mcp": "{brand} MCP",
+  "sidebar.usage.plan.zcodeMcp": "{brand} MCP",
   "sidebar.usage.plan.zcodeMcpDescription":
-    "ZCode 組み込みプラグイン MCP の 1 日あたりの合計クォータ",
+    "{brand} 組み込みプラグイン MCP の 1 日あたりの合計クォータ",
   "chat.planUsage.title": "プランの使用状況",
   "chat.planUsage.titleWithPlan": "{plan} プランの使用状況",
   "chat.planUsage.providerFallback": "現在のプロバイダー",
@@ -5253,7 +5260,7 @@ const jaJP: Record<string, string> = {
   "settings.skills.delete.title": "スキルを削除",
   "settings.skills.delete.description":
     "「{name}」を削除しますか？スキルのフォルダがディスクから削除され、元に戻すことはできません。",
-  "settings.skills.agent.glm": "ZCode Agent",
+  "settings.skills.agent.glm": "{brand} Agent",
   "settings.skills.agent.unknown": "不明なソース",
   "settings.skills.create.open": "新しいスキル",
   "settings.skills.create.taskCreateFailed":
@@ -5294,10 +5301,10 @@ const jaJP: Record<string, string> = {
   "settings.skills.import.mode.copy": "コピー",
   "settings.skills.import.mode.symlink": "シンボリックリンク",
   "settings.skills.import.mode.copy.description":
-    "スキルのディレクトリ全体を ZCode にコピーします。外部エージェントのディレクトリで後から行った変更は自動的に同期されません。",
+    "スキルのディレクトリ全体を {brand} にコピーします。外部エージェントのディレクトリで後から行った変更は自動的に同期されません。",
   "settings.skills.import.mode.symlink.description":
-    "外部エージェントのスキルへのディレクトリリンクを作成します。ZCode はソースの変更に追従しますが、スキルはそのソースパスが引き続き利用可能であることに依存します。",
-  "settings.skills.import.importing": "ZCode にスキルをインポート中",
+    "外部エージェントのスキルへのディレクトリリンクを作成します。{brand} はソースの変更に追従しますが、スキルはそのソースパスが引き続き利用可能であることに依存します。",
+  "settings.skills.import.importing": "{brand} にスキルをインポート中",
   "settings.skills.import.imported": "インポート済み",
   "settings.skills.import.skipped": "スキップ",
   "settings.skills.import.failed": "失敗",
@@ -5349,7 +5356,7 @@ const jaJP: Record<string, string> = {
   "settings.skills.diagnostics.code.skill_not_found": "スキルが見つかりません",
   "settings.subagents.title": "サブエージェント",
   "settings.subagents.description":
-    "ZCode Agent が使用するユーザーレベルのサブエージェント Markdown ファイルを管理します。",
+    "{brand} Agent が使用するユーザーレベルのサブエージェント Markdown ファイルを管理します。",
   "settings.subagents.workspaceScopeUnsupported":
     "ワークスペースレベルでの作成や編集はサポートされていません",
   "settings.subagents.searchPlaceholder": "サブエージェントを検索...",
@@ -5738,10 +5745,10 @@ const jaJP: Record<string, string> = {
   "settings.plugins.import.mode.copy": "コピー",
   "settings.plugins.import.mode.symlink": "シンボリックリンク",
   "settings.plugins.import.mode.copy.description":
-    "プラグインのディレクトリ全体を ZCode にコピーし、plugins.dirs に登録します。外部エージェントのディレクトリで後から行った変更は自動的に同期されません。",
+    "プラグインのディレクトリ全体を {brand} にコピーし、plugins.dirs に登録します。外部エージェントのディレクトリで後から行った変更は自動的に同期されません。",
   "settings.plugins.import.mode.symlink.description":
-    "外部エージェントのプラグインへのディレクトリリンクを作成し、plugins.dirs に登録します。ZCode はソースの変更に追従しますが、プラグインはそのソースパスが引き続き利用可能であることに依存します。",
-  "settings.plugins.import.importing": "ZCode にプラグインをインポート中",
+    "外部エージェントのプラグインへのディレクトリリンクを作成し、plugins.dirs に登録します。{brand} はソースの変更に追従しますが、プラグインはそのソースパスが引き続き利用可能であることに依存します。",
+  "settings.plugins.import.importing": "{brand} にプラグインをインポート中",
   "settings.plugins.import.imported": "インポート済み",
   "settings.plugins.import.skipped": "スキップ",
   "settings.plugins.import.failed": "失敗",
@@ -5750,9 +5757,9 @@ const jaJP: Record<string, string> = {
   "settings.plugins.import.finish": "完了",
   "settings.commands.title": "コマンド",
   "settings.commands.description":
-    "ZCode Agent の .md コマンドファイルを管理します。コマンドはチャットで /command-name で呼び出せます。",
+    "{brand} Agent の .md コマンドファイルを管理します。コマンドはチャットで /command-name で呼び出せます。",
   "settings.commands.sourceFilterLabel": "ソースで絞り込み",
-  "settings.commands.source.zcodeAgent": "ZCode Agent",
+  "settings.commands.source.zcodeAgent": "{brand} Agent",
   "settings.commands.add": "新規",
   "settings.commands.addNew": "新しいコマンド",
   "settings.commands.addDescription": "コマンド名とプロンプトを入力し、保存すると一覧に戻ります。",
@@ -5811,10 +5818,10 @@ const jaJP: Record<string, string> = {
   "settings.commands.import.mode.copy": "コピー",
   "settings.commands.import.mode.symlink": "シンボリックリンク",
   "settings.commands.import.mode.copy.description":
-    "コマンドファイルを ZCode にコピーします。外部エージェントのファイルで後から行った変更は自動的に同期されません。",
+    "コマンドファイルを {brand} にコピーします。外部エージェントのファイルで後から行った変更は自動的に同期されません。",
   "settings.commands.import.mode.symlink.description":
-    "外部エージェントのコマンドへのファイルリンクを作成します。ZCode はソースの変更に追従しますが、コマンドはそのソースパスが引き続き利用可能であることに依存します。",
-  "settings.commands.import.importing": "ZCode にコマンドをインポート中",
+    "外部エージェントのコマンドへのファイルリンクを作成します。{brand} はソースの変更に追従しますが、コマンドはそのソースパスが引き続き利用可能であることに依存します。",
+  "settings.commands.import.importing": "{brand} にコマンドをインポート中",
   "settings.commands.import.imported": "インポート済み",
   "settings.commands.import.skipped": "スキップ",
   "settings.commands.import.failed": "失敗",
@@ -5908,7 +5915,7 @@ const jaJP: Record<string, string> = {
   "settings.hooks.customJsonObjectError":
     "カスタムフィールドは JSON オブジェクトである必要があります。",
   "settings.hooks.customJsonParseError": "カスタムフィールド JSON の解析に失敗しました。",
-  "settings.plugins.zcodeOnly": "ZCode Agent のみ",
+  "settings.plugins.zcodeOnly": "{brand} Agent のみ",
   "settingsSync.dialog.title": "設定をインポート",
   "settingsSync.dialog.description":
     "まだ存在しない項目のみインポートされます。既存の設定は自動的にスキップされます。",
@@ -5917,8 +5924,8 @@ const jaJP: Record<string, string> = {
   "settingsSync.action.rescanning": "スキャン中...",
   "settingsSync.action.importSelected": "選択した項目をインポート",
   "settingsSync.action.importing": "インポート中...",
-  "settingsSync.action.finish": "ZCode を使い始める",
-  "settingsSync.agent.zcode": "ZCode Agent",
+  "settingsSync.action.finish": "{brand} を使い始める",
+  "settingsSync.agent.zcode": "{brand} Agent",
   "settingsSync.agent.claudeCode": "Claude Code",
   "settingsSync.agent.codexCli": "Codex CLI",
   "settingsSync.agent.openCode": "OpenCode",
@@ -5968,7 +5975,7 @@ const jaJP: Record<string, string> = {
   "settingsSync.discovery.description":
     "インポート可能なエージェント設定は自動的にスキャンされなくなりました。",
   "settingsSync.discovery.helper":
-    "まだ存在しない項目のみインポートされ、現在の ZCode の設定は上書きされません。",
+    "まだ存在しない項目のみインポートされ、現在の {brand} の設定は上書きされません。",
   "settingsSync.discovery.agentCount": "見つかったエージェント: {count}",
   "settingsSync.discovery.categoryCount": "見つかったカテゴリ: {count}",
   "settingsSync.discovery.error": "スキャンに失敗しました: {error}",
@@ -5995,7 +6002,7 @@ const jaJP: Record<string, string> = {
   "onboarding.stepDescription.agentSettings":
     "どのエージェントのプロバイダーを取り込むか選択してください。",
   "onboarding.stepDescription.migration":
-    "移行を開始し、ZCode が選択した項目をインポートするまでお待ちください。",
+    "移行を開始し、{brand} が選択した項目をインポートするまでお待ちください。",
   "onboarding.sessions.empty":
     "ワークスペースはまだありません。ローカル履歴をスキャンしてから、移行するワークスペースを選択してください。",
   "onboarding.sessions.count": "{count} 件のセッション",
@@ -6016,7 +6023,7 @@ const jaJP: Record<string, string> = {
   "onboarding.agentsFile.error": "AGENTS.md の移行状況を確認できませんでした: {error}",
   "onboarding.agentsFile.confirmTitle": "デフォルトの AGENTS.md を上書きしますか？",
   "onboarding.agentsFile.confirmDescription":
-    "ZCode は {source}を {target}にコピーします。\nコピー先のファイルがすでに存在する場合、ZCode のデフォルトの AGENTS 構成は上書きされます。",
+    "{brand} は {source}を {target}にコピーします。\nコピー先のファイルがすでに存在する場合、{brand} のデフォルトの AGENTS 構成は上書きされます。",
   "onboarding.agentsFile.confirmAction": "上書きして移行",
   "onboarding.finish.summary.label.imported": "インポート済み",
   "onboarding.finish.summary.label.skipped": "スキップ",
@@ -6108,8 +6115,8 @@ const jaJP: Record<string, string> = {
   "chat.emptyResult.description":
     "このタスクはチャット内容なしで終了しました。モデルが応答を生成する前に停止された可能性があります。",
   "chat.placeholder.newTask":
-    "ZCode に何でも質問できます。@ でコンテキストを追加、/ でコマンドや機能を呼び出せます",
-  "chat.placeholder.newTaskMobile": "ZCode に何でも質問…",
+    "{brand} に何でも質問できます。@ でコンテキストを追加、/ でコマンドや機能を呼び出せます",
+  "chat.placeholder.newTaskMobile": "{brand} に何でも質問…",
   "chat.placeholder.followUpAsk": "追加の変更を依頼",
   "chat.placeholder.followUpQueue": "入力を続けると、追加の変更をキューに入れられます",
   "chat.placeholder.loading": "タスクを初期化中...",
@@ -6423,7 +6430,7 @@ const jaJP: Record<string, string> = {
   "chat.modelSwitch.contextWindowGuard.title":
     "モデルを切り替える前にコンテキストを圧縮してください",
   "chat.modelSwitch.contextWindowGuard.description":
-    "この会話では {used} トークンを使用しており、最大出力を確保した後の {modelName}の利用可能なコンテキスト {target} トークンを超えています。\nまず現在のモデルで現在の会話を圧縮してください。圧縮後のコンテキストが収まれば、ZCode はモデルの切り替えを続行します。",
+    "この会話では {used} トークンを使用しており、最大出力を確保した後の {modelName}の利用可能なコンテキスト {target} トークンを超えています。\nまず現在のモデルで現在の会話を圧縮してください。圧縮後のコンテキストが収まれば、{brand} はモデルの切り替えを続行します。",
   "chat.modelSwitch.contextWindowGuard.compress": "圧縮",
   "chat.modelSwitch.contextWindowGuard.runningBlocked":
     "この会話で使用しているコンテキストは、最大出力を確保した後の切り替え先モデルの利用可能なコンテキストを超えています。モデルを切り替える前に会話を圧縮する必要がありますが、現在のタスクがまだ実行中のため、今はコンテキストを圧縮できません。タスクの終了を待ってから、もう一度モデルを切り替えてください。",
@@ -6436,11 +6443,11 @@ const jaJP: Record<string, string> = {
     "Computer Use は待機中です。初回使用時に自動的に起動します",
   "chat.toolbar.computerUse.tooltip.starting": "Computer Use プラグインを有効化中…",
   "chat.toolbar.computerUse.tooltip.ready":
-    "Computer Use の準備ができました。ZCode にしてほしいことを伝えてください",
+    "Computer Use の準備ができました。{brand} にしてほしいことを伝えてください",
   "chat.toolbar.computerUse.tooltip.permissionRequired":
     "macOS の権限が不足しています。クリックして許可してください",
   "chat.toolbar.computerUse.tooltip.error":
-    "Computer Use の有効化に失敗しました。ZCode アプリを再起動して再試行するか、ZCode にログの調査を依頼してください",
+    "Computer Use の有効化に失敗しました。{brand} アプリを再起動して再試行するか、{brand} にログの調査を依頼してください",
   "chat.toolbar.computerUse.tooltip.sessionBusy":
     "会話を実行中のため、今は Computer Use を切り替えられません。終了後にもう一度お試しください。",
   "chat.toolbar.mode.description":
@@ -6801,7 +6808,7 @@ const jaJP: Record<string, string> = {
     "ローカルエージェントに接続できなかったため、グローバルワークフローは利用できません。",
   "workflows.hub.empty.title": "開いているプロジェクトに保存済みのワークフローはまだありません",
   "workflows.hub.empty.hint":
-    "チャットで ZCode と一緒にワークフローを設計し、動作したらプロジェクトに保存してもらいましょう。開いていないプロジェクトはここに表示されません。",
+    "チャットで {brand} と一緒にワークフローを設計し、動作したらプロジェクトに保存してもらいましょう。開いていないプロジェクトはここに表示されません。",
   "workflows.hub.noWorkspace": "ワークスペースを開くと、そのワークフローを表示できます。",
   "workflows.hub.loadError": "ワークフローを読み取れませんでした: {error}",
   "workflows.hub.invalid": "{count} 個のファイルを読み取れませんでした",
@@ -6866,7 +6873,7 @@ const jaJP: Record<string, string> = {
   "workflows.hub.detail.description": "説明",
   "workflows.hub.detail.whenToUse": "使用するタイミング",
   "workflows.hub.detail.whenToUse.help":
-    "ZCode 向けのルーティングのヒントです。このワークフローが適しているのはどんなときかを記述します。",
+    "{brand} 向けのルーティングのヒントです。このワークフローが適しているのはどんなときかを記述します。",
   "workflows.hub.detail.args": "引数",
   "workflows.hub.detail.args.name": "名前",
   "workflows.hub.detail.args.type": "型",
@@ -6887,7 +6894,7 @@ const jaJP: Record<string, string> = {
   "workflows.hub.detail.meta.descriptionRequired": "説明は必須です",
   "workflows.hub.detail.script": "スクリプト",
   "workflows.hub.detail.script.note":
-    "スクリプトは読み取り専用です。変更するには、チャットで ZCode と一緒に修正し、新しいバージョンを保存してください。",
+    "スクリプトは読み取り専用です。変更するには、チャットで {brand} と一緒に修正し、新しいバージョンを保存してください。",
   "workflows.hub.detail.script.copy": "スクリプトをコピー",
   "workflows.hub.detail.loadError": "このワークフローを読み取れませんでした: {reason}",
   "workflows.hub.detail.notFound": "このワークフローはプロジェクト内に存在しなくなりました。",
@@ -7085,10 +7092,10 @@ const jaJP: Record<string, string> = {
   "chat.toolCall.workflow.saveRun.announce.project": "プロジェクトに保存しました",
   "chat.toolCall.workflow.saveRun.announce.global": "グローバルワークフローとして保存しました",
   "chat.toolCall.workflow.saveRun.title": "ワークフローを保存",
-  "chat.toolCall.workflow.saveRun.lead": "ZCode に改善して保存してもらう",
+  "chat.toolCall.workflow.saveRun.lead": "{brand} に改善して保存してもらう",
   "chat.toolCall.workflow.saveRun.lead.hint":
-    "ZCode が再利用可能なワークフローを抽出し、確認を求めます。",
-  "chat.toolCall.workflow.saveRun.lead.sending": "ZCode に渡しました…",
+    "{brand} が再利用可能なワークフローを抽出し、確認を求めます。",
+  "chat.toolCall.workflow.saveRun.lead.sending": "{brand} に渡しました…",
   "chat.toolCall.workflow.saveRun.lead.unsupported": "このエージェントは直接保存できません。",
   "chat.toolCall.workflow.saveRun.or": "またはそのまま保存",
   "chat.toolCall.workflow.saveRun.name": "名前",
@@ -7192,7 +7199,7 @@ const jaJP: Record<string, string> = {
   "chat.toolCall.workflow.run.artifacts.nextVersion": "次のバージョン",
   "chat.toolCall.workflow.run.artifacts.open": "成果物を開く",
   // 动作。「下载」（存到用户挑的位置）仍缺席；「作为文件打开」
-  // 落的是宿主 ~/.zcode/tmp 下的副本，不是用户挑的位置。
+  // 落的是宿主 ~/.dlMeta/tmp 下的副本，不是用户挑的位置。
   "chat.toolCall.workflow.run.artifacts.reveal": "ワークスペースで表示",
   "chat.toolCall.workflow.run.artifacts.copy": "コピー",
   "chat.toolCall.workflow.run.artifacts.copied": "コピーしました",
@@ -7475,7 +7482,7 @@ const jaJP: Record<string, string> = {
   "chat.slash.subagents.title": "エージェント",
   "chat.slash.subagents.empty": "一致するエージェントはありません",
   "chat.slash.emptyUnavailable":
-    "現在の ZCode Agent セッションではスラッシュコマンドが配信されていません",
+    "現在の {brand} Agent セッションではスラッシュコマンドが配信されていません",
   "chat.slash.emptyResults": "一致するスラッシュコマンドはありません",
   // Errors
   "chat.error.connectionLost": "エージェントとの接続が切断されました",
@@ -7521,9 +7528,9 @@ const jaJP: Record<string, string> = {
   "chat.quota.startPlan.concurrentLimit.switchModel":
     "現在のモデルのリクエスト同時実行数の上限に達しました。モデルを切り替えて現在のタスクを続行してください。",
   "chat.quota.mcp.quotaExhausted":
-    "ZCode MCP「{server}」の本日のクォータを使い切りました。明日リセットされます。",
+    "{brand} MCP「{server}」の本日のクォータを使い切りました。明日リセットされます。",
   "chat.quota.mcp.codingPlanRequired":
-    "ZCode MCP「{server}」のクォータがありません。使用するにはサインインするか、Coding Plan を入手してください。",
+    "{brand} MCP「{server}」のクォータがありません。使用するにはサインインするか、Coding Plan を入手してください。",
   "chat.quota.providerLimited":
     "現在のアカウントのクォータまたはプランの上限に達しました。続行するにはアップグレードするか、プランを調整してください。",
   "chat.quota.action.upgrade": "アップグレード",
@@ -7803,7 +7810,7 @@ const jaJP: Record<string, string> = {
   "resourceManager.network.empty": "新しいネットワークリクエストを待っています…",
   "resourceManager.network.noMatches": "一致するリクエストはありません",
   "resourceManager.storage": "ストレージ",
-  "resourceManager.appUsage": "ZCode",
+  "resourceManager.appUsage": "{brand}",
   "resourceManager.systemUsage": "システム",
   "resourceManager.category.base": "基本サービス",
   "resourceManager.category.task": "タスクプロセス",
@@ -8052,7 +8059,7 @@ const jaJP: Record<string, string> = {
   "feedback.submit.template.section.errorSummaryLine": "エラーの概要: {message}",
   "feedback.submit.template.section.errorDetail": "エラーの詳細",
   "feedback.submit.template.section.errorTraceId": "TraceID: {traceId}",
-  "feedback.submit.template.section.copyErrorHeading": "ZCode のエラー情報",
+  "feedback.submit.template.section.copyErrorHeading": "{brand} のエラー情報",
   "feedback.submit.template.section.notProvided": "未入力",
   "feedback.submit.template.section.remoteLogEmpty": "接続ログは取得されていません",
   "feedback.submit.template.section.taskFeedbackTitle": "タスクに関するフィードバック: {title}",
@@ -8216,7 +8223,7 @@ const jaJP: Record<string, string> = {
   "automations.statusFilter.failed": "失敗",
   "automations.statusFilter.empty": "このフィルターに一致するタスクはありません",
   "offPeak.keepAwakeBanner":
-    "ZCode がチャットを実行している間は、コンピューターをスリープさせないでください。",
+    "{brand} がチャットを実行している間は、コンピューターをスリープさせないでください。",
   "offPeak.sectionTitle": "アイドル時間タスク",
   "offPeak.createButton": "アイドル時間タスクを作成",
   "offPeak.templates.sectionTitle": "アイドル時間タスクのテンプレート",
@@ -8276,7 +8283,7 @@ const jaJP: Record<string, string> = {
   "offPeak.form.titlePlaceholder": "例: 夜間のリファクタリング",
   "offPeak.form.instructionsLabel": "指示",
   "offPeak.form.instructionsPlaceholder":
-    "ZCode がバックグラウンドで作業できるタスクを、期待する結果や制約も含めて記述してください…",
+    "{brand} がバックグラウンドで作業できるタスクを、期待する結果や制約も含めて記述してください…",
   "offPeak.form.permissionWarning":
     "アイドル時間の実行は無人で行われます。確認が必要な操作があると、応答するまでタスクは一時停止します。",
   "offPeak.form.modelLabel": "モデル",
@@ -8474,9 +8481,9 @@ const jaJP: Record<string, string> = {
   "automations.runs.nextPage": "次へ",
   // CUA (Computer Use)
   "chat.cuaReadiness.toolsNotLoaded":
-    "ZCode Computer Use はまだ準備中です。ツールはまだ読み込まれていません（{count} 個読み込み済み）。以下の権限を許可してください。ヘルパーの準備ができるとツールが表示されます。",
+    "{brand} Computer Use はまだ準備中です。ツールはまだ読み込まれていません（{count} 個読み込み済み）。以下の権限を許可してください。ヘルパーの準備ができるとツールが表示されます。",
   "chat.cuaReadiness.toolsPreparing":
-    "ZCode Computer Use はまだ準備中です。ツールはまだ読み込まれていません。以下の権限を許可してください。ヘルパーの準備ができるとツールが表示されます。",
+    "{brand} Computer Use はまだ準備中です。ツールはまだ読み込まれていません。以下の権限を許可してください。ヘルパーの準備ができるとツールが表示されます。",
   "chat.toolCall.cua.requestAccess": "Computer Use のアクセス権を確認",
   "chat.toolCall.cua.appName": "Computer Use",
   "chat.toolCall.cua.group.completedLabel": "Computer Use",
@@ -8604,9 +8611,9 @@ const jaJP: Record<string, string> = {
   "cuaPermission.modal.restartButton": "Helper を再起動",
   "cuaPermission.modal.restarting": "Helper を再起動中…",
   "cuaPermission.modal.restartFailed": "Helper を再起動できませんでした: {error}",
-  "cuaPermission.modal.relaunchAppButton": "ZCode を再起動",
+  "cuaPermission.modal.relaunchAppButton": "{brand} を再起動",
   "cuaPermission.modal.relaunchAppHint":
-    "Helper を再起動しても解決しない場合は、ZCode を再起動して Helper プロセスを完全に再読み込みしてください。",
+    "Helper を再起動しても解決しない場合は、{brand} を再起動して Helper プロセスを完全に再読み込みしてください。",
   "cuaPermission.status.granted": "許可済み",
   "cuaPermission.status.missing": "不足",
   "cuaPermission.status.unknown": "不明",
@@ -8620,7 +8627,7 @@ const jaJP: Record<string, string> = {
   "cuaPermission.tools.agentUpdateRequired":
     "接続中のエージェントが古いため、安全な準備状況の確認ができません。更新または再起動してから、もう一度確認してください。",
   "cuaPermission.tools.untrustedRuntime":
-    "Computer Use ツールが見つかりましたが、検証済みの ZCode プラグインから提供されたものではありません。プラグインのインストールを確認してから、もう一度確認してください。",
+    "Computer Use ツールが見つかりましたが、検証済みの {brand} プラグインから提供されたものではありません。プラグインのインストールを確認してから、もう一度確認してください。",
   "cuaPermission.perm.accessibility": "アクセシビリティ",
   "cuaPermission.perm.accessibility.purpose": "UI 要素の読み取り/操作 + 入力の合成",
   "cuaPermission.perm.screenRecording": "画面収録",
@@ -8631,7 +8638,7 @@ const jaJP: Record<string, string> = {
     "使用する前に macOS をアップグレードしてください。古いバージョンでは権限の設定を完了できません。",
   "cuaPermission.ready": "権限の準備ができました",
   "cuaPermission.ready.sessionValidationHint":
-    "最初のセッションの開始時に、ZCode はそのセッションに対して Computer Use ツールを検証します。",
+    "最初のセッションの開始時に、{brand} はそのセッションに対して Computer Use ツールを検証します。",
   "settings.computerUse.title": "Computer Use",
   "settings.computerUse.toggleLabel": "Computer Use を有効にする",
   "settings.computerUse.toggleDescription":
@@ -8685,13 +8692,13 @@ const jaJP: Record<string, string> = {
   "globalNotice.highspeed.textCopyFailed":
     "共有テキストをコピーできませんでした。もう一度お試しください。",
   "globalNotice.highspeed.copyImage": "画像をコピー",
-  "globalNotice.highspeed.badge": "ZCode & Coding Plan 限定特典",
+  "globalNotice.highspeed.badge": "{brand} & Coding Plan 限定特典",
   "globalNotice.highspeed.standardTaskSpeed": "標準の生成速度",
   "globalNotice.highspeed.relativeTaskDuration": "相対的な生成時間",
   "globalNotice.highspeed.speedSummary": "HighSpeed · {duration}",
   "globalNotice.highspeed.lessWaiting": "待ち時間を {percent}% 短縮",
   "globalNotice.highspeed.copySummary":
-    "ZCode の Highspeed カードを使って {duration} 秒短縮しました。ぜひ試してみてください。ZCode のダウンロード: https://zcode.z.ai",
+    "{brand} の Highspeed カードを使って {duration} 秒短縮しました。ぜひ試してみてください。{brand} のダウンロード: https://zcode.z.ai",
   "globalNotice.highspeed.imageSummary": "{tokens} トークン · {duration}秒 短縮",
   "globalNotice.highspeed.close": "Highspeed の共有カードを閉じる",
   "remoteSync.title": "データ同期",
@@ -8702,7 +8709,7 @@ const jaJP: Record<string, string> = {
   "remoteSync.device.status.online": "接続済み",
   "remoteSync.empty.title": "接続済みのデバイスはありません",
   "remoteSync.empty.description":
-    "SSH、WSL、Docker のデバイスを接続すると、このデバイスの構成をその ~/.zcode ディレクトリにプッシュできます。",
+    `SSH、WSL、Docker のデバイスを接続すると、このデバイスの構成をその ~/.${DATA_DIR_NAME} ディレクトリにプッシュできます。`,
   "remoteSync.empty.connect": "リモートデバイスを接続",
   "remoteSync.device.neverSynced": "まだ同期されていません",
   "remoteSync.device.lastSynced.today": "今日 {time}に同期",
@@ -8767,7 +8774,7 @@ const jaJP: Record<string, string> = {
   "remoteSync.blocked.compatDirectory":
     "リモートの項目は ~/.agents 互換ディレクトリにあるため上書きできません",
   "remoteSync.blocked.externalDirectory":
-    "リモートにある同名のプラグインは ~/.zcode/plugins の外（開発用のチェックアウトなど）にあるため更新できません",
+    `リモートにある同名のプラグインは ~/.${DATA_DIR_NAME}/plugins の外（開発用のチェックアウトなど）にあるため更新できません`,
   "remoteSync.blocked.targetCompatConfig":
     "リモートデバイスは ~/.agents 互換構成を使用しています。プッシュするとその構成が無効になります",
   "remoteSync.blocked.sourceRemoved": "ソースが削除されたため同期できません",

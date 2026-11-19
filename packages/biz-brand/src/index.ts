@@ -47,6 +47,7 @@ export const brandIdentity: BrandIdentity = {
   productName: "FusionFinLab",
   displayName: "融智坊",
   displayNameEn: "FUSIONFINLAB",
+  i18nBrandName: "DLMetaWork",
   appId: "com.meta.fusionfinlab.desktop",
   linuxExecutableName: "fusionfinlab",
   logoSvg: LOGO_SVG,

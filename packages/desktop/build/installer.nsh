@@ -41,7 +41,7 @@
 
   ; 卸载器只在更新时删除旧文件；单独记录清理阶段，避免外层把权限/空间错误误报成应用仍在运行。
   !macro ZCodeReportUninstallerStage MESSAGE
-    DetailPrint "ZCode: ${MESSAGE}"
+    DetailPrint "DLMetaWork: ${MESSAGE}"
     Push "${MESSAGE}"
     Call ${ZCODE_UNINSTALLER_FUNCTION_PREFIX}ZCodeWriteUninstallerLog
   !macroend
@@ -162,7 +162,7 @@
   ; 详情面板和文件日志共用同一条阶段事件，避免静默安装丢失关键上下文。
   !macro ZCodeReportInstallerStage MESSAGE
     SetDetailsPrint listonly
-    DetailPrint "ZCode: ${MESSAGE}"
+    DetailPrint "DLMetaWork: ${MESSAGE}"
     Push "${MESSAGE}"
     Call ZCodeWriteInstallerLog
   !macroend
@@ -232,7 +232,7 @@
       IfErrors zcodeShowUninstallerDetailsClose
       StrCmp $R1 "" zcodeShowUninstallerDetailsRead
       SetDetailsPrint listonly
-      DetailPrint "ZCode: cleanup-log $R1"
+      DetailPrint "DLMetaWork: cleanup-log $R1"
       Goto zcodeShowUninstallerDetailsRead
     zcodeShowUninstallerDetailsClose:
       FileClose $R0
@@ -333,7 +333,7 @@
     Pop $R2
     StrCmp $R1 "0" zcodePreviousProcessesStopped
     !insertmacro ZCodeReportInstallerStage "process-cleanup-failed exit-code=$R1 install-dir=$installationDir details=$R2"
-    !insertmacro ZCodeCleanupErrorMessage "无法验证或关闭旧版本进程，安装已停止。请关闭 ZCode 后重试。进程信息：$R2" "Cannot verify or close previous-version processes. Setup stopped. Close ZCode and retry. Process details: $R2"
+    !insertmacro ZCodeCleanupErrorMessage "无法验证或关闭旧版本进程，安装已停止。请关闭 DLMetaWork 后重试。进程信息：$R2" "Cannot verify or close previous-version processes. Setup stopped. Close DLMetaWork and retry. Process details: $R2"
     SetErrorLevel 2
     Quit
     zcodePreviousProcessesStopped:
@@ -553,7 +553,7 @@
       ; 修复原因：静默自动更新无人值守，未设置 /SD 的模态框会一直等待用户点击，
       ; 使明确的退出码无法返回 electron-updater。静默时自动采用 IDOK，交互时仍显示提示。
       SetDetailsPrint listonly
-      DetailPrint "ZCode: cleanup-failed exit-code=$R0"
+      DetailPrint "DLMetaWork: cleanup-failed exit-code=$R0"
       Call ZCodeShowUninstallerCleanupDetails
       ; 最终错误也沿用安装器语言，避免英文 Retry/Cancel 之后固定切回中文。
       !insertmacro ZCodeCleanupErrorMessage "旧版本清理失败（错误码 $R0）。可能是文件被占用、权限不足或磁盘空间不足。详细日志：${ZCODE_UNINSTALLER_LOG_PATH}" "Previous version cleanup failed (exit code $R0). Files may be in use, permissions may be insufficient, or disk space may be low. Log: ${ZCODE_UNINSTALLER_LOG_PATH}"
@@ -791,7 +791,7 @@
     zcodeInstallDirDataBlockFound:
       IfSilent zcodeInstallDirDataBlockSilent
 
-      !insertmacro MUI_HEADER_TEXT "需要修改安装目录" "当前安装目录或其子目录包含 ZCode 数据目录"
+      !insertmacro MUI_HEADER_TEXT "需要修改安装目录" "当前安装目录或其子目录包含 DLMetaWork 数据目录"
       nsDialogs::Create 1018
       Pop $0
       StrCmp $0 error zcodeInstallDirDataBlockDialogFailed 0
