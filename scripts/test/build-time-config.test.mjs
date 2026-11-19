@@ -15,25 +15,28 @@ async function writeDefaults(name, content) {
   return path;
 }
 
-test("没有私有默认配置也没有环境变量时三项能力都关闭", async () => {
+test("没有私有默认配置也没有环境变量时所有能力都关闭", async () => {
   const config = await resolveBuildTimeConfig({}, { defaultsPath: join(dir, "missing.json") });
   assert.deepEqual(config, {
     armsRumEndpoint: "",
     telemetryReportEndpoint: "",
     autoUpdateEnabled: false,
+    buildDefaultEndpointOrigin: "",
   });
 });
 
-test("私有默认配置启用三项能力", async () => {
+test("私有默认配置启用全部能力", async () => {
   const defaultsPath = await writeDefaults("defaults.json", {
     ZCODE_ARMS_RUM_ENDPOINT: " https://rum.example.com/x ",
     ZCODE_TELEMETRY_REPORT_ENDPOINT: "https://report.example.com/event",
     ZCODE_AUTO_UPDATE: "1",
+    ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN: " http://127.0.0.1:18091 ",
   });
   assert.deepEqual(await resolveBuildTimeConfig({}, { defaultsPath }), {
     armsRumEndpoint: "https://rum.example.com/x",
     telemetryReportEndpoint: "https://report.example.com/event",
     autoUpdateEnabled: true,
+    buildDefaultEndpointOrigin: "http://127.0.0.1:18091",
   });
 });
 
@@ -42,12 +45,14 @@ test("环境变量优先于私有默认配置，显式空字符串关闭单项�
     ZCODE_ARMS_RUM_ENDPOINT: "https://rum.example.com/x",
     ZCODE_TELEMETRY_REPORT_ENDPOINT: "https://report.example.com/event",
     ZCODE_AUTO_UPDATE: "true",
+    ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN: "http://127.0.0.1:18091",
   });
   const config = await resolveBuildTimeConfig(
     {
       ZCODE_ARMS_RUM_ENDPOINT: "",
       ZCODE_TELEMETRY_REPORT_ENDPOINT: "https://other.example.com/event",
       ZCODE_AUTO_UPDATE: "0",
+      ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN: "",
     },
     { defaultsPath },
   );
@@ -55,6 +60,7 @@ test("环境变量优先于私有默认配置，显式空字符串关闭单项�
     armsRumEndpoint: "",
     telemetryReportEndpoint: "https://other.example.com/event",
     autoUpdateEnabled: false,
+    buildDefaultEndpointOrigin: "",
   });
 });
 
@@ -69,11 +75,13 @@ test("define 以 JSON 字面量注入", () => {
       armsRumEndpoint: "https://rum.example.com/x",
       telemetryReportEndpoint: "",
       autoUpdateEnabled: true,
+      buildDefaultEndpointOrigin: "http://127.0.0.1:18091",
     }),
     {
       __ZCODE_ARMS_RUM_ENDPOINT__: '"https://rum.example.com/x"',
       __ZCODE_TELEMETRY_REPORT_ENDPOINT__: '""',
       __ZCODE_AUTO_UPDATE_ENABLED__: "true",
+      __ZCODE_DEFAULT_ENDPOINT_ORIGIN__: '"http://127.0.0.1:18091"',
     },
   );
 });

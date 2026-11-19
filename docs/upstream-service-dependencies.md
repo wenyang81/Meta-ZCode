@@ -26,7 +26,7 @@
 
 | 服务 | 默认地址 | 发起进程 / 传输 | env 开关 |
 | --- | --- | --- | --- |
-| ZCode 控制面 origin | `https://zcode.z.ai`（`zcodeEndpoint.ts:3`，TEST 与 DEFAULT **同域**） | Host，HTTPS REST | `ZCODE_ENV`、`ZCODE_BASE_URL`、`ZCODE_ENDPOINT_ORIGIN`、`ZCODE_{TEST,PRODUCTION}_BASE_URL` |
+| ZCode 控制面 origin | `https://zcode.z.ai`（`zcodeEndpoint.ts:6`，TEST 与 DEFAULT **同域**） | Host，HTTPS REST | A 档：`ZCODE_ENV`、`ZCODE_BASE_URL`、`ZCODE_ENDPOINT_ORIGIN`、`ZCODE_{TEST,PRODUCTION}_BASE_URL`；B 档：`ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN`（打包灼入默认 origin，验证包烤本机地址用，见 fusionfinlab-packaging.md §6） |
 | 设备码式登录 | `/api/v1/oauth/cli/init`、`/api/v1/oauth/cli/poll/{flowId}`、`/api/v1/oauth/profile` | Host + Agent CLI，REST 轮询 | 同上 |
 | OAuth 换 token / 刷新 | `/api/v1/oauth/token` | Host，REST | `ZAI_OAUTH_TOKEN_URL`、`BIGMODEL_OAUTH_TOKEN_URL` |
 | Z.ai 授权页 / 用户信息 | `https://chat.z.ai/api/oauth/authorize`、`/api/oauth/userinfo` | 浏览器流程 + Host REST | `ZAI_OAUTH_AUTHORIZE_URL`、`ZAI_OAUTH_ORIGIN`、`ZAI_OAUTH_CLIENT_ID`（当前公开 client_id `client_P8X5CMWmlaRO9gyO-KSqtg`） |

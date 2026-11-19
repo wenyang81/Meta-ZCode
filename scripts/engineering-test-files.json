@@ -168,5 +168,6 @@
   "packages/zcode-server-cli/test/verifyRemoteSshTarget.test.ts",
   "packages/desktop/test/credential-keyring-assets.test.ts",
   "packages/desktop/test/stdioTapCredentialRedaction.test.ts",
-  "packages/shared/test/dataDirName.test.ts"
+  "packages/shared/test/dataDirName.test.ts",
+  "packages/shared/test/zcodeEndpoint.test.ts"
 ]

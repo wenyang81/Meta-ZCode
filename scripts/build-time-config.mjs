@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 /**
- * 桌面构建期可选能力的唯一解析入口：ARMS RUM 上报、事件上报、自动更新。
+ * 桌面构建期可选能力的唯一解析入口：ARMS RUM 上报、事件上报、自动更新、默认控制面覆盖。
  * 优先级：构建进程环境变量 > config/private/build-defaults.json（仅内部仓库存在）> 关闭。
  * 规则见 docs/desktop/build-time-optional-capabilities.md。
  */
@@ -44,6 +44,8 @@ export async function resolveBuildTimeConfig(
     autoUpdateEnabled: ENABLED_VALUES.has(
       pickValue(env, defaults, "ZCODE_AUTO_UPDATE").toLowerCase(),
     ),
+    // 空 = 不灼入，源码回落上游默认控制面；验证包用它把默认 origin 烤成本机/内网地址。
+    buildDefaultEndpointOrigin: pickValue(env, defaults, "ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN"),
   };
 }
 
@@ -52,5 +54,6 @@ export function createBuildTimeConfigDefines(config) {
     __ZCODE_ARMS_RUM_ENDPOINT__: JSON.stringify(config.armsRumEndpoint),
     __ZCODE_TELEMETRY_REPORT_ENDPOINT__: JSON.stringify(config.telemetryReportEndpoint),
     __ZCODE_AUTO_UPDATE_ENABLED__: JSON.stringify(config.autoUpdateEnabled),
+    __ZCODE_DEFAULT_ENDPOINT_ORIGIN__: JSON.stringify(config.buildDefaultEndpointOrigin),
   };
 }

@@ -110,6 +110,7 @@ A 档的官方登记模板是仓库根 [.env.fusionfinlab.example](../.env.fusio
 | `ZCODE_TELEMETRY_REPORT_ENDPOINT` | 业务事件上报 | 整体 no-op |
 | `ZCODE_ARMS_RUM_ENDPOINT` | 阿里云 RUM（含崩溃 minidump） | `enable: false` |
 | `ZCODE_AUTO_UPDATE` | 自更新总开关 | 关闭自动更新 |
+| `ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN` | 灼入默认控制面 origin（`__ZCODE_DEFAULT_ENDPOINT_ORIGIN__`，进桌面 main/host/renderer） | 回落上游 `https://zcode.z.ai`；验证包用它烤本机地址，替代旧「改源码→发布前恢复」 |
 
 私有构建建议在 CI/打包环境里显式置空前两个。
 
