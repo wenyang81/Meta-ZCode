@@ -1529,6 +1529,7 @@ modules:
       - packages/web/src/share-manage
     managed: true
     requires:
+      - biz-brand
       - shared
       - ui
       - web
