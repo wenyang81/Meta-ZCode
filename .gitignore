@@ -75,6 +75,9 @@ packages/desktop/resources/macos-window-bounds/
 __pycache__/
 *.pyc
 .zcode-runtime
+# 本仓库作为 workspace 时的运行时数据目录（workspace 契约 config、codegraph 索引
+# sqlite 等），全部是本机生成物，不入库也不参与推送工作区检查。
+.dlMeta/
 
 # CR-01：afterPack 生成的 NSIS helper define，按架构命名，不得入库
 packages/desktop/build/generated/

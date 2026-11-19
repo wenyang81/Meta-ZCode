@@ -1848,6 +1848,19 @@ modules:
     layers:
       domain: .
     owner: biz
+  # biz-codegraph：由 architecture:adopt 登记
+  - id: biz-codegraph
+    roots:
+      - packages/biz-codegraph/src
+    managed: true
+    requires:
+      - shared
+    publicEntrypoints:
+      - packages/biz-codegraph/src/index.ts
+      - packages/biz-codegraph/src/contract.ts
+    layers:
+      adapters: .
+    owner: biz
 
 global:
   # 临时时间戳（2026-09-10）：unmanaged-new-file 只约束此日期之后首次入库的文件。
