@@ -1963,6 +1963,11 @@ exceptions:
     paths:
       - packages/services/src/model-provider/providerGatewayModelSync.ts
     reason: fork 专属 MetaRouter 供应商的网关模型清单拉取（spec 见 docs/metarouter-provider.md），由 providerFacadeServices 的服务装配调用；只新增单文件、不动上游 model-provider 目录结构，故按文件登记例外而非接管目录。
+  - id: biz-codegraph-smoke-script
+    rule: unmanaged-new-file
+    paths:
+      - packages/biz-codegraph/smoke.mjs
+    reason: codegraph 的手工冒烟脚本（rebuild/stats/query 计时），跑在 src 模块根之外、只 import 模块公开入口；纯 dev 工具不进 managed 边界，按文件登记例外。
   - id: plugin-agent-permission-mode-restrict-only-existing-edit
     rule: unmanaged-new-file
     paths:

@@ -74,7 +74,9 @@ function loadProject(root: string): Project {
   const project = new Project({
     ...(tsconfig ? { tsConfigFilePath: path.join(root, tsconfig) } : {}),
     skipAddingFilesFromTsConfig: true,
-    skipFileDependencyResolution: false,
+    // 全仓解析（含 lib .d.ts 拉取）在大仓会吃满默认堆（2026-11-19 实测 OOM）。
+    // 符号表抽取只要 AST；引用边靠语言服务在查询时按需解析 import。
+    skipFileDependencyResolution: true,
   });
   project.addSourceFilesAtPaths(sourceGlobs(root).map((g) => path.join(root, g)));
   return project;
