@@ -24,7 +24,7 @@ import { runCommandsCommand } from "./commands-command.js";
 import { runCodegraphCommand } from "./codegraph-command.js";
 import { resolveCliCwd } from "./cwd.js";
 import { runLoginCommand, runLogoutCommand } from "./login-command.js";
-import { CLI_COMMAND_NAME, CLI_PROCESS_NAME } from "./process-name.js";
+import { CLI_COMMAND_NAME, CLI_PROCESS_NAME, invokedCommandName } from "./process-name.js";
 import { isPluginHostInvocation, runPluginHostCommand } from "./plugin-host-command.js";
 import { isDwfChildInvocation, runDwfChildCommand } from "./dwf-child-command.js";
 import { runPrompt } from "./prompt-command.js";
@@ -234,7 +234,7 @@ const runDoctor = (ctx: RunContext, options: GlobalOptions, workingDirectory: st
   }
 
   const colors = supportsColor(ctx.stdout, options.noColor);
-  ctx.stdout.write(`${color.bold("zcode doctor", colors)}\n`);
+  ctx.stdout.write(`${color.bold(`${invokedCommandName()} doctor`, colors)}\n`);
   ctx.stdout.write(`version: ${payload.cli.version}\n`);
   ctx.stdout.write(`process: ${payload.runtime.processTitle}\n`);
   ctx.stdout.write(`node: ${payload.runtime.node}\n`);

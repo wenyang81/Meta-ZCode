@@ -9,6 +9,7 @@ import type {
   ZCodeSkillInspection,
 } from "@zcode/bootstrap";
 import type { CliEnv } from "./env.js";
+import { invokedCommandName } from "./process-name.js";
 
 type BootstrapModule = typeof import("@zcode/bootstrap");
 type CliSkillListOutcome = Awaited<ReturnType<typeof listZCodeSkills>>;
@@ -23,7 +24,7 @@ interface SkillsCommandDependencies {
   loadBootstrapModule?: () => Promise<BootstrapModule>;
 }
 
-const SKILLS_COMMAND_USAGE = "Usage: zcode skills [list|inspect <name>]";
+const SKILLS_COMMAND_USAGE = `Usage: ${invokedCommandName()} skills [list|inspect <name>]`;
 
 export const runSkillsCommand = async (
   ctx: RunContext,

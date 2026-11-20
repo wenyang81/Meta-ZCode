@@ -52,6 +52,10 @@ export const outputBinaryName = (target) => {
   return `zcode-${outputPlatform}-${arch}${extension}`;
 };
 
+// dlmeta 别名二进制：同一 SEA blob 复制改名即可用（blob 不校验 exe 文件名），
+// 与 package.json bin 的 dlmeta 条目对应。
+export const aliasBinaryName = (target) => outputBinaryName(target).replace(/^zcode-/, "dlmeta-");
+
 export const nodeReleaseArtifact = (target, nodeVersion) => {
   const { arch, releasePlatform } = targetParts(target);
 

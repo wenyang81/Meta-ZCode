@@ -8,6 +8,7 @@ import { resolveSpawnRuntimeOptions } from "../../../../../scripts/spawn-command
 import { resolveDownloadedNodeBinary } from "./sea-node-download.mjs";
 import {
   adHocCodesignArgs,
+  aliasBinaryName,
   hostTarget,
   isHostTarget,
   nodeReleaseArtifact,
@@ -30,6 +31,7 @@ import { collectSeaProviderConfigAssets } from "./sea-provider-config-assets.mjs
 
 export {
   adHocCodesignArgs,
+  aliasBinaryName,
   hostTarget,
   isHostTarget,
   nodeReleaseArtifact,
@@ -281,7 +283,12 @@ const buildTarget = async ({ nodeBinaries, nodeVersion, postjectBin, target }) =
   run(postjectBin, postjectArgsForTarget({ binaryPath, seaBlob, sentinelFuse, target }));
   adHocSignMacBinary(target, binaryPath);
   await smokeTestHostTarget(target, binaryPath);
+  // dlmeta 别名：同一 SEA blob 复制改名即可用，不走第二次注入。
+  const aliasPath = resolve(dist, aliasBinaryName(target));
+  await copyFile(binaryPath, aliasPath);
+  await chmod(aliasPath, 0o755);
   console.log(`[sea] binary written to ${binaryPath}`);
+  console.log(`[sea] alias binary written to ${aliasPath}`);
 };
 
 export const main = async (argv = process.argv.slice(2)) => {

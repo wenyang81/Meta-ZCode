@@ -2,6 +2,7 @@ import { formatJson } from "@zcode/core";
 import type { GlobalOptions, RunContext } from "@zcode/shared-types";
 import { loadBootstrapModule } from "./bootstrap-loader.js";
 import { loadCliDotenv } from "./env.js";
+import { invokedCommandName } from "./process-name.js";
 import type { RunDependencies } from "./cli-types.js";
 
 export async function runLoginCommand(
@@ -14,7 +15,7 @@ export async function runLoginCommand(
   try {
     const providerId = args[0] ?? "zai";
     if (args.length > 1 || (providerId !== "zai" && providerId !== "bigmodel")) {
-      throw new Error("Usage: zcode login [zai|bigmodel] [--no-browser]");
+      throw new Error(`Usage: ${invokedCommandName()} login [zai|bigmodel] [--no-browser]`);
     }
     const env = deps.env ?? process.env;
     const workingDirectory = (deps.cwd ?? process.cwd)();

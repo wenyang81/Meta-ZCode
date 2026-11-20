@@ -1,7 +1,6 @@
 import { formatJson } from "@zcode/core";
 import type { GlobalOptions, RunContext } from "@zcode/shared-types";
-import type { SetZCodePluginEnabledResult, ZCodePluginInstallData } from "@zcode/bootstrap";
-import {
+import type { SetZCodePluginEnabledResult, ZCodePluginInstallData } from "@zcode/bootstrap";import {
   formatAvailablePluginJson,
   formatDiagnosticJson,
   formatDiagnosticLines,
@@ -31,6 +30,7 @@ import {
   type PluginsCommandFlags,
 } from "./plugins-command-shared.js";
 import { runMarketplaceCommand } from "./plugins-marketplace-command.js";
+import { invokedCommandName } from "./process-name.js";
 
 export type {
   PluginsCommandDependencies,
@@ -38,7 +38,9 @@ export type {
   PluginsCommandOverrides,
 } from "./plugins-command-shared.js";
 
-const PLUGINS_COMMAND_USAGE = `Usage: zcode plugins <command> [options]
+const CLI = invokedCommandName();
+
+const PLUGINS_COMMAND_USAGE = `Usage: ${CLI} plugins <command> [options]
 
 Commands:
   list [--json] [--available]                  List installed plugins; --available also lists the marketplace catalog
@@ -55,7 +57,7 @@ Commands:
   marketplace remove <name>                    Remove a configured marketplace
   marketplace update [name]                    Refresh one marketplace, or all when omitted
 
-Scopes: user (default), project. \`zcode plugin\` is an alias of \`zcode plugins\`.`;
+Scopes: user (default), project. \`${CLI} plugin\` is an alias of \`${CLI} plugins\`.`;
 
 export async function runPluginsCommand(
   ctx: RunContext,

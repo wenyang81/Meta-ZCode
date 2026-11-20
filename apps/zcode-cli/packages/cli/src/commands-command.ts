@@ -9,6 +9,7 @@ import type {
   ZCodeCustomCommandInspection,
 } from "@zcode/bootstrap";
 import type { CliEnv } from "./env.js";
+import { invokedCommandName } from "./process-name.js";
 
 type BootstrapModule = typeof import("@zcode/bootstrap");
 type CustomCommandListOutcome = Awaited<ReturnType<typeof listZCodeCustomCommands>>;
@@ -27,7 +28,7 @@ interface CommandsCommandDependencies {
   logger?: Logger;
 }
 
-const COMMANDS_COMMAND_USAGE = "Usage: zcode commands [list|inspect <name>]";
+const COMMANDS_COMMAND_USAGE = `Usage: ${invokedCommandName()} commands [list|inspect <name>]`;
 
 export async function runCommandsCommand(
   ctx: RunContext,
