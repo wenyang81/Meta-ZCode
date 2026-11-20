@@ -18,8 +18,10 @@ const toPosix = (path) => path.replaceAll("\\", "/");
 const WHITELIST = new Set(["packages/shared/src/dataDirName.ts"]);
 const EXCEPTIONS_FILE = "scripts/data-dir-literal-exceptions.json";
 const SOURCE_EXT = /\.(ts|tsx|mjs)$/;
+// bundled-agents 是打包时整仓复制的产物（.gitignore:12），里面的 .zcode 字面量随上游源码
+// 原样存在，收口责任在源码侧；产物目录不扫，否则出过包的机器永远过不了这条门禁。
 const EXCLUDED_DIR =
-  /(^|\/)(dist|out|node_modules|test|tests|__tests__|e2e|__mocks__|fixtures)($|\/)/;
+  /(^|\/)(dist|out|node_modules|test|tests|__tests__|e2e|__mocks__|fixtures|bundled-agents)($|\/)/;
 const EXCLUDED_FILE = /(\.(test|spec)\.[cm]?[jt]sx?|\.d\.ts)$/;
 /**
  * 叶子必须独占一个完整路径段：前面是路径起点（`~`、`/` 或字符串/模板边界），后面是 `/`
