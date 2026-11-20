@@ -292,7 +292,7 @@ export async function prepareVoiceInputFixture(
   const mock = await startAsrMockServer({ kind: "normal", partial: "", final: "" });
   const envPatch = {
     ZCODE_E2E_ASR_MOCK_URL: mock.origin,
-    ZCODE_BASE_URL: mock.origin,
+    DLMETA_BASE_URL: mock.origin,
     ZCODE_TEST_BASE_URL: mock.origin,
     ZCODE_ENDPOINT_ORIGIN: mock.origin,
     ZAI_BUSINESS_BASE_URL: mock.origin,

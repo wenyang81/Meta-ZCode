@@ -8,7 +8,7 @@ export function isOffPeakTeamPlanSpec(specs: readonly string[]) {
 }
 
 const CODING_PLAN_COMMON_ENV_KEYS = [
-  "ZCODE_BASE_URL",
+  "DLMETA_BASE_URL",
   "ZCODE_ENDPOINT_ORIGIN",
   "ZCODE_TEST_BASE_URL",
   "BIGMODEL_API_BASE_URL",

@@ -45,7 +45,8 @@ export async function resolveBuildTimeConfig(
       pickValue(env, defaults, "ZCODE_AUTO_UPDATE").toLowerCase(),
     ),
     // 空 = 不灼入，源码回落上游默认控制面；验证包用它把默认 origin 烤成本机/内网地址。
-    buildDefaultEndpointOrigin: pickValue(env, defaults, "ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN"),
+    // 二开自有命名空间 DLMETA_*，与上游 ZCode 共存的机器互不影响（上游不读 DLMETA_ 前缀）。
+    buildDefaultEndpointOrigin: pickValue(env, defaults, "DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN"),
   };
 }
 

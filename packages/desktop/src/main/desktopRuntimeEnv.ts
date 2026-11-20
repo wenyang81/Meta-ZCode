@@ -291,10 +291,10 @@ export function resolveZCodeEndpointEnvBaseOrigin(
     ZCODE_ENV === "production" ? "ZCODE_PRODUCTION_BASE_URL" : "ZCODE_TEST_BASE_URL";
   // Bugfix: main 进程临时验证更新服务时不会重新写 .env，命令行传入的 endpoint 必须优先于本地文件。
   return (
-    process.env["ZCODE_BASE_URL"]?.trim() ||
+    process.env["DLMETA_BASE_URL"]?.trim() ||
     process.env["ZCODE_ENDPOINT_ORIGIN"]?.trim() ||
     process.env[scopedEnvName]?.trim() ||
-    localEnv.ZCODE_BASE_URL?.trim() ||
+    localEnv.DLMETA_BASE_URL?.trim() ||
     localEnv.ZCODE_ENDPOINT_ORIGIN?.trim() ||
     localEnv[scopedEnvName]?.trim() ||
     undefined
@@ -319,7 +319,11 @@ function applySelectedZCodeEnvLinks(env: Record<string, string>): Record<string,
 
   return {
     ...env,
-    ZCODE_BASE_URL: env.ZCODE_BASE_URL ?? resolveRuntimeZCodeEndpointOrigin(endpointEnv),
+    DLMETA_BASE_URL: env.DLMETA_BASE_URL ?? resolveRuntimeZCodeEndpointOrigin(endpointEnv),
+    // 官方插件市场（cdn-zcode.z.ai）的 manifest 模板写死 ${ZCODE_BASE_URL}，fork 代码已不再读
+    // 旧名，但子进程 env 保留这个别名字段（值 = fork 解析后的 origin），否则官方 image_search
+    // 等插件的 MCP 地址会解析失败。进程级注入，不落机器环境，不影响上游 ZCode。
+    ZCODE_BASE_URL: env.DLMETA_BASE_URL ?? resolveRuntimeZCodeEndpointOrigin(endpointEnv),
     ZAI_OAUTH_ORIGIN: env.ZAI_OAUTH_ORIGIN ?? resolveZaiOAuthOrigin(endpointEnv),
     ZAI_BUSINESS_BASE_URL: env.ZAI_BUSINESS_BASE_URL ?? resolveZaiBusinessBaseUrl(endpointEnv),
     ZAI_OAUTH_CLIENT_ID: env.ZAI_OAUTH_CLIENT_ID ?? resolveZaiOAuthClientId(endpointEnv),

@@ -36,9 +36,9 @@ describe("E2E provider endpoint ownership", () => {
     expect(getE2EProviderEndpointEnv([ordinary], "deepseek", "replay")).toEqual({});
     expect(shouldUseProductionE2EProviderEndpoint([ordinary], "deepseek", "replay")).toBe(false);
 
-    requestSecurityEnv.current = { ZCODE_BASE_URL: "https://config.example.com" };
+    requestSecurityEnv.current = { DLMETA_BASE_URL: "https://config.example.com" };
     expect(getE2EProviderEndpointEnv([ordinary], "example-preset", "capture")).toEqual({
-      ZCODE_BASE_URL: "https://config.example.com",
+      DLMETA_BASE_URL: "https://config.example.com",
     });
     expect(shouldUseProductionE2EProviderEndpoint([ordinary], "example-preset", "capture")).toBe(
       true,

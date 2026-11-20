@@ -113,7 +113,7 @@ export async function prepareWebRemoteControlSessionEventsFixture(options: {
       ? {}
       : { BIGMODEL_API_BASE_URL: relay.httpUrl }),
     ZCODE_E2E_REMOTE_AUTH_GATE_URL: relay.httpUrl,
-    ZCODE_BASE_URL: relay.httpUrl,
+    DLMETA_BASE_URL: relay.httpUrl,
     ZCODE_ENDPOINT_ORIGIN: relay.httpUrl,
     ZCODE_TEST_BASE_URL: relay.httpUrl,
     ZCODE_WEB_REMOTE_CONTROL_RELAY_WS_URL: relay.wsUrl,

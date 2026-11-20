@@ -61,7 +61,7 @@ export interface RemoteConnection {
 
 const REMOTE_RUNTIME_ENV_KEYS = [
   "ZCODE_ENV",
-  "ZCODE_BASE_URL",
+  "DLMETA_BASE_URL",
   "ZCODE_ENDPOINT_ORIGIN",
   "ZCODE_TEST_BASE_URL",
   "ZCODE_PRODUCTION_BASE_URL",

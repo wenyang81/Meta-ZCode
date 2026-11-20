@@ -63,7 +63,7 @@ docker/plugin-eval/bin/build-image.sh --ref feat-cli-plugins-parity \
 2. `builder` 阶段 `pnpm install --frozen-lockfile --filter "@zcode/cli..." --filter zcode`，然后按仓库脚本
    `scripts/build-desktop-agent-cli.mjs` 的顺序构建 shared-types → contracts → core → adapters → i18n → telemetry → bootstrap → cli。
 3. `runtime` 阶段只带 `node + zcode.cjs + jq/python3/git/ripgrep`，以 uid 10001 的 `zcode` 用户运行；
-   `HOME=/data`、`ZCODE_DATA_BASE_DIR=/data`、`ZCODE_STORAGE_DIR=/data/.zcode`、`ZCODE_BASE_URL=https://zcode.z.ai`。
+   `HOME=/data`、`ZCODE_DATA_BASE_DIR=/data`、`ZCODE_STORAGE_DIR=/data/.zcode`、`DLMETA_BASE_URL=https://zcode.z.ai`。
    内置插件不在 `zcode.cjs` 里，CLI 在入口文件同级的 `packages/<name>-plugin` 找根目录，所以 builder 阶段把
    document-skills、zcode-guide、skill-creator、restore-legacy-sessions 四个纯内容型内置插件 stage 到 `/opt/zcode/packages/`；
    同理 CLI 启动必读的内置 provider 目录 `config/provider/zcode-builtin.json` 放到 `/opt/zcode/provider/`。
@@ -183,9 +183,9 @@ eval-results/
 - **模型会绕过限制**：headless 默认 yolo 权限。一次冒烟里模型在拿不到 MCP 工具时，自行用 Bash 解密了容器内的
   `credentials.json` 并手动 curl 数据接口。评测容器必须视为可读到全部注入凭据的环境：只注入评测账号、用完即弃、
   不要复用生产账号；判分时用 `mcpToolsInvoked` 而不是最终答案来判断插件能力是否真的被使用。
-- **`ZCODE_BASE_URL` 必须显式设置**：插件 manifest 里的 MCP 地址写作 `${ZCODE_BASE_URL}/api/v1/mcp/...`，
+- **`DLMETA_BASE_URL` 必须显式设置**：插件 manifest 里的 MCP 地址写作 `${DLMETA_BASE_URL}/api/v1/mcp/...`，
   独立 CLI 不注入该变量时 `plugins list --json` 会出现 `plugin_variable_missing`，对应 MCP 直接被丢弃。镜像已内置生产值，
-  打测试环境时用 `docker run -e ZCODE_BASE_URL=...` 覆盖。
+  打测试环境时用 `docker run -e DLMETA_BASE_URL=...` 覆盖。
 - **法律插件（`legal` / `legal-global`）是市场插件，国内法律服务目前靠环境变量取凭证**：镜像构建时随官方市场全量安装，无需在镜像里单独暂存；因此**只有发布到官方市场之后**，容器里才找得到它们。法律任务放在 `docker/plugin-eval/legal-bench/tasks/`，不在默认的 `tasks/` 里，要用 `--tasks` 显式指定，默认全量运行不受影响。
   `legal-cn` 等国内服务读 `LEGAL_GATEWAY_TOKEN`（可选 `LEGAL_GATEWAY_URL`），不走 `zcode_official`；跑套件前在宿主 `export` 即可，`run-suite.sh` 只在任务声明的插件全部是 `legal` / `legal-global`（按名字精确匹配）时用 `-e NAME` 从宿主环境带入容器，令牌不出现在命令行参数里，其它任务（包括以 `legal` 开头的第三方插件、与其它插件混用的任务）的容器读不到。未提供时国内检索类工具失败关闭并提示「未配置法律服务凭证」，技能降级到公开来源。令牌绑定个人账号、会扣额度，评测请用评测专用令牌。天眼查声明的是 `zcode_official` 远程 MCP，同样在 headless 下失败关闭（见上一条）。本机 CLI 直接跑、含从本地市场安装的做法见 `docker/plugin-eval/legal-bench/`。
 - **代理**：CLI 自己的网络只认 `ZCODE_HTTP_PROXY`，不读 `http_proxy`；构建用 `--proxy`，运行用 `run-suite.sh --proxy`。
@@ -203,7 +203,7 @@ eval-results/
 | 容器退出 65 | `plugins.json`、`plugins-enable.log` | 白名单里的插件名拼错、同名多市场需要写 `name@marketplace` |
 | 422 / 模型不对 | `stderr.log`、`summary.json.source` | `defaultModelSelection` 不完整，重跑 `prepare-auth.mjs` 显式给 `--model --reasoning` |
 | 全部 401 / auth_failed | `stderr.log` | `ZCODE_EVAL_CREDENTIAL_SECRET` 与生成时不一致，或本机登录态已过期 |
-| `plugin_variable_missing` | `plugins.json` diagnostics | 运行时覆盖了 `ZCODE_BASE_URL` 为空 |
+| `plugin_variable_missing` | `plugins.json` diagnostics | 运行时覆盖了 `DLMETA_BASE_URL` 为空 |
 | skill 没被调用 | `events.jsonl` 中 `tool.updated` | prompt 没点名插件/skill；或插件未在白名单 |
 
 ## 验证记录

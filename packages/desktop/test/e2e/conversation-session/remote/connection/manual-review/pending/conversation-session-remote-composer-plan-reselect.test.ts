@@ -305,7 +305,7 @@ describe(`${CASE_MARKER}: 远端 Composer 切回已生效套餐连接`, () => {
     await seedSignedInIndividualPlan();
     await prepareSSHConnectionPage(CASE_MARKER);
     await prepareV4ConversationE2E();
-    // 远端按下发的 ZCODE_BASE_URL（宿主 127.0.0.1:<port>）查询套餐权益；在容器内监听同一端口转发到宿主。
+    // 远端按下发的 DLMETA_BASE_URL（宿主 127.0.0.1:<port>）查询套餐权益；在容器内监听同一端口转发到宿主。
     const tunnel = await createSSHReplayTunnel(config, CASE_MARKER, {
       username: "tunnel",
       mirrorLocalPort: true,

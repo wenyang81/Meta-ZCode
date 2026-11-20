@@ -193,7 +193,7 @@ ZCODE_ENV=production pnpm bundle:desktop -- linux x64
 | `ZCODE_ENV` | 产品身份 flavor、内置 Provider 目录文件、产物 `_TEST` 后缀 | 未显式给时**回落去读 env 文件**（§2 的坑） |
 | `ZCODE_PREVIEW_IDENTITY` | 生产后端 + Preview 身份（可并排装的内部包） | 只接受 `1`/`0` |
 | `ZCODE_AUTO_UPDATE` | `__ZCODE_AUTO_UPDATE_ENABLED__`（[:44-46](../scripts/build-time-config.mjs#L44-L46)） | ⚠️ 内部默认文件 `config/private/build-defaults.json` **不存在**，所以不打这个变量就是**关闭自更新** |
-| `ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN` | `__ZCODE_DEFAULT_ENDPOINT_ORIGIN__`：灼入默认控制面 origin（[zcodeEndpoint.ts](../packages/shared/src/zcodeEndpoint.ts)） | 空 = 回落上游 `https://zcode.z.ai`；**验证包**打 `http://127.0.0.1:18091` 让无环境变量机器开箱连本机后端，CLI 由 host 下发的 `ZCODE_BASE_URL` 自动跟随，无需改源码 |
+| `DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN` | `__ZCODE_DEFAULT_ENDPOINT_ORIGIN__`：灼入默认控制面 origin（[zcodeEndpoint.ts](../packages/shared/src/zcodeEndpoint.ts)） | 空 = 回落上游 `https://zcode.z.ai`；**验证包**打 `http://127.0.0.1:18091` 让无环境变量机器开箱连本机后端，CLI 由 host 下发的 `DLMETA_BASE_URL` 自动跟随（2026-11-21 由 `ZCODE_BASE_URL` 改名，fork 不再读上游同名变量），无需改源码。原 `ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN` 已改名，避免与上游共享命名空间 |
 | `ZCODE_ARMS_RUM_ENDPOINT` | `__ZCODE_ARMS_RUM_ENDPOINT__` | 空 = 不上报 |
 | `ZCODE_TELEMETRY_REPORT_ENDPOINT` | `__ZCODE_TELEMETRY_REPORT_ENDPOINT__` | 空 = 不上报 |
 | `ZCODE_ENABLE_MAC_SIGN` | 是否启用 macOS 签名参数（需配合身份变量） | 关 |

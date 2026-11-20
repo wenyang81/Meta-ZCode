@@ -265,7 +265,7 @@ export async function prepareAccessToken401Fixture(options: {
     BIGMODEL_OAUTH_USERINFO_URL: `${baseUrl}/api/biz/customer/getCustomerInfo`,
     ZAI_BUSINESS_BASE_URL: baseUrl,
     ZAI_OAUTH_USERINFO_URL: `${baseUrl}${preserveSession ? "/api/oauth/userinfo" : "/api/biz/customer/getCustomerInfo"}`,
-    ZCODE_BASE_URL: controlBaseUrl,
+    DLMETA_BASE_URL: controlBaseUrl,
     ZCODE_TEST_BASE_URL: controlBaseUrl,
     ZCODE_ENDPOINT_ORIGIN: controlBaseUrl,
   };

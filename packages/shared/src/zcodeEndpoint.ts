@@ -1,9 +1,10 @@
 import type { ZCodeEnv } from "./env.js";
 
-// 上游默认控制面。构建期可用 ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN 覆盖（B 档 define，
-// 经 scripts/build-time-config.mjs 灼入桌面 main/host/renderer bundle），验证包直接烤
+// 上游默认控制面。构建期可用 DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN 覆盖（B 档 define，二开自有命名空间，
+// 上游 ZCode 不读 DLMETA_ 前缀，共存机器互不影响；经 scripts/build-time-config.mjs 灼入桌面
+// main/host/renderer bundle），验证包直接烤
 // 验证机地址，不再需要「改源码 → 发布前恢复」；未灼入（dev、web、CLI、测试）回落上游默认。
-// CLI 由 host 下发解析后的 ZCODE_BASE_URL（desktopRuntimeEnv 的 hostProcessEnv），无需自带 define。
+// CLI 由 host 下发解析后的 DLMETA_BASE_URL（desktopRuntimeEnv 的 hostProcessEnv），无需自带 define。
 declare const __ZCODE_DEFAULT_ENDPOINT_ORIGIN__: string;
 export const DEFAULT_ZCODE_ENDPOINT_ORIGIN: string =
   typeof __ZCODE_DEFAULT_ENDPOINT_ORIGIN__ !== "undefined" &&
@@ -85,7 +86,7 @@ export interface ZCodeEndpointUrls {
 export interface RuntimeZCodeEndpointEnv {
   [key: string]: string | undefined;
   ZCODE_ENV?: string;
-  ZCODE_BASE_URL?: string;
+  DLMETA_BASE_URL?: string;
   ZCODE_ENDPOINT_ORIGIN?: string;
   ZCODE_TEST_BASE_URL?: string;
   ZCODE_PRODUCTION_BASE_URL?: string;
@@ -223,7 +224,7 @@ export function resolveRuntimeZCodeEndpointOrigin(
   return resolveZCodeEndpointOrigin({
     env: zcodeEnv,
     envBaseOrigin:
-      readRuntimeEnvValue(env, "ZCODE_BASE_URL") ??
+      readRuntimeEnvValue(env, "DLMETA_BASE_URL") ??
       readRuntimeEnvValue(env, "ZCODE_ENDPOINT_ORIGIN") ??
       scopedBaseOrigin,
     overrideOrigin: options?.overrideOrigin,

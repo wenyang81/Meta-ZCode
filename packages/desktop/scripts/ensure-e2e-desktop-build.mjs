@@ -84,10 +84,16 @@ export const E2E_DESKTOP_BUILD_ENV_NAMES = [
   "VITE_ZCODE_BASE_URL",
   "VITE_ZCODE_E2E_STORE_BRIDGE",
   "VITE_ZCODE_ENDPOINT_ORIGIN",
+  // 登录页协议链接被编译进 renderer（biz-brand），变化时必须使 E2E 构建缓存失效。
+  "VITE_ZCODE_TERMS_URL",
+  "VITE_ZCODE_PRIVACY_URL",
   "ZAI_BUSINESS_BASE_URL",
   "ZAI_BUSINESS_LOGIN_URL",
   "ZAI_OAUTH_CLIENT_ID",
   "ZAI_OAUTH_ORIGIN",
+  "DLMETA_BASE_URL",
+  // 上游官方插件 manifest 模板仍用 ${ZCODE_BASE_URL}（host 子进程以别名字段下发），
+  // e2e 构建环境同样不能继承机器上可能为上游 ZCode 设置的旧名。
   "ZCODE_BASE_URL",
   "ZCODE_COMMIT",
   "ZCODE_CUA_HELPER_BUILD_ID",
@@ -113,13 +119,13 @@ const WORKSPACE_DEPENDENCY_FIELDS = [
  * E2E 桌面包固定按 test 环境构建。
  *
  * bug 根因：从 ZCode 客户端拉起的 shell 里带有应用自身环境（实测 ZCODE_ENV=production、
- * ZCODE_BASE_URL=https://zcode.z.ai）。这些变量被 tsup 当作构建输入编译进 main/host 包，
+ * DLMETA_BASE_URL=https://zcode.z.ai）。这些变量被 tsup 当作构建输入编译进 main/host 包，
  * 于是 `resolveZCodeEndpointOrigin` 走 production 分支、忽略 settings 里的 endpoint，
  * spec 用 fixture 起的本地 mock server 全部收不到请求，表现为大批配置类用例失败。
- * 构建前统一归一，runner 与本脚本共用同一结果；ZCODE_BASE_URL 等运行时变量也不能进入构建。
+ * 构建前统一归一，runner 与本脚本共用同一结果；DLMETA_BASE_URL 等运行时变量也不能进入构建。
  */
 export const E2E_DESKTOP_BUILD_INHERITED_ENV_NAMES = [
-  "ZCODE_BASE_URL",
+  "DLMETA_BASE_URL",
   "ZCODE_RUNTIME_ENV",
   "ZCODE_APP_VERSION",
   "ZCODE_BUILD_COMMIT_ID",

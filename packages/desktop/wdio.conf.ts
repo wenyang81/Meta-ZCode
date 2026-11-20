@@ -650,11 +650,11 @@ process.env.ZCODE_DESKTOP_APPLICATION_NAME = "ZCode E2E";
 process.env.ZCODE_DESKTOP_HOME_DIR = E2E_HOME_DIR;
 process.env.ZCODE_DESKTOP_USE_ELECTRON_DEFAULT_USER_DATA = "1";
 // 修复原因：从 ZCode 客户端拉起的 shell 里带有应用自身环境（ZCODE_ENV=production、
-// ZCODE_BASE_URL=https://zcode.z.ai）。它们会被 onPrepare 的 agent 构建读走并固化进产物，
+// DLMETA_BASE_URL=https://zcode.z.ai）。它们会被 onPrepare 的 agent 构建读走并固化进产物，
 // 让 E2E 打到生产域、忽略 settings 里的 endpoint，fixture mock server 收不到请求。
 // 桌面包的归一在 ensure-e2e-desktop-build 内完成，这里保证 WDIO 侧构建链路一致。
 process.env.ZCODE_ENV = "test";
-delete process.env.ZCODE_BASE_URL;
+delete process.env.DLMETA_BASE_URL;
 delete process.env.ZCODE_RUNTIME_ENV;
 // Bugfix: renderer E2E store bridge 只能由 WDIO 进程显式打开，避免 ZCODE_ENV=test 的产品测试环境暴露全局可变 store。
 process.env.VITE_ZCODE_E2E_STORE_BRIDGE = "1";
@@ -2314,7 +2314,7 @@ async function stopCodingPlanTeamMock() {
     codingPlanDataPlaneProxy = null;
   }
   // Bugfix：不能无条件删除共享 env。beforeSession 里 budget/catalog mock 先于本函数
-  // 注入的 ZCODE_BASE_URL 等会被误删，导致那些 spec 的 Electron 打真实域名。
+  // 注入的 DLMETA_BASE_URL 等会被误删，导致那些 spec 的 Electron 打真实域名。
   // 只清除“当前值仍指向本 mock”的键：既撤掉 runnerEnv 播种到非 team worker 的污染，
   // 又不碰其他 mock 家族刚写入的值。
   const ownedBaseUrl =
@@ -2739,7 +2739,7 @@ async function startModelContextBudgetConfigE2EMock(specs: string[] = []) {
     await stopModelContextBudgetConfigE2EMock();
     modelContextBudgetConfigMockServer = await startModelContextBudgetConfigMockServer(scenario);
   }
-  process.env.ZCODE_BASE_URL = modelContextBudgetConfigMockServer.baseUrl;
+  process.env.DLMETA_BASE_URL = modelContextBudgetConfigMockServer.baseUrl;
   process.env.ZCODE_TEST_BASE_URL = modelContextBudgetConfigMockServer.baseUrl;
   process.env.ZCODE_ENDPOINT_ORIGIN = modelContextBudgetConfigMockServer.baseUrl;
 }
@@ -2750,7 +2750,7 @@ async function stopModelContextBudgetConfigE2EMock() {
   }
   await modelContextBudgetConfigMockServer.stop();
   modelContextBudgetConfigMockServer = null;
-  delete process.env.ZCODE_BASE_URL;
+  delete process.env.DLMETA_BASE_URL;
   delete process.env.ZCODE_TEST_BASE_URL;
   delete process.env.ZCODE_ENDPOINT_ORIGIN;
 }

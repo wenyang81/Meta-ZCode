@@ -11,7 +11,7 @@ illustrations and reference images while producing documents, slides, posters, o
 
 ## Requirements
 
-- A ZCode session signed in to an account that can reach `${ZCODE_BASE_URL}`; the server uses
+- A ZCode session signed in to an account that can reach `${DLMETA_BASE_URL}`; the server uses
   official ZCode JWT authentication, so no manual token or API key is needed.
 - Network access to the ZCode API endpoint.
 - Start a new ZCode session after installing or updating the plugin.

@@ -23,7 +23,7 @@ A 档的官方登记模板是仓库根 [.env.fusionfinlab.example](../.env.fusio
 三个坑（详见 example 文件头）：
 
 1. `.env.development` 是随仓库跟踪的上游默认值，且排在 `.env.local` **之后**——覆盖它已有的 key（如 `ZCODE_TEST_BASE_URL`）必须写 `.env.development.local`，写 `.env.local` 会被静默盖掉。
-2. 优先级按变量名分不按文件分：非 scoped 名（`ZCODE_BASE_URL`）> scoped 名（`ZCODE_TEST_BASE_URL`）。推荐全用非 scoped 名，一次覆盖 test 和 production 两档。
+2. 优先级按变量名分不按文件分：非 scoped 名（`DLMETA_BASE_URL`）> scoped 名（`ZCODE_TEST_BASE_URL`）。推荐全用非 scoped 名，一次覆盖 test 和 production 两档。
 3. 真实进程环境变量优先于所有 dotenv 文件。临时验证最省事：`DLMETA_METAROUTER_BASE_URL=... pnpm dev:desktop`。
 
 `.env`、`.env.local`、`.env.*.local` 均已 gitignore，**实值不要提交**。
@@ -51,11 +51,11 @@ A 档的官方登记模板是仓库根 [.env.fusionfinlab.example](../.env.fusio
 
 ## 三、控制面与认证（指向你自己的后端）
 
-这些决定「账号、登录、计费、分享、远控」连谁。给 `ZCODE_BASE_URL` 一个值就同时覆盖 test 和 production 两档：
+这些决定「账号、登录、计费、分享、远控」连谁。给 `DLMETA_BASE_URL` 一个值就同时覆盖 test 和 production 两档：
 
 | 变量 | 干什么 | 备注 |
 | --- | --- | --- |
-| `ZCODE_BASE_URL` | 控制面 origin：登录、计费、目录刷新、分享 API、远控中继、强更门槛、自更新、image_search MCP **全部自动跟随** | 只改写 origin 恰好等于 `zcode.z.ai` 的 URL；`cdn-zcode.z.ai` / `api.z.ai` / `bigmodel.cn` **不跟** |
+| `DLMETA_BASE_URL` | 控制面 origin：登录、计费、目录刷新、分享 API、远控中继、强更门槛、自更新、image_search MCP **全部自动跟随** | 只改写 origin 恰好等于 `zcode.z.ai` 的 URL；`cdn-zcode.z.ai` / `api.z.ai` / `bigmodel.cn` **不跟**。原 `ZCODE_BASE_URL`（上游同名变量）已改名：与上游 ZCode 共存的机器上机器级 setx 不再互相污染；host 子进程 env 保留 `ZCODE_BASE_URL` 别名字段仅供官方插件 manifest 模板解析 |
 | `ZCODE_ENV` | 后端档位：`test` / `production` | dev 启动脚本自动注入，一般不手填 |
 | `ZAI_OAUTH_ORIGIN` | Z.ai OAuth 授权页 + userinfo | |
 | `ZAI_BUSINESS_BASE_URL` | Z.ai 业务登录、用量/配额 | |
@@ -64,7 +64,7 @@ A 档的官方登记模板是仓库根 [.env.fusionfinlab.example](../.env.fusio
 | `ZAI_OAUTH_ENABLED` / `BIGMODEL_OAUTH_ENABLED` | `false` = 登录页隐藏该 provider | 认证不走这两族建议直接关 |
 | `ZAI_OAUTH_TOKEN_URL` 等 4 条 | token/授权页/userinfo/业务登录端点路径定制 | 不设自动跟随第 1 节 origin 拼接 |
 | `BIGMODEL_OAUTH_APP_ID` / `APP_SECRET` | BigModel OAuth 应用凭据 | **`APP_SECRET` 是真凭据：只放 `.env.*.local`，绝不提交** |
-| `ZCODE_OAUTH_ALLOW_INSECURE_HTTP` | 放行 http 授权地址（局域网联调） | 仅开发/测试；打包生产绝不带 |
+| `DLMETA_OAUTH_ALLOW_INSECURE_HTTP` | 放行 http 授权地址（局域网联调） | 仅开发/测试；打包生产绝不带。原 `ZCODE_OAUTH_ALLOW_INSECURE_HTTP` 已改名进 DLMETA_ 命名空间，上游 ZCode 不读 |
 
 前置条件：你的后端要按**同名 path** 实现（`/api/v1/oauth/cli/init` 等），只换域名不改路径。完整路径清单见 example 第 3 节。
 
@@ -110,7 +110,7 @@ A 档的官方登记模板是仓库根 [.env.fusionfinlab.example](../.env.fusio
 | `ZCODE_TELEMETRY_REPORT_ENDPOINT` | 业务事件上报 | 整体 no-op |
 | `ZCODE_ARMS_RUM_ENDPOINT` | 阿里云 RUM（含崩溃 minidump） | `enable: false` |
 | `ZCODE_AUTO_UPDATE` | 自更新总开关 | 关闭自动更新 |
-| `ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN` | 灼入默认控制面 origin（`__ZCODE_DEFAULT_ENDPOINT_ORIGIN__`，进桌面 main/host/renderer） | 回落上游 `https://zcode.z.ai`；验证包用它烤本机地址，替代旧「改源码→发布前恢复」 |
+| `DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN` | 灼入默认控制面 origin（`__ZCODE_DEFAULT_ENDPOINT_ORIGIN__`，进桌面 main/host/renderer） | 回落上游 `https://zcode.z.ai`；验证包用它烤本机地址，替代旧「改源码→发布前恢复」；二开自有命名空间，上游 ZCode 不读。原 `ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN` 已改名 |
 
 私有构建建议在 CI/打包环境里显式置空前两个。
 
@@ -132,7 +132,7 @@ A 档的官方登记模板是仓库根 [.env.fusionfinlab.example](../.env.fusio
 
 | 改了什么 | 生效动作 |
 | --- | --- |
-| `DLMETA_METAROUTER_*`、`ZCODE_BASE_URL`、`ZAI_*`、`BIGMODEL_*` | 重启 dev（或重启应用） |
+| `DLMETA_METAROUTER_*`、`DLMETA_BASE_URL`、`ZAI_*`、`BIGMODEL_*` | 重启 dev（或重启应用） |
 | `VITE_ZCODE_TERMS_URL` / `VITE_ZCODE_PRIVACY_URL` | 重启 dev（vite 构建期注入） |
 | dotenv 文件本身新增/改名 | 重启 dev |
 | `ZCODE_TELEMETRY_REPORT_ENDPOINT` 等 B 档 | 重新打包构建 |

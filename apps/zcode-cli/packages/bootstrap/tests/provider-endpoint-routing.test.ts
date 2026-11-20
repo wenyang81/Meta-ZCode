@@ -9,7 +9,7 @@ describe("resolveProcessProviderEndpointRoutingPort", () => {
     const secondStore = { load: vi.fn(async () => null) } as unknown as SharedZCodeCredentialStore;
     const create = (credentialStore: SharedZCodeCredentialStore) =>
       resolveProcessProviderEndpointRoutingPort({
-        env: { ZCODE_ENV: "production", ZCODE_BASE_URL: "https://credential-owner.example.test" },
+        env: { ZCODE_ENV: "production", DLMETA_BASE_URL: "https://credential-owner.example.test" },
         logger,
         network: {},
         credentialStore,
@@ -46,7 +46,7 @@ describe("resolveProcessProviderEndpointRoutingPort", () => {
   it("isolates ports when the endpoint origin changes", () => {
     const create = (origin: string) =>
       resolveProcessProviderEndpointRoutingPort({
-        env: { ZCODE_ENV: "production", ZCODE_BASE_URL: origin },
+        env: { ZCODE_ENV: "production", DLMETA_BASE_URL: origin },
         logger,
         network: {},
       });

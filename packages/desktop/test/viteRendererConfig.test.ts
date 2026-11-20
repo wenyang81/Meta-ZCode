@@ -36,7 +36,7 @@ describe("desktop renderer Vite dependency aliases", () => {
     "injects the selected ZCode endpoint origin into renderer env",
     async () => {
       vi.stubEnv("ZCODE_ENV", "test");
-      vi.stubEnv("ZCODE_BASE_URL", "");
+      vi.stubEnv("DLMETA_BASE_URL", "");
       const desktopRoot = resolve(import.meta.dirname, "..");
       const configFile = resolve(desktopRoot, "vite.config.ts");
       const result = await loadConfigFromFile(

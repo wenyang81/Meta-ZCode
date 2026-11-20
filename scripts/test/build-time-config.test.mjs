@@ -30,7 +30,7 @@ test("私有默认配置启用全部能力", async () => {
     ZCODE_ARMS_RUM_ENDPOINT: " https://rum.example.com/x ",
     ZCODE_TELEMETRY_REPORT_ENDPOINT: "https://report.example.com/event",
     ZCODE_AUTO_UPDATE: "1",
-    ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN: " http://127.0.0.1:18091 ",
+    DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN: " http://127.0.0.1:18091 ",
   });
   assert.deepEqual(await resolveBuildTimeConfig({}, { defaultsPath }), {
     armsRumEndpoint: "https://rum.example.com/x",
@@ -45,14 +45,14 @@ test("环境变量优先于私有默认配置，显式空字符串关闭单项�
     ZCODE_ARMS_RUM_ENDPOINT: "https://rum.example.com/x",
     ZCODE_TELEMETRY_REPORT_ENDPOINT: "https://report.example.com/event",
     ZCODE_AUTO_UPDATE: "true",
-    ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN: "http://127.0.0.1:18091",
+    DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN: "http://127.0.0.1:18091",
   });
   const config = await resolveBuildTimeConfig(
     {
       ZCODE_ARMS_RUM_ENDPOINT: "",
       ZCODE_TELEMETRY_REPORT_ENDPOINT: "https://other.example.com/event",
       ZCODE_AUTO_UPDATE: "0",
-      ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN: "",
+      DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN: "",
     },
     { defaultsPath },
   );

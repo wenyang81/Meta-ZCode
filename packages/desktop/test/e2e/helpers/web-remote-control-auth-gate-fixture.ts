@@ -167,7 +167,7 @@ export async function prepareWebRemoteControlAuthGateFixture(options: {
     // 缓存账号会触发独立业务 API；必须同样隔离，避免合成凭据收到线上401并提前登出。
     ZAI_BUSINESS_BASE_URL: baseUrl,
     ZCODE_E2E_REMOTE_AUTH_GATE_URL: baseUrl,
-    ZCODE_BASE_URL: baseUrl,
+    DLMETA_BASE_URL: baseUrl,
     ZCODE_ENDPOINT_ORIGIN: baseUrl,
     ZCODE_TEST_BASE_URL: baseUrl,
     ZCODE_WEB_REMOTE_CONTROL_RELAY_WS_URL: `${baseUrl.replace("http:", "ws:")}/api/v1/remote/ws2`,

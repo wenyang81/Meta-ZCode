@@ -155,7 +155,7 @@ describe("Coding Plan E2E mock env", () => {
     applyCodingPlanTeamMockEnv(environment, teamBaseUrl);
     clearCodingPlanUpgradeMockEnv(environment, upgradeBaseUrl);
 
-    expect(environment.ZCODE_BASE_URL).toBe(teamBaseUrl);
+    expect(environment.DLMETA_BASE_URL).toBe(teamBaseUrl);
     expect(environment.ZCODE_ENDPOINT_ORIGIN).toBe(teamBaseUrl);
     expect(environment.ZCODE_E2E_CODING_PLAN_MOCK_URL).toBe(teamBaseUrl);
   });
@@ -169,7 +169,7 @@ describe("Coding Plan E2E mock env", () => {
     applyCodingPlanUpgradeMockEnv(environment, upgradeBaseUrl);
     clearCodingPlanTeamMockEnv(environment, teamBaseUrl);
 
-    expect(environment.ZCODE_BASE_URL).toBe(upgradeBaseUrl);
+    expect(environment.DLMETA_BASE_URL).toBe(upgradeBaseUrl);
     expect(environment.ZCODE_ENDPOINT_ORIGIN).toBe(upgradeBaseUrl);
     expect(environment.ZCODE_E2E_CODING_PLAN_MOCK_URL).toBe(upgradeBaseUrl);
   });

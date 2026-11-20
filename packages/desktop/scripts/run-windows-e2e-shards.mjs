@@ -160,7 +160,7 @@ export function createWindowsE2ERunId({ timestamp, processId, entropy }) {
 
 function createBuildEnv(env) {
   const { NODE_OPTIONS: _nodeOptions, ...buildEnv } = env;
-  // 修复原因：从 ZCode 客户端 shell 运行时，构建会继承 ZCODE_ENV=production / ZCODE_BASE_URL，
+  // 修复原因：从 ZCode 客户端 shell 运行时，构建会继承 ZCODE_ENV=production / DLMETA_BASE_URL，
   // 把它们固化进 agent 与桌面包，导致 E2E 打生产域、fixture endpoint 失效。
   return normalizeE2EDesktopBuildEnv({
     ...buildEnv,

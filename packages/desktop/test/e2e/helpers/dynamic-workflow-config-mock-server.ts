@@ -65,7 +65,7 @@ export function applyDynamicWorkflowConfigMockEnv(
   environment: Record<string, string | undefined>,
   baseUrl: string,
 ): void {
-  environment.ZCODE_BASE_URL = baseUrl;
+  environment.DLMETA_BASE_URL = baseUrl;
   environment.ZCODE_TEST_BASE_URL = baseUrl;
   environment.ZCODE_ENDPOINT_ORIGIN = baseUrl;
   // 未打包 dev 档位下 Main 会把开发者 shell 里的合法 ZCODE_DYNAMIC_WORKFLOW_MODE 透传给 Host
@@ -78,7 +78,7 @@ export function clearDynamicWorkflowConfigMockEnv(
   environment: Record<string, string | undefined>,
   baseUrl: string,
 ): void {
-  for (const key of ["ZCODE_BASE_URL", "ZCODE_TEST_BASE_URL", "ZCODE_ENDPOINT_ORIGIN"] as const) {
+  for (const key of ["DLMETA_BASE_URL", "ZCODE_TEST_BASE_URL", "ZCODE_ENDPOINT_ORIGIN"] as const) {
     if (environment[key] === baseUrl) {
       delete environment[key];
     }

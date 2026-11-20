@@ -51,7 +51,7 @@ renderer、host/service 和 agent 里的 ZCode API、远控链接、zcode-plan O
 覆盖优先级：
 
 1. 完整 URL 覆盖优先，例如 `ZAI_OAUTH_AUTHORIZE_URL`、`BIGMODEL_OAUTH_AUTHORIZE_URL`。
-2. 不带环境前缀的 origin/base 覆盖其次，例如 `ZCODE_BASE_URL`、`ZAI_OAUTH_ORIGIN`、`ZAI_BUSINESS_BASE_URL`、`BIGMODEL_API_BASE_URL`。
+2. 不带环境前缀的 origin/base 覆盖其次，例如 `DLMETA_BASE_URL`、`ZAI_OAUTH_ORIGIN`、`ZAI_BUSINESS_BASE_URL`、`BIGMODEL_API_BASE_URL`。
 3. 环境 scoped 覆盖再次，例如 `ZCODE_TEST_BASE_URL`、`ZAI_PRODUCTION_OAUTH_ORIGIN`、`BIGMODEL_TEST_API_BASE_URL`。
 4. 最后使用 shared resolver 内置默认域名。
 

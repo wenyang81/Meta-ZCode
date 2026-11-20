@@ -10,7 +10,7 @@
 
 ## 使用前提
 
-- ZCode 会话已登录且可访问 `${ZCODE_BASE_URL}`；该服务使用 ZCode 官方 JWT 鉴权，无需手动配置 Token 或 API Key。
+- ZCode 会话已登录且可访问 `${DLMETA_BASE_URL}`；该服务使用 ZCode 官方 JWT 鉴权，无需手动配置 Token 或 API Key。
 - 可访问 ZCode API 的网络环境。
 - 安装或更新插件后需新建 ZCode 会话。
 

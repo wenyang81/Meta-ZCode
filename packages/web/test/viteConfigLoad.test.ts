@@ -107,7 +107,7 @@ describe("web Vite config", () => {
     "uses the same public ZAI OAuth origin in local development mode",
     async () => {
       vi.stubEnv("ZCODE_ENV", "");
-      vi.stubEnv("ZCODE_BASE_URL", "");
+      vi.stubEnv("DLMETA_BASE_URL", "");
       vi.stubEnv("ZAI_OAUTH_ORIGIN", "");
       vi.stubEnv("ZAI_OAUTH_CLIENT_ID", "");
       const webRoot = resolve(import.meta.dirname, "..");
@@ -134,7 +134,7 @@ describe("web Vite config", () => {
 
   it("uses shared ZCode endpoint env override for renderer injection", async () => {
     vi.stubEnv("ZCODE_ENV", "test");
-    vi.stubEnv("ZCODE_BASE_URL", "https://zcode.z.ai/custom/path");
+    vi.stubEnv("DLMETA_BASE_URL", "https://zcode.z.ai/custom/path");
     const webRoot = resolve(import.meta.dirname, "..");
     const configFile = resolve(webRoot, "vite.config.ts");
     const result = await loadConfigFromFile(

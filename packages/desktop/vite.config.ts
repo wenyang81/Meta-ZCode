@@ -185,7 +185,7 @@ export default defineConfig(({ command, mode }) => {
   const zcodeEndpointOrigin = resolveZCodeEndpointOrigin({
     env: zcodeEnv,
     envBaseOrigin:
-      env.ZCODE_BASE_URL ??
+      env.DLMETA_BASE_URL ??
       env.ZCODE_ENDPOINT_ORIGIN ??
       (zcodeEnv === "production" ? env.ZCODE_PRODUCTION_BASE_URL : env.ZCODE_TEST_BASE_URL),
   });

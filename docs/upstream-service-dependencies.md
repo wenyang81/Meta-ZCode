@@ -16,7 +16,7 @@
 
 分档依据是一个容易误判的机制：`rewriteZCodeEndpointUrl()`
 （[packages/shared/src/zcodeEndpoint.ts:388](../packages/shared/src/zcodeEndpoint.ts)）
-只改写 **origin 恰好等于 `https://zcode.z.ai`** 的 URL。所以把 `ZCODE_BASE_URL` 指到自己的网关，
+只改写 **origin 恰好等于 `https://zcode.z.ai`** 的 URL。所以把 `DLMETA_BASE_URL` 指到自己的网关，
 只会带走 `zcode.z.ai` 这一族，`cdn-zcode.z.ai`、`cdn.codegeex.cn`、`open.bigmodel.cn` 都不受影响。
 另一处易误判：OAuth provider 配置里的字面量（如
 [packages/services/src/oauth/providers/zaiProviderConfig.ts:22](../packages/services/src/oauth/providers/zaiProviderConfig.ts)）
@@ -26,13 +26,13 @@
 
 | 服务 | 默认地址 | 发起进程 / 传输 | env 开关 |
 | --- | --- | --- | --- |
-| ZCode 控制面 origin | `https://zcode.z.ai`（`zcodeEndpoint.ts:6`，TEST 与 DEFAULT **同域**） | Host，HTTPS REST | A 档：`ZCODE_ENV`、`ZCODE_BASE_URL`、`ZCODE_ENDPOINT_ORIGIN`、`ZCODE_{TEST,PRODUCTION}_BASE_URL`；B 档：`ZCODE_BUILD_DEFAULT_ENDPOINT_ORIGIN`（打包灼入默认 origin，验证包烤本机地址用，见 fusionfinlab-packaging.md §6） |
+| ZCode 控制面 origin | `https://zcode.z.ai`（`zcodeEndpoint.ts:6`，TEST 与 DEFAULT **同域**） | Host，HTTPS REST | A 档：`ZCODE_ENV`、`DLMETA_BASE_URL`、`ZCODE_ENDPOINT_ORIGIN`、`ZCODE_{TEST,PRODUCTION}_BASE_URL`；B 档：`DLMETA_BUILD_DEFAULT_ENDPOINT_ORIGIN`（打包灼入默认 origin，验证包烤本机地址用，见 fusionfinlab-packaging.md §6） |
 | 设备码式登录 | `/api/v1/oauth/cli/init`、`/api/v1/oauth/cli/poll/{flowId}`、`/api/v1/oauth/profile` | Host + Agent CLI，REST 轮询 | 同上 |
 | OAuth 换 token / 刷新 | `/api/v1/oauth/token` | Host，REST | `ZAI_OAUTH_TOKEN_URL`、`BIGMODEL_OAUTH_TOKEN_URL` |
 | Z.ai 授权页 / 用户信息 | `https://chat.z.ai/api/oauth/authorize`、`/api/oauth/userinfo` | 浏览器流程 + Host REST | `ZAI_OAUTH_AUTHORIZE_URL`、`ZAI_OAUTH_ORIGIN`、`ZAI_OAUTH_CLIENT_ID`（当前公开 client_id `client_P8X5CMWmlaRO9gyO-KSqtg`） |
 | Z.ai 业务登录 | `https://api.z.ai/api/auth/z/login` | Host + CLI，REST | `ZAI_BUSINESS_BASE_URL`、`ZAI_BUSINESS_LOGIN_URL` |
 | BigModel 授权 / 用户信息 | `https://bigmodel.cn/login`、`/api/biz/customer/getCustomerInfo` | 浏览器流程 + Host REST | `BIGMODEL_OAUTH_*`、`BIGMODEL_API_BASE_URL`、`BIGMODEL_OAUTH_APP_ID`（appId 当前为 `"zcode"`） |
-| 套餐与计费 | `/api/v1/zcode-plan/billing/{current,balance,preview,claim}`、`/pay/batch-preview`、`/api/biz/subscription/list` | Host，REST | 随 `ZCODE_BASE_URL` / `ZAI_BUSINESS_BASE_URL` / `BIGMODEL_API_BASE_URL` |
+| 套餐与计费 | `/api/v1/zcode-plan/billing/{current,balance,preview,claim}`、`/pay/batch-preview`、`/api/biz/subscription/list` | Host，REST | 随 `DLMETA_BASE_URL` / `ZAI_BUSINESS_BASE_URL` / `BIGMODEL_API_BASE_URL` |
 
 登录态恢复依赖 userinfo，**不能离线进入主界面**；应用本身可以在全部域名不可达时启动（见第 6 节）。
 
@@ -46,7 +46,7 @@
 | 标准 API 模板 | `api.z.ai/api/paas/v4`、`open.bigmodel.cn/api/paas/v4` | **A** | 用户填 key 的模板，不自动启用 |
 | 第三方模板（Kimi/DeepSeek/OpenAI/Anthropic/OpenRouter/Ark/Dashscope…） | 各自官方域 | 不适用 | 用户自配，与智谱无关 |
 | 内置目录远端刷新 | `GET {origin}/api/v1/client/configs` → 响应内签名 URL → CDN 取 `zcode-builtin.json` | **A** | 60s 轮询、成功间隔 1 小时、失败指数退避并回退随包版本（LKG） |
-| 托管 image_search MCP | `${ZCODE_BASE_URL}/api/v1/mcp/server/image_search` | **A** | 插件自带 `.mcp.json` |
+| 托管 image_search MCP | `${DLMETA_BASE_URL}/api/v1/mcp/server/image_search` | **A** | 插件自带 `.mcp.json` |
 | 个人 provider 配置 | 本地 `~/.zcode/v2/provider_config.json` | — | 唯一写者 `ProviderConfigService`；`ZCODE_PERSONAL_PROVIDER_CONFIG_FILE` 可改路径 |
 
 无强制默认模型：CLI 明确禁止取「Registry 首项」
@@ -103,7 +103,7 @@
 
 ## 7. 处置建议
 
-1. **先做 A 档**：一组 env（`ZCODE_BASE_URL`、`ZAI_*`、`BIGMODEL_*`、`ZCODE_TELEMETRY_REPORT_ENDPOINT`、
+1. **先做 A 档**：一组 env（`DLMETA_BASE_URL`、`ZAI_*`、`BIGMODEL_*`、`ZCODE_TELEMETRY_REPORT_ENDPOINT`、
    `ZCODE_ARMS_RUM_ENDPOINT`）把控制面、认证、计费、遥测整体指到自己的后端，不动代码即可跑通。
    注意 `ZCODE_ENV=test` 与 production 默认同域，指走时两边都要给。
 2. **再收 C 档里的三处硬骨头**：插件市场 CDN、`zcode-builtin.json` 内的 `open.bigmodel.cn`/`api.z.ai`

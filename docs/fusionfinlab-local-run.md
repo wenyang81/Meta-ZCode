@@ -135,7 +135,7 @@ dev 起来后的进程与端口：
 
 两个最容易把结论搞反的机制，排障时先怀疑它们，不要先改代码：
 
-1. **`rewriteZCodeEndpointUrl()` 只改写 origin 恰好等于 `https://zcode.z.ai` 的 URL**，所以 `cdn-zcode.z.ai`、`open.bigmodel.cn` 等不会跟着 `ZCODE_BASE_URL` 走。
+1. **`rewriteZCodeEndpointUrl()` 只改写 origin 恰好等于 `https://zcode.z.ai` 的 URL**，所以 `cdn-zcode.z.ai`、`open.bigmodel.cn` 等不会跟着 `DLMETA_BASE_URL` 走。
 2. **env 生效顺序按变量名，不按文件**。构建期读取顺序见 [packages/desktop/tsup.config.ts:29-67](../packages/desktop/tsup.config.ts#L29-L67)；runtime host 侧是 workspace 根再 desktop 根，后读的文件覆盖先读的（[packages/desktop/src/main/desktopRuntimeEnv.ts:168-213](../packages/desktop/src/main/desktopRuntimeEnv.ts#L168-L213)）。带 `_TEST_`/`_PRODUCTION_` 作用域前缀的变量排在未加作用域的名字之后。
 
 ## 6. 常见失败 → 处置
