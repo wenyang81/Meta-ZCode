@@ -4,15 +4,26 @@
  */
 import { mkdirSync } from "node:fs";
 import path from "node:path";
-import { DatabaseSync, type StatementSync } from "node:sqlite";
+import { DatabaseSync } from "node:sqlite";
 
-export const CODEGRAPH_SCHEMA_VERSION = "2";
+export const CODEGRAPH_SCHEMA_VERSION = "3";
 
 export interface FileRow {
   readonly path: string;
   readonly mtimeMs: number;
   readonly hash: string;
   readonly module: string;
+}
+
+/**
+ * 一条静态 import/export-from 说明符。只存说明符不存解析结果：解析要贴着当前工作区
+ * 做（路径别名、exports 回映），把目标文件写死进索引会让一次文件移动就污染图库。
+ */
+export interface ImportRow {
+  readonly filePath: string;
+  readonly specifier: string;
+  readonly line: number;
+  readonly typeOnly: boolean;
 }
 
 export interface SymbolRow {
@@ -59,6 +70,13 @@ interface EdgeRowSql {
   is_reexport: number;
 }
 
+interface ImportRowSql {
+  file_path: string;
+  specifier: string;
+  line: number;
+  type_only: number;
+}
+
 const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS meta (
   key TEXT PRIMARY KEY,
@@ -95,6 +113,13 @@ CREATE TABLE IF NOT EXISTS edge_coverage (
   name TEXT NOT NULL,
   PRIMARY KEY (owner_file, name)
 );
+CREATE TABLE IF NOT EXISTS imports (
+  file_path TEXT NOT NULL,
+  specifier TEXT NOT NULL,
+  line INTEGER NOT NULL,
+  type_only INTEGER NOT NULL,
+  PRIMARY KEY (file_path, line, specifier)
+);
 `;
 
 function toFileRow(r: FileRowSql): FileRow {
@@ -117,6 +142,10 @@ function toEdgeRow(r: EdgeRowSql): EdgeRow {
   };
 }
 
+function toImportRow(r: ImportRowSql): ImportRow {
+  return { filePath: r.file_path, specifier: r.specifier, line: Number(r.line), typeOnly: r.type_only === 1 };
+}
+
 export class CodegraphStore {
   private readonly db: DatabaseSync;
 
@@ -129,7 +158,7 @@ export class CodegraphStore {
     if (version !== CODEGRAPH_SCHEMA_VERSION) {
       // schema 不兼容时整库重建：索引是纯派生物，丢弃零成本（spec §3 事实源在文件系统）。
       this.db.exec(
-        "DELETE FROM meta; DELETE FROM files; DELETE FROM symbols; DELETE FROM edges; DELETE FROM edge_coverage;",
+        "DELETE FROM meta; DELETE FROM files; DELETE FROM symbols; DELETE FROM edges; DELETE FROM edge_coverage; DELETE FROM imports;",
       );
       this.setMeta("schema_version", CODEGRAPH_SCHEMA_VERSION);
     }
@@ -152,6 +181,15 @@ export class CodegraphStore {
     return (this.db.prepare("SELECT path, mtime_ms, hash, module FROM files").all() as unknown as FileRowSql[]).map(toFileRow);
   }
 
+  /** 全仓静态 import 说明符（结构视图的依赖方向数据源：一次读全表，量级 ~4 万行）。 */
+  listImports(): ImportRow[] {
+    return (
+      this.db
+        .prepare("SELECT file_path, specifier, line, type_only FROM imports ORDER BY file_path, line")
+        .all() as unknown as ImportRowSql[]
+    ).map(toImportRow);
+  }
+
   updateFileMtime(pathValue: string, mtimeMs: number): void {
     this.db.prepare("UPDATE files SET mtime_ms = ? WHERE path = ?").run(mtimeMs, pathValue);
   }
@@ -161,16 +199,18 @@ export class CodegraphStore {
     this.db.prepare("DELETE FROM symbols WHERE file_path = ?").run(pathValue);
     this.db.prepare("DELETE FROM edges WHERE owner_file = ? OR from_file = ?").run(pathValue, pathValue);
     this.db.prepare("DELETE FROM edge_coverage WHERE owner_file = ?").run(pathValue);
+    this.db.prepare("DELETE FROM imports WHERE file_path = ?").run(pathValue);
   }
 
-  /** 符号表重建：同时作废该文件导出符号的缓存边（符号行变了，旧边不可信）。 */
-  replaceFile(file: FileRow, symbols: readonly SymbolRow[]): void {
+  /** 符号表与 import 表同步替换：两者来自同一次 parse，拆开写会让结构视图读到新旧混叠。 */
+  replaceFile(file: FileRow, symbols: readonly SymbolRow[], imports: readonly ImportRow[]): void {
     this.db.exec("BEGIN");
     try {
       this.db.prepare("DELETE FROM files WHERE path = ?").run(file.path);
       this.db.prepare("DELETE FROM symbols WHERE file_path = ?").run(file.path);
       this.db.prepare("DELETE FROM edges WHERE owner_file = ?").run(file.path);
       this.db.prepare("DELETE FROM edge_coverage WHERE owner_file = ?").run(file.path);
+      this.db.prepare("DELETE FROM imports WHERE file_path = ?").run(file.path);
       this.db
         .prepare("INSERT INTO files (path, mtime_ms, hash, module) VALUES (?, ?, ?, ?)")
         .run(file.path, file.mtimeMs, file.hash, file.module);
@@ -179,6 +219,12 @@ export class CodegraphStore {
       );
       for (const s of symbols) {
         insertSymbol.run(s.filePath, s.name, s.kind, s.line, s.isExported ? 1 : 0);
+      }
+      const insertImport = this.db.prepare(
+        "INSERT OR IGNORE INTO imports (file_path, specifier, line, type_only) VALUES (?, ?, ?, ?)",
+      );
+      for (const i of imports) {
+        insertImport.run(i.filePath, i.specifier, i.line, i.typeOnly ? 1 : 0);
       }
       this.db.exec("COMMIT");
     } catch (error) {
@@ -222,6 +268,12 @@ export class CodegraphStore {
         .prepare("SELECT 1 AS ok FROM edge_coverage WHERE owner_file = ? AND name = ?")
         .get(ownerFile, name) !== undefined
     );
+  }
+
+  /** 已算过精确边的「声明文件+符号名」对数；结构视图用它说明边覆盖了多少导出符号。 */
+  coveredPairCount(): number {
+    const row = this.db.prepare("SELECT COUNT(*) AS c FROM edge_coverage").get() as { c: number | bigint };
+    return Number(row.c);
   }
 
   /** 引用点所在文件变更后，其作为 from_file 参与的旧边全部作废，相关 owner 的缓存一并失效。 */

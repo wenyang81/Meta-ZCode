@@ -674,6 +674,7 @@ export class PermissionService {
       "Read",
       "Glob",
       "Grep",
+      "CodegraphQuery",
       "WebSearch",
       "WebFetch",
       "TodoRead",

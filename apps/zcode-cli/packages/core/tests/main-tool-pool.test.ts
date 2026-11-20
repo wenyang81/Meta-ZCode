@@ -48,6 +48,7 @@ describe("main agent tool pool", () => {
       "DeferredToolCall",
       "Read",
       "Bash",
+      "CodegraphQuery",
       "WebFetch",
       "WebSearch",
       "TodoWrite",

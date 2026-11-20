@@ -169,5 +169,7 @@
   "packages/desktop/test/credential-keyring-assets.test.ts",
   "packages/desktop/test/stdioTapCredentialRedaction.test.ts",
   "packages/shared/test/dataDirName.test.ts",
-  "packages/shared/test/zcodeEndpoint.test.ts"
+  "packages/shared/test/zcodeEndpoint.test.ts",
+  "packages/biz-codegraph/tests/freshness.test.ts",
+  "packages/biz-codegraph/tests/structural.test.ts"
 ]

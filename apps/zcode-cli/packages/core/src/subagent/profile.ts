@@ -32,7 +32,7 @@ export function createBuiltInExploreAgentProfile(
     ...(options.modelSelection ? { modelSelection: options.modelSelection } : {}),
     source: "built-in",
     systemPrompt: "",
-    tools: ["Bash", "Glob", "Grep", "Read", "WebFetch", "WebSearch", "TodoWrite"],
+    tools: ["Bash", "Glob", "Grep", "CodegraphQuery", "Read", "WebFetch", "WebSearch", "TodoWrite"],
   };
 }
 

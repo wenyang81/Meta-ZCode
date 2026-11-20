@@ -4,6 +4,8 @@ const SORTED_PROVIDER_TOOL_NAMES = new Set([
   "Agent",
   "AskUserQuestion",
   "Bash",
+  // 与 Glob/Grep 同族：符号级查询是搜索面的结构化那一半，排在参考工具块里保持位置稳定。
+  "CodegraphQuery",
   "CronCreate",
   "CronDelete",
   "CronList",

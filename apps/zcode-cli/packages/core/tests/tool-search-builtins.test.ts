@@ -13,6 +13,9 @@ const RESIDENT_NAMES = [
   "Agent",
   "AskUserQuestion",
   "Bash",
+  // 常驻：Explore 的提示词把符号查询排在文本搜索之前（docs/codegraph-index.md §4.3），
+  // 要先 ToolSearch 才拿得到就等于让模型多绕一跳，正好违背这条路由规则的目的。
+  "CodegraphQuery",
   "Edit",
   "Glob",
   "Grep",

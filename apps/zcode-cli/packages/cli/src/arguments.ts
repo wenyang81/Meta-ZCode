@@ -105,6 +105,15 @@ export const parseGlobalArgs = (argv: string[]) =>
         multiple: true,
         type: "string",
       },
+      // `zcode codegraph` 子命令旗标：同上，strict 解析器要求先在全局注册，
+      // 由 run.ts 透传给 codegraph-command；`--cwd` 管的是进程工作目录，不借用它。
+      workspace: {
+        type: "string",
+      },
+      // `zcode codegraph wiki --export <dir>`：结构视图 markdown 的落点，相对 workspace 解析。
+      export: {
+        type: "string",
+      },
     },
     strict: true,
   });

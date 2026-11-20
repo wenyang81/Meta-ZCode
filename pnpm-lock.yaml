@@ -425,6 +425,9 @@ importers:
       '@zcode/adapters':
         specifier: workspace:*
         version: link:../adapters
+      '@zcode/biz-codegraph':
+        specifier: workspace:*
+        version: link:../../../../packages/biz-codegraph
       '@zcode/bootstrap':
         specifier: workspace:*
         version: link:../bootstrap
@@ -480,6 +483,9 @@ importers:
 
   apps/zcode-cli/packages/core:
     dependencies:
+      '@zcode/biz-codegraph':
+        specifier: workspace:*
+        version: link:../../../../packages/biz-codegraph
       '@zcode/contracts':
         specifier: workspace:*
         version: link:../contracts
@@ -1018,13 +1024,13 @@ importers:
       ts-morph:
         specifier: ^28.0.0
         version: 28.0.0
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
     devDependencies:
       '@types/node':
         specifier: ^25.5.0
         version: 25.6.0
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.2
 
   packages/client:
     dependencies:
@@ -18119,7 +18125,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.0.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.7(patch_hash=11fdb66aa985e1d77e68752deeb7c1130ae33c9a4e2968f23aae8adaf8bc9ba0)(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(msw@2.13.3(@types/node@24.12.2)(typescript@5.9.3))(vite@8.0.8(@types/node@24.12.2)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
+      vitest: 4.1.7(patch_hash=11fdb66aa985e1d77e68752deeb7c1130ae33c9a4e2968f23aae8adaf8bc9ba0)(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(msw@2.13.3(@types/node@24.12.2)(typescript@6.0.2))(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
 
   '@vitest/expect@4.1.4':
     dependencies:

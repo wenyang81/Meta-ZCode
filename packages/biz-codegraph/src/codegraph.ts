@@ -1,40 +1,62 @@
 /**
  * 门面：rebuild / ensure / query / stats（spec docs/codegraph-index.md §4）。
  *
- * 分层性能模型（2026-11-19 全量 findReferences 实测超 10 分钟后定型）：
- * - 全量 rebuild 与查询前的 ensure 只建符号表（纯 AST 遍历，不碰语言服务）。
- * - 符号级精确引用边在查询时对「被查的那个符号」懒算，持久缓存进 edge_coverage 表；
- *   之后任何进程/会话直接命中 SQLite——持久索引保证同一符号只算一次。
+ * 性能模型（2026-11-19 实测定型）：
+ * - 符号表与 import 说明符：裸 TypeScript 逐文件 parse（~2ms/文件，本仓 ~8453 文件约 20s），流式处理内存有界。
+ * - 引用边：查询时对「被查的单个符号」用一次性小 Project 走语言服务懒算（extract.ts），
+ *   结果持久缓存进 edge_coverage 表——同一符号全生命周期只算一次。
+ * - ensure 只 stat 比对：干净时零解析。
+ * - 新鲜度（spec §5.1）：「检测到变化但重抽失败」的文件，其查询结果携带 stale 标记
+ *   返回，禁止静默给旧图。
  * - 事件顺序：文件系统（事实源）→ stat 比对 → 重抽 → store 单事务替换。
- * - 新鲜度（spec §5.1）：查询默认先 ensure；任何「检测到变化但重抽失败」的文件，
- *   其结果携带 stale 标记返回，禁止静默给旧图。
  */
 import { createHash } from "node:crypto";
-import { existsSync, statSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
-import { Project, FileSystemRefreshResult } from "ts-morph";
-import { extractSymbols, extractSymbolEdges, moduleForPath, toPosix } from "./extract.js";
+import {
+  createEdgeProject,
+  extractFileFacts,
+  extractSymbolEdges,
+  moduleForPath,
+  toPosix,
+} from "./extract.js";
 import { codegraphIndexPath } from "./indexPath.js";
 import { CodegraphStore, type EdgeRow, type FileRow } from "./store.js";
 import type {
   CodegraphEdge,
   CodegraphStats,
   CodegraphSymbol,
+  StructuralWikiPolicyAdapter,
+  StructuralWikiSnapshot,
   SymbolQuery,
   SymbolQueryResult,
 } from "./contract.js";
 
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx", ".mts", ".cts"]);
-const PRUNED_DIRS = new Set(["node_modules", "dist", "build", "coverage", "out", ".git", ".dlMeta"]);
-/** filePath + inbound 方向时最多懒算的导出符号数（语言服务调用贵，防一次性算全文件）。 */
+const PRUNED_DIRS = new Set(["node_modules", "dist", "build", "coverage", "out", ".git", ".dlMeta", ".cache"]);
+/** filePath + inbound 方向时最多懒算的导出符号数（语言服务调用贵）。 */
 const MAX_INBOUND_SYMBOLS_PER_FILE = 20;
+/** 懒算边时的候选引用方上限（文本预筛命中数）。 */
+const MAX_EDGE_CANDIDATES = 300;
+
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** 非阻塞的文件列表快照（懒算边用；缓存过期时后台刷新，不阻塞查询路径）。 */
+function diskFilesFor(ctx: WorkspaceContext): readonly string[] {
+  return ctx.filesCache?.files ?? [];
+}
 
 interface WorkspaceContext {
   readonly root: string;
   readonly store: CodegraphStore;
-  project: Project | null;
+  /** 目录遍历结果进程内缓存：stat 比对与候选扫描共享，TTL 内不再重走目录树。 */
+  filesCache: { readonly files: readonly string[]; readonly at: number } | null;
 }
+
+const FILES_CACHE_TTL_MS = 60_000;
 
 const contexts = new Map<string, WorkspaceContext>();
 const locks = new Map<string, Promise<unknown>>();
@@ -50,57 +72,24 @@ function sha1(content: string): string {
   return createHash("sha1").update(content).digest("hex");
 }
 
-function sourceGlobs(root: string): string[] {
-  const exclude = [
-    "!**/node_modules/**",
-    "!**/dist/**",
-    "!**/build/**",
-    "!**/coverage/**",
-    "!**/out/**",
-  ];
-  const repoShape = [
-    "packages/*/src/**/*.{ts,tsx,mts,cts}",
-    "packages/*/test/**/*.{ts,tsx,mts,cts}",
-    "apps/*/src/**/*.{ts,tsx,mts,cts}",
-    "apps/*/test/**/*.{ts,tsx,mts,cts}",
-  ];
-  const generic = ["src/**/*.{ts,tsx,mts,cts}", "lib/**/*.{ts,tsx,mts,cts}", "test/**/*.{ts,tsx,mts,cts}"];
-  const isRepoShaped = existsSync(path.join(root, "packages")) || existsSync(path.join(root, "apps"));
-  return [...(isRepoShaped ? repoShape : generic), ...exclude];
-}
-
-function loadProject(root: string): Project {
-  const tsconfig = ["tsconfig.json", "tsconfig.base.json"].find((f) => existsSync(path.join(root, f)));
-  const project = new Project({
-    ...(tsconfig ? { tsConfigFilePath: path.join(root, tsconfig) } : {}),
-    skipAddingFilesFromTsConfig: true,
-    // 全仓解析（含 lib .d.ts 拉取）在大仓会吃满默认堆（2026-11-19 实测 OOM）。
-    // 符号表抽取只要 AST；引用边靠语言服务在查询时按需解析 import。
-    skipFileDependencyResolution: true,
-  });
-  project.addSourceFilesAtPaths(sourceGlobs(root).map((g) => path.join(root, g)));
-  return project;
-}
-
 function getContext(root: string): WorkspaceContext {
   const existing = contexts.get(root);
   if (existing) return existing;
-  const ctx: WorkspaceContext = {
-    root,
-    store: new CodegraphStore(codegraphIndexPath(root)),
-    project: null,
-  };
+  const ctx: WorkspaceContext = { root, store: new CodegraphStore(codegraphIndexPath(root)), filesCache: null };
   contexts.set(root, ctx);
   return ctx;
 }
 
-/** Project 懒加载：干净查询（stat 全命中）永远不触发全仓解析。 */
-function getProject(ctx: WorkspaceContext): Project {
-  if (!ctx.project) ctx.project = loadProject(ctx.root);
-  return ctx.project;
+async function getCachedFiles(ctx: WorkspaceContext): Promise<readonly string[]> {
+  if (ctx.filesCache && Date.now() - ctx.filesCache.at < FILES_CACHE_TTL_MS) {
+    return ctx.filesCache.files;
+  }
+  const files = await walkSourceFiles(ctx.root);
+  ctx.filesCache = { files, at: Date.now() };
+  return files;
 }
 
-async function walkSourceFiles(root: string): Promise<string[]> {
+export async function walkSourceFiles(root: string): Promise<string[]> {
   const found: string[] = [];
   async function visit(dir: string): Promise<void> {
     let entries;
@@ -128,43 +117,58 @@ async function currentStat(root: string, absPath: string): Promise<{ mtimeMs: nu
   let stats;
   try {
     stats = await fsPromises.stat(absPath);
+    // 读不出内容（同名目录、权限、瞬时 IO 错误）按「内容已变」处理，交给重抽那一步
+    // 记录失败并标 stale（spec §5.1），不在这里把异常抛穿查询路径。
+    const content = await fsPromises.readFile(absPath, "utf8");
+    return { mtimeMs: stats.mtimeMs, hash: sha1(content) };
   } catch {
     return null;
   }
-  const content = await fsPromises.readFile(absPath, "utf8");
-  return { mtimeMs: stats.mtimeMs, hash: sha1(content) };
 }
 
-/** 符号表重抽（不含语言服务）。作序：replaceFile 会连带作废该文件导出符号的缓存边。 */
-function reindexFileSymbols(ctx: WorkspaceContext, project: Project, absPath: string): void {
-  const sf = project.getSourceFile(absPath);
-  if (!sf) throw new Error(`source file not loaded: ${toPosix(ctx.root, absPath)}`);
-  const stats = statSync(absPath);
+/** 单文件符号表 + import 说明符重抽（裸 TS ~2ms）。replaceFile/invalidate 连带作废关联缓存边。 */
+function reindexFileSymbols(ctx: WorkspaceContext, absPath: string): void {
   const rel = toPosix(ctx.root, absPath);
+  let stats;
+  try {
+    stats = statSync(absPath);
+  } catch {
+    throw new Error(`file disappeared: ${rel}`);
+  }
+  const text = readFileSync(absPath, "utf8");
   const fileRow: FileRow = {
     path: rel,
     mtimeMs: stats.mtimeMs,
-    hash: sha1(sf.getFullText()),
+    hash: sha1(text),
     module: moduleForPath(ctx.root, absPath),
   };
-  ctx.store.replaceFile(fileRow, extractSymbols(ctx.root, sf));
+  const facts = extractFileFacts(ctx.root, absPath, text);
+  ctx.store.replaceFile(fileRow, facts.symbols, facts.imports);
   // 该文件作为「引用方」参与的其它 owner 缓存边随内容变更作废（spec §5.1 不静默给旧边）。
   ctx.store.invalidateEdgesFrom(rel);
 }
 
-function rebuildAll(ctx: WorkspaceContext, project: Project): void {
-  for (const sf of project.getSourceFiles()) {
-    reindexFileSymbols(ctx, project, sf.getFilePath());
+/** 全量重建（CLI rebuild 入口）。覆盖式：清库 → 逐文件流式抽符号表。 */
+export async function rebuildIndex(root: string): Promise<{ files: number; symbols: number; edges: number }> {
+  const ctx = contexts.get(root) ?? getContext(root);
+  const files = await getCachedFiles(ctx);
+  for (const file of ctx.store.listFiles()) ctx.store.removeFile(file.path);
+  let errorCount = 0;
+  let firstError: string | null = null;
+  for (const abs of files) {
+    try {
+      reindexFileSymbols(ctx, abs);
+    } catch (error) {
+      // 单文件不可读/不可解析：跳过（索引缺席 ≠ 旧数据，不违反 §5.1）；错误计数进 meta 供 stats 观测。
+      errorCount += 1;
+      if (!firstError) {
+        firstError = `${toPosix(ctx.root, abs)}: ${error instanceof Error ? error.message : String(error)}`;
+      }
+    }
   }
   ctx.store.setMeta("built_at", new Date().toISOString());
-}
-
-/** 全量重建（CLI rebuild 入口）。覆盖式：先清库再逐文件抽符号表。同步阻塞，CLI 专用。 */
-export function rebuildIndex(root: string): { files: number; symbols: number; edges: number } {
-  const ctx = contexts.get(root) ?? getContext(root);
-  const project = getProject(ctx);
-  for (const file of ctx.store.listFiles()) ctx.store.removeFile(file.path);
-  rebuildAll(ctx, project);
+  ctx.store.setMeta("rebuild_error_count", String(errorCount));
+  ctx.store.setMeta("rebuild_first_error", firstError ?? "");
   return ctx.store.counts();
 }
 
@@ -173,10 +177,7 @@ interface EnsureReport {
   readonly failed: ReadonlyMap<string, string>;
 }
 
-/**
- * 查询前按需增量：mtime 未变的文件零读取；mtime 变了才读内容比 hash。
- * 变更/新增文件需要 Project（懒加载）；删除只清库不碰 Project。
- */
+/** 查询前按需增量：mtime 未变零读取；mtime 变了读内容比 hash；新文件补录。 */
 async function ensureIndex(ctx: WorkspaceContext): Promise<EnsureReport> {
   const reindexed: string[] = [];
   const failed = new Map<string, string>();
@@ -200,45 +201,21 @@ async function ensureIndex(ctx: WorkspaceContext): Promise<EnsureReport> {
     changedPaths.push(abs);
   }
 
-  const loaded = new Set(
-    (ctx.project?.getSourceFiles() ?? []).map((sf) => toPosix(ctx.root, sf.getFilePath())),
-  );
-  const diskFiles = await walkSourceFiles(ctx.root);
-  const missing = diskFiles.filter((abs) => !loaded.has(toPosix(ctx.root, abs)));
+  const diskFiles = await getCachedFiles(ctx);
+  const indexed = new Set(ctx.store.listFiles().map((f) => f.path));
+  const missing = diskFiles.filter((abs) => !indexed.has(toPosix(ctx.root, abs)));
 
   if (changedPaths.length === 0 && missing.length === 0) {
     return { reindexed, failed };
   }
 
-  const project = getProject(ctx);
-  for (const abs of changedPaths) {
+  for (const abs of [...changedPaths, ...missing]) {
     const rel = toPosix(ctx.root, abs);
     try {
-      let sf = project.getSourceFile(abs);
-      if (!sf) {
-        project.addSourceFilesAtPaths([abs]);
-        sf = project.getSourceFile(abs);
-      } else if (sf.refreshFromFileSystemSync() === FileSystemRefreshResult.Deleted) {
-        ctx.store.removeFile(rel);
-        project.removeSourceFile(sf);
-        continue;
-      }
-      if (!sf) throw new Error(`source file could not be loaded: ${rel}`);
-      reindexFileSymbols(ctx, project, abs);
+      reindexFileSymbols(ctx, abs);
       reindexed.push(rel);
     } catch (error) {
       failed.set(rel, error instanceof Error ? error.message : String(error));
-    }
-  }
-  if (missing.length > 0) {
-    project.addSourceFilesAtPaths(missing);
-    for (const abs of missing) {
-      try {
-        reindexFileSymbols(ctx, project, abs);
-        reindexed.push(toPosix(ctx.root, abs));
-      } catch (error) {
-        failed.set(toPosix(ctx.root, abs), error instanceof Error ? error.message : String(error));
-      }
     }
   }
   return { reindexed, failed };
@@ -288,7 +265,7 @@ function toContractEdge(edge: EdgeRow): CodegraphEdge {
 }
 
 export interface QueryOptions {
-  /** false 时不做增量重抽、只校验并标注 stale（测试用）；运行时工具保持默认 true。 */
+  /** false 时不做增量重抽、只校验并标注 stale（测试 stale 标记用）；运行时工具默认 true。 */
   readonly ensure?: boolean;
 }
 
@@ -313,12 +290,35 @@ export async function querySymbols(
     if (direction === "outbound") return;
     if (!ctx.store.isEdgeCovered(ownerFile, name)) {
       try {
-        const project = getProject(ctx);
-        const sf = project.getSourceFile(path.join(ctx.root, ownerFile));
+        // 引用方不在 owner 的 import 闭包里（它们 import owner），所以 program 必须包含
+        // 候选引用方。先按符号名做文本预筛（正则词边界），再把 owner+候选装进一次性
+        // 小 Project 跑 findReferences——2026-11-19 实测：预筛 1.2s + 求边 6.5s，
+        // 结果持久缓存，同一符号只算一次。直接全仓 findReferences 会 OOM/超 10 分钟。
+        const abs = path.join(ctx.root, ownerFile);
+        const pattern = new RegExp(`\\b${escapeRegExp(name)}\\b`);
+        const candidates: string[] = [];
+        for (const file of diskFilesFor(ctx)) {
+          if (file === abs) continue;
+          let text: string;
+          try {
+            text = readFileSync(file, "utf8");
+          } catch {
+            continue;
+          }
+          if (pattern.test(text)) {
+            candidates.push(file);
+            if (candidates.length >= MAX_EDGE_CANDIDATES) break;
+          }
+        }
+        const project = createEdgeProject(ctx.root);
+        // 用 addSourceFileAtPathIfExists 而不是 addSourceFilesAtPaths：后者按 glob 匹配，
+        // Windows 的「\\」绝对路径一个都匹配不上，曾让全部懒算边静默为空并误报 stale。
+        const sf = project.addSourceFileAtPathIfExists(abs);
         if (!sf) {
           failed.set(ownerFile, `source file not loaded: ${ownerFile}`);
           return;
         }
+        for (const candidate of candidates) project.addSourceFileAtPathIfExists(candidate);
         const computed = extractSymbolEdges(ctx.root, sf, name);
         if (!computed) {
           failed.set(ownerFile, `export not found: ${name}`);
@@ -339,7 +339,10 @@ export async function querySymbols(
   if (query.symbol) {
     for (const row of ctx.store.symbolsByName(query.symbol, limit)) {
       symbols.push(
-        toContractSymbol({ ...row, module: moduleForPath(ctx.root, path.join(ctx.root, row.filePath)) }),
+        toContractSymbol({
+          ...row,
+          module: moduleForPath(ctx.root, path.join(ctx.root, row.filePath)),
+        }),
       );
       targetFiles.add(row.filePath);
       collectInbound(row.filePath, row.name);
@@ -381,6 +384,29 @@ export async function querySymbols(
   };
 }
 
+/**
+ * 索引是否已就绪（spec §5.1：缺失时返回明确提示，绝不「查询顺带全量重建」）。
+ * 只查文件存在与行数，不 stat 每个源文件——运行时工具每次查询都要过这道门。
+ */
+export function codegraphIndexReady(root: string): { ready: boolean; files: number } {
+  if (!existsSync(codegraphIndexPath(root))) return { ready: false, files: 0 };
+  const ctx = contexts.get(root) ?? getContext(root);
+  const files = ctx.store.counts().files;
+  return { ready: files > 0, files };
+}
+
+/**
+ * 释放某个 workspace 的索引句柄与进程内缓存。
+ * Windows 上没关的 SQLite 文件锁会让临时目录删不掉，测试与长驻进程的收尾都要走这里。
+ */
+export function closeCodegraphIndex(root: string): void {
+  const ctx = contexts.get(root);
+  if (!ctx) return;
+  contexts.delete(root);
+  locks.delete(root);
+  ctx.store.close();
+}
+
 export async function codegraphStats(root: string): Promise<CodegraphStats> {
   const ctx = contexts.get(root) ?? getContext(root);
   const counts = ctx.store.counts();
@@ -400,5 +426,127 @@ export async function codegraphStats(root: string): Promise<CodegraphStats> {
     edges: counts.edges,
     builtAt: ctx.store.getMeta("built_at") ?? "",
     staleRatio: counts.files === 0 ? 0 : staleCount / counts.files,
+  };
+}
+
+interface WikiModuleEntry {
+  readonly files: { readonly path: string; readonly exports: { readonly name: string; readonly kind: string; readonly line: number }[] }[];
+  readonly dependsOn: Map<string, number>;
+  readonly dependedBy: Map<string, number>;
+}
+
+/** 注入了 policy 适配器、但文件不属于任何已登记模块时的归属桶。 */
+const UNREGISTERED_MODULE = "unregistered";
+
+/**
+ * 结构视图快照（spec §4.1 `CodegraphModules`）：模块清单、每模块的文件与导出面、
+ * 模块间依赖方向、越界告警。全部从索引现有表聚合，不额外解析源码、不调模型。
+ *
+ * 依赖方向的数据源是索引里的**静态 import 说明符**（不是按符号懒算的精确引用边），
+ * 所以它是全量而非下界；代价是动态 `import()`、`require()` 与外部包不计入。
+ *
+ * 模块口径与越界告警由调用方注入适配器：`architecture-policy.yaml` 的解析和那 14 条
+ * 规则的唯一所有者在 `scripts/architecture`，本包不重复实现，也不自己读 YAML。
+ * 没有适配器时依赖方向留空并在渲染端标注「未计算」——不在这里造第二套解析器。
+ */
+export async function buildStructuralWiki(
+  root: string,
+  options: QueryOptions = {},
+  adapter?: StructuralWikiPolicyAdapter,
+): Promise<StructuralWikiSnapshot> {
+  const ctx = contexts.get(root) ?? getContext(root);
+  let failed = new Map<string, string>();
+  if (options.ensure !== false) {
+    const report = await withLock(root, () => ensureIndex(ctx));
+    failed = new Map(report.failed);
+  }
+
+  const rows = ctx.store.listFiles();
+  const indexedModule = new Map(rows.map((row) => [row.path, row.module] as const));
+  const byModule = new Map<string, WikiModuleEntry>();
+  const entryFor = (module: string): WikiModuleEntry => {
+    const existing = byModule.get(module);
+    if (existing) return existing;
+    const created: WikiModuleEntry = { files: [], dependsOn: new Map(), dependedBy: new Map() };
+    byModule.set(module, created);
+    return created;
+  };
+  // 无适配器时用索引里存的包级口径；有适配器时以 policy 为准，未登记的文件归进 unregistered。
+  const classify = (rel: string): string =>
+    adapter
+      ? (adapter.moduleOf(rel) ?? UNREGISTERED_MODULE)
+      : (indexedModule.get(rel) ?? moduleForPath(ctx.root, path.join(ctx.root, rel)));
+
+  let exportedSymbols = 0;
+  for (const row of rows) {
+    const entry = entryFor(classify(row.path));
+    const symbols = ctx.store.symbolsForFile(row.path).filter((symbol) => symbol.isExported);
+    exportedSymbols += symbols.length;
+    entry.files.push({
+      path: row.path,
+      exports: symbols.map((symbol) => ({
+        name: symbol.name,
+        kind: kindToContract(symbol.kind),
+        line: symbol.line,
+      })),
+    });
+  }
+
+  let unresolvedImports = 0;
+  if (adapter) {
+    for (const imp of ctx.store.listImports()) {
+      const fromModule = classify(imp.filePath);
+      const target = adapter.resolveImport(imp.filePath, imp.specifier);
+      if (target === null) {
+        // 外部包、动态别名或 policy 未登记目录：不是本仓模块，不进依赖表。
+        unresolvedImports += 1;
+        continue;
+      }
+      const targetModule = classify(target);
+      // 同模块内的 import 不进依赖表：这里要回答的是「谁跨了模块」。
+      if (targetModule === fromModule) continue;
+      const from = entryFor(fromModule);
+      from.dependsOn.set(targetModule, (from.dependsOn.get(targetModule) ?? 0) + 1);
+      const to = entryFor(targetModule);
+      to.dependedBy.set(fromModule, (to.dependedBy.get(fromModule) ?? 0) + 1);
+    }
+  }
+
+  const rank = (counts: Map<string, number>) =>
+    [...counts.entries()]
+      .map(([module, edges]) => ({ module, edges }))
+      .sort((a, b) => b.edges - a.edges || a.module.localeCompare(b.module));
+
+  const modules = [...byModule.entries()]
+    .map(([id, entry]) => ({
+      id,
+      files: [...entry.files].sort((a, b) => a.path.localeCompare(b.path)),
+      dependsOn: rank(entry.dependsOn),
+      dependedBy: rank(entry.dependedBy),
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  const staleTargets = rows.filter((row) => failed.has(row.path)).map((row) => row.path);
+  const counts = ctx.store.counts();
+  return {
+    workspace: ctx.root,
+    builtAt: ctx.store.getMeta("built_at") ?? "",
+    files: counts.files,
+    symbols: counts.symbols,
+    edges: counts.edges,
+    moduleScope: adapter ? "policy" : "path",
+    stale: staleTargets.length > 0,
+    staleReason:
+      staleTargets.length > 0
+        ? `重索引失败: ${staleTargets
+            .slice(0, 5)
+            .map((f) => `${f}: ${failed.get(f) ?? ""}`)
+            .join("; ")}`
+        : undefined,
+    unresolvedImports,
+    coverage: { exportedSymbols, computedSymbolPairs: ctx.store.coveredPairCount() },
+    violations: adapter?.violations ?? [],
+    acknowledgedViolations: adapter?.acknowledgedViolations ?? 0,
+    modules,
   };
 }

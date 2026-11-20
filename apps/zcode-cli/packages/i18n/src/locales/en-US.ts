@@ -17,6 +17,7 @@ With no command, zcode opens the full-screen TUI.
 Commands:
   app-server Run the ZCode Protocol stdio app server
   commands   List custom slash commands (\`commands list\`)
+  codegraph  Rebuild or inspect the symbol/dependency index (\`codegraph rebuild|stats\`)
   doctor     Inspect runtime and packaging assumptions
   login [zai|bigmodel]  Sign in through browser authorization
   logout     Remove the shared Z.AI login credentials

@@ -28,6 +28,8 @@ const DIRECT_BRANCH_EXPECTED_PROVIDER_TOOL_ORDER = [
   "Agent",
   "AskUserQuestion",
   "Bash",
+  // 进排序名单，按名字落在 Bash 与 Edit 之间（docs/codegraph-index.md §4.1）。
+  "CodegraphQuery",
   "Edit",
   "EnterPlanMode",
   "ExitPlanMode",

@@ -2414,3 +2414,14 @@ exceptions:
     paths:
       - packages/ui/src/components/workflow-timeline/workflowRunSave.ts
     reason: 上游 c5904686（v3.18.1 同步）新增的工作流保存路径预览，只把全局档展示串的用户级叶子换成 DATA_DIR_NAME，项目档仍按契约名 `.zcode` 字面量；纯展示文案，不改保存 owner 与模块边界，接管整个 ui 未受管模块不在本次范围内。
+  - id: codegraph-cli-subcommand-unmanaged-file
+    rule: unmanaged-new-file
+    paths:
+      - apps/zcode-cli/packages/cli/src/codegraph-command.ts
+    reason: codegraph 的 CLI 入口薄壳（spec docs/codegraph-index.md §4.2）：只做参数校验、workspace 根解析与 rebuild/stats 转调，索引与查询逻辑全在 managed 模块 biz-codegraph；按文件登记例外，不接管整个未受管的 zcode-cli 命令目录。
+  - id: codegraph-tool-registration-unmanaged-files
+    rule: unmanaged-new-file
+    paths:
+      - apps/zcode-cli/packages/contracts/src/tools/codegraph-query.ts
+      - apps/zcode-cli/packages/core/src/tool/handlers/codegraph-query.ts
+    reason: codegraph 原生工具的注册薄壳（spec docs/codegraph-index.md §4.1 与 §5.5）：contracts 只声明 CodegraphQuery 的入参/出参 schema，core handler 只做入参校验、索引就绪判定与结果投影，解析、存储与新鲜度全部在 managed 模块 biz-codegraph。两处都必须是这个形状才能挂进上游的工具注册循环，按文件登记例外，不接管 contracts 与 core 目录。

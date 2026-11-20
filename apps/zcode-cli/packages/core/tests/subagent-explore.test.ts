@@ -58,6 +58,7 @@ Your strengths:
 - Reading and analyzing file contents
 
 Guidelines:
+- Use CodegraphQuery for symbol-level questions (who references an exported name, a file's export surface, cross-file dependencies) before any file sweep; when it reports the index is missing, fall back to the text-search tools
 - Use \`find\` via Bash for broad file pattern matching
 - Use \`grep\` via Bash for searching file contents with regex
 - Use Read when you know the specific file path you need to read
@@ -573,6 +574,7 @@ describe("Explore subagent", () => {
     // provider-visible 顺序由最终输出边界统一排序，本地工具追加在后。
     expect(childRequests[0].tools.map((tool: any) => tool.name)).toEqual([
       "Bash",
+      "CodegraphQuery",
       "Read",
       "TodoWrite",
       "WebFetch",
@@ -601,6 +603,7 @@ describe("Explore subagent", () => {
       "ToolSearch",
       "DeferredToolCall",
       "Bash",
+      "CodegraphQuery",
       "Read",
       "WebFetch",
       "WebSearch",
@@ -3730,6 +3733,7 @@ describe("Explore subagent", () => {
     });
     expect(childToolNames).toEqual([
       "Bash",
+      "CodegraphQuery",
       "Read",
       "TodoWrite",
       "WebFetch",
@@ -4500,6 +4504,7 @@ describe("Explore subagent", () => {
     expect(childStreamRequests).toHaveLength(1);
     expect(childStreamRequests[0].tools.map((tool: any) => tool.name)).toEqual([
       "Bash",
+      "CodegraphQuery",
       "Read",
       "TodoWrite",
       "WebFetch",

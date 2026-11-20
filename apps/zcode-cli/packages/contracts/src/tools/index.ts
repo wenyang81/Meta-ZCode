@@ -13,6 +13,9 @@ export * from "./bash.js";
 export * from "./node-repl.js";
 export * from "./glob.js";
 export * from "./grep.js";
+// fork 专属（docs/codegraph-index.md）：符号索引查询面。名字常量被 core 的工具注册与
+// Explore 子代理白名单读走，入参的「symbol/filePath 至少给一个」由 handler 校验。
+export * from "./codegraph-query.js";
 export * from "./webfetch.js";
 export * from "./agent.js";
 export * from "./skill.js";

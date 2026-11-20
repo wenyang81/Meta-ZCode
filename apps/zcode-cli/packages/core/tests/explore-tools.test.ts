@@ -12,26 +12,28 @@ describe("Explore tool policy", () => {
       "Bash",
       "Glob",
       "Grep",
+      "CodegraphQuery",
       "Read",
       "WebFetch",
       "WebSearch",
       "TodoWrite",
     ]);
     expect(formatExploreAllowedToolsForAgentDescription()).toBe(
-      "Glob, Grep, Read, Bash, WebFetch, WebSearch, TodoWrite",
+      "CodegraphQuery, Glob, Grep, Read, Bash, WebFetch, WebSearch, TodoWrite",
     );
 
     expect(buildExploreAllowedTools({ embeddedSearchEnabled: true })).toEqual([
       "ToolSearch",
       "DeferredToolCall",
       "Bash",
+      "CodegraphQuery",
       "Read",
       "WebFetch",
       "WebSearch",
       "TodoWrite",
     ]);
     expect(formatExploreAllowedToolsForAgentDescription({ embeddedSearchEnabled: true })).toBe(
-      "Read, Bash, WebFetch, WebSearch, TodoWrite",
+      "CodegraphQuery, Read, Bash, WebFetch, WebSearch, TodoWrite",
     );
   });
 });

@@ -400,7 +400,9 @@ Review carefully.`,
     });
 
     expect(prompt).toContain("Explore");
-    expect(prompt).toContain("Tools: Read, Bash, WebFetch, WebSearch, TodoWrite");
+    expect(prompt).toContain(
+      "Tools: CodegraphQuery, Read, Bash, WebFetch, WebSearch, TodoWrite",
+    );
     expect(prompt).not.toContain("Glob");
     expect(prompt).not.toContain("Grep");
   });

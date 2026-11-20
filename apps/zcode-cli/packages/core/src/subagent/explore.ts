@@ -18,12 +18,18 @@ export interface LegacyExploreSystemPromptOptions extends ExploreAgentPromptOpti
 }
 
 export function buildExploreAgentPrompt(options: ExploreAgentPromptOptions): string {
+  // 路由规则（docs/codegraph-index.md §4.3）：符号级问题先查索引，一次调用顶掉一轮文件扫描。
+  // 排在文本搜索两条之前，模型按顺序选用；索引缺席时它自己会退回文本搜索。
+  const codegraphGuideline =
+    "- Use CodegraphQuery for symbol-level questions (who references an exported name, a file's export surface, cross-file dependencies) before any file sweep; when it reports the index is missing, fall back to the text-search tools";
   const searchGuidelines = options.embeddedSearchEnabled
     ? [
+        codegraphGuideline,
         "- Use `find` via Bash for broad file pattern matching",
         "- Use `grep` via Bash for searching file contents with regex",
       ]
     : [
+        codegraphGuideline,
         "- Use Glob for broad file pattern matching",
         "- Use Grep for searching file contents with regex",
       ];

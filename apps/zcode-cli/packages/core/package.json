@@ -37,6 +37,7 @@
     "lint:fix": "oxlint --fix src --no-ignore"
   },
   "dependencies": {
+    "@zcode/biz-codegraph": "workspace:*",
     "@zcode/contracts": "workspace:*",
     "@zcode/dynamic-workflow": "workspace:*",
     "@zcode/session-control": "workspace:*",

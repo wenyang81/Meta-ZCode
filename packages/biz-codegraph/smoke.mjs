@@ -2,7 +2,7 @@ import { rebuildIndex, codegraphStats, querySymbols } from "./src/index.js";
 
 const root = "F:/develop/metaBase1.0/Meta-ZCode";
 let t0 = Date.now();
-const counts = rebuildIndex(root);
+const counts = await rebuildIndex(root);
 console.log("rebuild ms", Date.now() - t0);
 console.log("counts", JSON.stringify(counts));
 t0 = Date.now();

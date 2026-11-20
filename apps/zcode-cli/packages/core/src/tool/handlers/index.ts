@@ -34,6 +34,7 @@ import type { BashTimeoutPolicy } from "../bash-timeout-policy.js";
 import { createJsToolEntry, jsToolEntry } from "./node-repl.js";
 import { globToolEntry } from "./glob.js";
 import { grepToolEntry } from "./grep.js";
+import { codegraphQueryToolEntry } from "./codegraph-query.js";
 import { webFetchToolEntry } from "./webfetch.js";
 import { webSearchToolEntry } from "./websearch.js";
 import {
@@ -97,6 +98,7 @@ export const builtInTools: ToolEntry[] = [
   bashToolEntry,
   globToolEntry,
   grepToolEntry,
+  codegraphQueryToolEntry,
   webFetchToolEntry,
   webSearchToolEntry,
   todoReadToolEntry,
