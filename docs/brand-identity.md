@@ -12,7 +12,7 @@
 ## 唯一所有者：`biz-brand`
 
 `packages/biz-brand` 是 `domain` 层受控模块：无 IO、无 `await`、无 JSX，只持有常量与字符串。
-品牌事实只有一个来源，其它位置一律读取，不再各自复制一份名称或图形。
+品牌事实只有一个来源，其它位置一律读取，不再各自复制一份名称、图形或品牌自有链接。
 
 公开契约（`packages/biz-brand/src/contract.ts`）：
 
@@ -26,6 +26,7 @@
 | `linuxExecutableName` | Linux 可执行与包名                      | `fusionfinlab`                  |
 | `logoSvg`             | 品牌标记母版（viewBox 0 0 120 120）     | SVG 源码字符串                  |
 | `logoDataUrl`         | 可直接进 `<img src>` 的 data URL        | 由 `logoSvg` 编码               |
+| `productDocsUrl`      | 产品文档站入口（帮助菜单/命令面板共用） | `https://www.fusionfinlab.com/docs` |
 
 字段只保留有真实消费方的：窗口/文档标题由 HTML 壳的 `<title>` 与 `document.title` 决定，
 没有集中所有者，因此不设 `windowTitle` 字段，避免契约里躺着没人读的值。
@@ -93,6 +94,24 @@
 **不要动** `packages/ui/src/assets/provider-icons/logo-zai.svg`：它同时是 Z.AI 服务商图标
 （`packages/ui/src/lib/oauthProviderIcon.tsx:6`），属于第三方 provider 品牌，不是本应用标识。
 
+### 2.2 品牌链接 seam（产品文档入口）
+
+上游把文档站地址写成 UI 里的硬编码字面量，白标产品点「产品文档」会跳到 `zcode.z.ai`。
+地址值收口到 `brandIdentity.productDocsUrl`，上游调用点保持原样：
+
+| 位置                                                              | 现状                                     | 接管                                                                 |
+| ----------------------------------------------------------------- | ---------------------------------------- | -------------------------------------------------------------------- |
+| `packages/ui/src/lib/productDocs.ts:2`                            | 导出 `ZCODE_PRODUCT_DOCS_URL` 常量       | 改为读通 `brandIdentity.productDocsUrl`，不再自带字面量               |
+| `packages/ui/src/lib/helpMenuActions.ts:33`、`App.tsx:755`        | `platform.openExternal(常量)`            | 零改动：问号菜单、命令面板与 quickpick 三个入口继续共用同一常量       |
+
+读通而不删常量文件，是为了把 fork 的 diff 压在一个上游文件的两行上：删掉它要同时改
+`helpMenuActions.ts` 和 `App.tsx`，那两个文件会因此退出上游快照准入、每次同步都产生冲突。
+
+进本模块的链接只有一条判定线：**地址已定且随品牌身份一起换**（文档站属于「谁的产品」，
+换标时它必然跟着换）。仍待法务或域名决策的条款/隐私与分享落地页走 env（见「明确不改的边界」），
+可运营随时下发的社群与反馈地址走 `config/default.json` + 远端 help config，都不进品牌契约——
+后两类改起来不该要求重新构建安装包，而品牌契约是无 IO 的编译期常量。
+
 ### 3. 主进程原生外壳
 
 | 位置                                                                             | 内容                                                   | 接管                                                                                                                 |
@@ -153,8 +172,9 @@ Windows 上无法再生成，保持上游原样并视为未换标。
 | 分享落地页与分享管理页的 `ShareBrandMark`                                                    | `packages/web/src/share/ConversationShareLandingPage.tsx:249` 仍内联上游 Z 图形与 "ZCode" 字形 path，同页 `ZCODE_DOWNLOAD_URL = https://zcode.z.ai` 会把访客引到上游下载。这两处对外可见，但换标要连同本 fork 的下载/落地地址一起定，未决策前不动 |
 
 上表中条款链接与分享落地地址本质是**服务依赖**而不是图形依赖，处置档位与其余上游域名
-一起登记在 [上游服务依赖清单](upstream-service-dependencies.md)；品牌 seam 只负责图形与文案取值，
-不代为决定这些地址指向哪里。条款链接的注入机制已按 env 落地（见上表），分享落地地址仍待决策。
+一起登记在 [上游服务依赖清单](upstream-service-dependencies.md)；品牌 seam 负责图形、文案取值，
+以及**地址已定且随品牌一起换**的链接（产品文档，见 2.2），不代为决定仍待法务或域名决策、
+以及可运营随时下发的地址指向哪里。条款链接的注入机制已按 env 落地（见上表），分享落地地址仍待决策。
 
 ## 开源合规边界（Apache-2.0）
 
@@ -228,5 +248,6 @@ Windows 上无法再生成，保持上游原样并视为未换标。
 | `packages/ui/src/components/mobile-ui/ZCodeAppLogo.tsx`                                      | 跨端 App logo       |
 | `packages/ui/src/v4/ConversationDraftEmptyState.tsx`                                         | 草稿首页品牌水印    |
 | `packages/ui/src/WelcomeScreen.tsx` + `i18n/locales/*.ts` 的 `login.*`                       | 登录页品牌文案占位  |
+| `packages/ui/src/lib/productDocs.ts`                                                         | 产品文档链接读通（2.2） |
 | `packages/desktop/src/main/about.ts`、`desktopTray.ts`、`packages/shared/src/desktopMenu.ts` | 原生外壳文案        |
 | `packages/shared/src/dataDirName.ts`                                                         | 数据目录叶子名 owner（见 [data-dir-name.md](data-dir-name.md)） |

@@ -1,6 +1,6 @@
 /**
- * 品牌事实的公开契约：只描述「这个产品叫什么、长什么样」，不含行为与 IO。
- * 任何层都可以读取，但不允许在别处再复制一份名称或图形。
+ * 品牌事实的公开契约：只描述「这个产品叫什么、长什么样、对外链接指向哪里」，不含行为与 IO。
+ * 任何层都可以读取，但不允许在别处再复制一份名称、图形或品牌自有链接。
  * 见 docs/brand-identity.md。
  */
 export interface BrandIdentity {
@@ -24,4 +24,11 @@ export interface BrandIdentity {
   readonly logoSvg: string;
   /** 由 logoSvg 编码出的 data URL，供 `<img src>` 直接使用。 */
   readonly logoDataUrl: string;
+  /**
+   * 产品文档站入口（帮助菜单「产品文档」、命令面板与 quickpick 的同一目标）。
+   * 只存地址，不含打开行为：跳转由消费方经 `IPlatformService.openExternal()` 完成。
+   * 与「用户社群」「问题上报」不同——后两者的地址来自 `config/default.json` 与远端 help
+   * config，属于运行期可下发的运营配置，不由品牌身份决定。
+   */
+  readonly productDocsUrl: string;
 }

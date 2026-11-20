@@ -88,7 +88,8 @@
 | 飞书 / Lark | `open.feishu.cn`、`accounts.feishu.cn`、`applink.feishu.cn`、`*.larksuite.com` | **C** |
 | 微信 iLink / Telegram | `ilinkai.weixin.qq.com`、`api.telegram.org` | **C** |
 | 反馈表单 / 社区 | `config/default.json:2-7` 里烤进飞书表单与 Discord 邀请 | 可远端覆盖，本地兜底是 C |
-| 用户协议 / 隐私 | `https://zcode.z.ai/{terms,privacy}` | **A**（2026-11-15 起：`VITE_ZCODE_TERMS_URL` / `VITE_ZCODE_PRIVACY_URL`，构建期注入 renderer，见 `.env.fusionfinlab` 第 4 节；文档链接仍为 C） |
+| 用户协议 / 隐私 | `https://zcode.z.ai/{terms,privacy}` | **A**（2026-11-15 起：`VITE_ZCODE_TERMS_URL` / `VITE_ZCODE_PRIVACY_URL`，构建期注入 renderer，见 `.env.fusionfinlab` 第 4 节） |
+| 产品文档站 | 上游默认 `https://zcode.z.ai/docs`；本 fork 取 `https://www.fusionfinlab.com/docs` | **C**（2026-11-19 起值收口到 `brandIdentity.productDocsUrl`，改一处即可，不再散在 UI；见 [brand-identity.md](brand-identity.md) 2.2） |
 | 奖励 / 更新日志页 | `{origin}/(cn|en)/{rewards,changelog}` | **A** |
 | Gen-UI iframe CSP 白名单 | 含 `zcode.z.ai` 与公共 CDN（jsdelivr/unpkg/esm.sh/gstatic…） | **C** |
 | 打包元数据 | `homepage https://zcode.z.ai`、`maintainer "ZCode <dev@zcode.z.ai>"` | **C**（仅影响 Linux .desktop 等） |
@@ -108,7 +109,8 @@
 2. **再收 C 档里的三处硬骨头**：插件市场 CDN、`zcode-builtin.json` 内的 `open.bigmodel.cn`/`api.z.ai`
    推理地址、以及超算套餐重写。这三处决定「完全不碰智谱托管」能否成立，建议按 seam 方式集中到
    `packages/biz-brand` 之外的新受控模块（如 `biz-endpoints`），而不是散点替换。
-3. **C 档里的文案类**（docs 链接、分享落地页 CTA、打包 homepage）等真实域名定了再改；
+3. **C 档里的文案类**：docs 链接已于 2026-11-19 收口到 `biz-brand`（见上表），分享落地页 CTA 与
+   打包 homepage 等真实域名定了再改；
    terms/privacy 已升 A 档（见上表），只差你把 URL 填进 `.env.fusionfinlab`。
 4. **B 档**在每次正式构建的 env 里固化，写进 CI 变量清单即可，不改源码。
 

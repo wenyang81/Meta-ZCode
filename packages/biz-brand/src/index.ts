@@ -52,4 +52,5 @@ export const brandIdentity: BrandIdentity = {
   linuxExecutableName: "fusionfinlab",
   logoSvg: LOGO_SVG,
   logoDataUrl: `data:image/svg+xml,${encodeURIComponent(LOGO_SVG)}`,
+  productDocsUrl: "https://www.fusionfinlab.com/docs",
 };

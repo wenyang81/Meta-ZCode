@@ -122,7 +122,7 @@ A 档的官方登记模板是仓库根 [.env.fusionfinlab.example](../.env.fusio
 - Claude 官方插件源：github 仓库 clone 地址
 - 内置模型推理地址：`config/provider/zcode-builtin.json` 里的 `open.bigmodel.cn` / `api.z.ai`（×6）
 - 超算套餐 URL 重写：`official-coding-plan-gateway.ts` 两条硬编码规则
-- 文档链接 `zcode.z.ai/docs`、分享落地页 CTA、反馈表单/Discord、Gen-UI iframe 白名单
+- 文档链接（值已收口到 `brandIdentity.productDocsUrl`，改 `packages/biz-brand/src/index.ts` 一行，见 docs/brand-identity.md 2.2）、分享落地页 CTA、反馈表单/Discord、Gen-UI iframe 白名单
 
 例外：metarouter 模板的 `baseUrl` / `apiKeyManagementUrl` 虽也在这个 JSON 里，但走占位符在解码时被 `DLMETA_METAROUTER_*` 替换，属于 A 档（见第一节）。
 
