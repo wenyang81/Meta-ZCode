@@ -44,7 +44,7 @@ const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" 
 </svg>`;
 
 export const brandIdentity: BrandIdentity = {
-  productName: "FusionFinLab",
+  productName: "DLMetaWork",
   displayName: "融智坊",
   displayNameEn: "FUSIONFINLAB",
   i18nBrandName: "DLMetaWork",
